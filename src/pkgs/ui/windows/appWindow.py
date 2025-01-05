@@ -4,10 +4,10 @@ import sys
 import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
 
-from .appWindow_ui import Ui_MainWindow
+from .appWindow_ui import Ui_appWindow
 
 
-class AppWindow(qtw.QMainWindow, Ui_MainWindow):
+class AppWindow(qtw.QMainWindow, Ui_appWindow):
     """
     The application main window.
     """
