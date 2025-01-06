@@ -2,7 +2,7 @@
 CBOR datastore binary encoder
 
 ![test](https://github.com/Electronya/cbor-datastore-creator/actions/workflows/test.yml/badge.svg)
-[![coverage](https://codecov.io/gh/Electronya/cbor-datastore-creator/branch/main/graph/badge.svg?token=WEAWM1E3HZ)](https://codecov.io/gh/Electronya/cbor-datastore-creator)
+[![codecov](https://codecov.io/gh/Electronya/cbor-datastore-creator/graph/badge.svg?token=BNR4z8iMQ7)](https://codecov.io/gh/Electronya/cbor-datastore-creator)
 
 ## Development
 ### Setup
