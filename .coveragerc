@@ -4,6 +4,8 @@ omit =
     */site-packages/*
     */distutils/*
     tests/*
+    */*_ui.py
+    */*_rc.py
 
 [report]
 exclude_lines =
