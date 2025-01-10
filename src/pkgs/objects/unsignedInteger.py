@@ -53,6 +53,15 @@ class UnsignedInteger:
         """
         self._data.name = name
 
+    def getId(self) -> int:
+        """
+        Get the object ID.
+
+        Return
+            The object ID.
+        """
+        return self._data.id
+
     def getIndex(self) -> int:
         """
         Get the object index.

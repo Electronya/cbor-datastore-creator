@@ -79,6 +79,15 @@ class TestUnsignedInteger(TestCase):
             self._uut.setName(name)
             self.assertEqual(name, self._uut._data.name)
 
+    def test_getIdReturnId(self) -> None:
+        """
+        The getId method must return the object ID.
+        """
+        objectIds = [0x0101, 0xff02]
+        for objectId in objectIds:
+            self._uut._data.id = objectId
+            self.assertEqual(objectId, self._uut.getId())
+
     def test_getIndexReturnIndex(self) -> None:
         """
         The getIndex method must return the object index based on its ID.
