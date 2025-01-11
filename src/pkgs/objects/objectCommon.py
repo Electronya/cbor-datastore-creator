@@ -1,7 +1,4 @@
 
-OBJECT_SIZES = [1, 2, 4, 8]
-
-
 class SizeError(Exception):
     """
     The object size error.
