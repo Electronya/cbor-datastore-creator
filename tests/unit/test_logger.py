@@ -98,6 +98,23 @@ class TestLogger(TestCase):
         self.assertEqual(_loggingSettings, expectedResult, '_updateSettings '
                          'failed to update the settings.')
 
+    def test_setInDebugModeDebugNewLogger(self) -> None:
+        """
+        The _setInDebugMode must update the logging settings by adding the new
+        logger.
+        """
+        expectedResult = deepcopy(_loggingSettings)
+        expectedResult['handlers']['console']['level'] = 'DEBUG'
+        expectedResult['loggers']['app.testLogger'] = {'level': 'DEBUG',
+                                                       'handlers': ['console'],
+                                                       'propagate': False}
+        self.testArg.verbose = 'app.testLogger'
+        loggersList = [self.testArg.verbose]
+        for loggers in loggersList:
+            dut._setInDebugMode(loggers)
+        self.assertEqual(_loggingSettings, expectedResult, '_updateSettings '
+                         'failed to update the settings.')
+
     def test_updateSettings(self) -> None:
         """
         The _updateSettings function must set in debug mode the loggers
