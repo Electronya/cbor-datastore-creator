@@ -7,27 +7,27 @@ from .objectCommon import LimitError, SizeError
 
 
 @dataclass
-class UnsignedIntegerData:
+class SignedIntegerData:
     """
-    Unsigned integer data class.
+    Signed integer data class.
     """
     name: str
     index: int
     size: int = 1
-    min: int = 0
-    max: int = 255
+    min: int = -128
+    max: int = 127
     default: int = 0
     inNvm: bool = False
 
 
-class UnsignedInteger:
+class SignedInteger:
     """
-    The unsigned integer object type class.
+    The singed integer object type class.
     """
-    BASE_ID: int = 0x0100
+    BASE_ID: int = 0x0200
     VALID_SIZES = (1, 2, 4, 8)
 
-    def __init__(self, data: UnsignedIntegerData):
+    def __init__(self, data: SignedIntegerData):
         """
         Constructor.
 
@@ -91,7 +91,8 @@ class UnsignedInteger:
         Return
             True if the limits are valid, False otherwise.
         """
-        if min > max or min < 0 or max > pow(2, 8 * size) - 1:
+        if min > max or min < int(-1 * pow(2, 8 * size) / 2) or \
+                max > int(pow(2, 8 * size) / 2 - 1):
             return False
         return True
 
@@ -237,7 +238,7 @@ class UnsignedInteger:
         Raise
             A limit error if the default value is invalid.
         """
-        if not self._isDefaultValid(self._data.min, self._data.max, default):
+        if default < self._data.min or default > self._data.max:
             raise LimitError(f"A value of {default} is outside of the "
                              f"{self._data.min} minimum and "
                              f"{self._data.max} maximum")
