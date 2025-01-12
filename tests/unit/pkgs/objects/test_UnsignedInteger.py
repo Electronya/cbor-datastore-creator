@@ -298,7 +298,7 @@ class TestUnsignedInteger(TestCase):
         for limits in objectLimits:
             errMsg = f"A min of {limits[0]} or a max of " \
                      f"{limits[1]} is not valid"
-            if limits[0] > 65535:
+            if limits[1] > 65535:
                 self._uut._data.size = 2
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
