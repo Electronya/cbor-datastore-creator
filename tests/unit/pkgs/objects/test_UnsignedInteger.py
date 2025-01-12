@@ -164,7 +164,6 @@ class TestUnsignedInteger(TestCase):
                       (4, 0, pow(2, 8 * 4) - 1, True),
                       (8, 0, pow(2, 8 * 8) - 1, True)]
         for values in testValues:
-            print(values)
             self.assertEqual(values[3], self._uut._areLimitsValid(values[0],
                                                                   values[1],
                                                                   values[2]))
