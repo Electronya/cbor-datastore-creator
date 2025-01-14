@@ -18,7 +18,7 @@ from pkgs.objects import (                  # noqa: E402
 
 class TestSignedInteger(TestCase):
     """
-    UnsignedInteger test cases.
+    SignedInteger test cases.
     """
     def setUp(self) -> None:
         """
@@ -223,7 +223,6 @@ class TestSignedInteger(TestCase):
         """
         indexes = [1, 2]
         for index in indexes:
-            print(f"test index: {index}")
             self._uut._data.index = index
             self.assertEqual(index, self._uut.getIndex())
 
