@@ -11,25 +11,25 @@ sys.path.append(os.path.abspath('./src'))
 from pkgs.objects import (                  # noqa: E402
     LimitError,
     SizeError,
-    SignedInteger,
-    SignedIntegerData
+    Float,
+    FloatData
 )
 
 
-class TestSignedInteger(TestCase):
+class TestFloat(TestCase):
     """
-    SignedInteger test cases.
+    Float test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.signedInteger.logging'
+        self._loggingMod = 'pkgs.objects.floatObject.logging'
         self._mockedLogger = Mock()
-        objectData = SignedIntegerData('testObject', 1, 1, -128, 127, 32)
+        objectData = FloatData('testObject', 1, 4, -128.5, 128.5, 32.0)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = SignedInteger(objectData)
+            self._uut = Float(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
@@ -42,7 +42,7 @@ class TestSignedInteger(TestCase):
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': SignedInteger.BASE_ID | objectData.index,
+            'id': Float.BASE_ID | objectData.index,
             'size': objectData.size,
             'min': objectData.min,
             'max': objectData.max,
@@ -56,13 +56,13 @@ class TestSignedInteger(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = SignedIntegerData("testObject", 256)
+        objectData = FloatData("testObject", 256)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            SignedInteger(objectData)
+            Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
 
@@ -71,13 +71,13 @@ class TestSignedInteger(TestCase):
         The constructor must raise a size error if the size used to initialize
         the object is invalid.
         """
-        objectData = SignedIntegerData("testObject", 1, 3, 0, 255, 32)
+        objectData = FloatData("testObject", 1, 3, 0.0, 255.0, 32.0)
         errMsg = f"Cannot create object {objectData.name}: Invalid size " \
             f"({objectData.size})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(SizeError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            SignedInteger(objectData)
+            Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
 
@@ -86,13 +86,13 @@ class TestSignedInteger(TestCase):
         The constructor must raise a limit error if the limits used to
         initialize the object are invalid.
         """
-        objectData = SignedIntegerData("testObject", 1, 1, -1, 255, 32)
+        objectData = FloatData("testObject", 1, 4, 1.0, -1.0, 0.0)
         errMsg = f"Cannot create object {objectData.name}: Invalid min " \
             f"({objectData.min}) or max ({objectData.max})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            SignedInteger(objectData)
+            Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
 
@@ -101,13 +101,13 @@ class TestSignedInteger(TestCase):
         The constructor must raise a limit error if the default value used to
         initialize the object is invalid.
         """
-        objectData = SignedIntegerData("testObject", 1, 1, -128, 127, 128)
+        objectData = FloatData("testObject", 1, 8, -128.0, 127.0, 128.0)
         errMsg = f"Cannot create object {objectData.name}: Invalid default " \
             f"({objectData.default})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            SignedInteger(objectData)
+            Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
 
@@ -115,18 +115,18 @@ class TestSignedInteger(TestCase):
         """
         The constructor must get the uint logger.
         """
-        objectData = SignedIntegerData("testObject", 1)
+        objectData = FloatData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
-            SignedInteger(objectData)
+            Float(objectData)
             mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = SignedIntegerData("testObject", 1)
+        objectData = FloatData("testObject", 1)
         with patch(self._loggingMod):
-            testObject = SignedInteger(objectData)
+            testObject = Float(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -144,7 +144,7 @@ class TestSignedInteger(TestCase):
         The _isSizeValid method must return true when the size is valid and
         false otherwise. To be valid the size must either 1, 2, 4 or 8.
         """
-        results = [True, True, False, True, False, False, False, True, False]
+        results = [False, False, False, True, False, False, False, True, False]
         for idx, result in enumerate(results):
             size = idx + 1
             self.assertEqual(result, self._uut._isSizeValid(size))
@@ -152,28 +152,14 @@ class TestSignedInteger(TestCase):
     def test__areLimitsValidReturnValue(self) -> None:
         """
         The _areLimitsValid method return true when the limits are valid and
-        false otherwise. to be valid the minimum must be -1 * 2^(8 * size) / 2
-        or greater, the maximum must be 2^(8 * size) / 2 - 1 or smaller and the
-        minimum must be less than the maximum.
+        false otherwise. to be valid the minimum must be less than the maximum.
         """
-        min4bits = int(-1 * pow(2, 8 * 4) / 2)
-        max4bits = int(pow(2, 8 * 4) / 2 - 1)
-        min8bits = int(-1 * pow(2, 8 * 8) / 2)
-        max8bits = int(pow(2, 8 * 8) / 2 - 1)
-        # test values: (size, min, max, result)
-        testValues = [(1, -129, 127, False), (1, 0, 128, False),
-                      (2, -32769, 32767, False), (2, -32768, 32768, False),
-                      (4, min4bits - 1, max4bits, False),
-                      (4, min4bits, max4bits + 1, False),
-                      (8, min8bits - 1, max8bits, False),    # noqa: E501
-                      (8, min8bits, max8bits + 1, False),
-                      (1, 1, -1, False), (1, -128, 127, True),
-                      (2, -32768, 32767, True), (4, min4bits, max4bits, True),
-                      (8, min8bits, max8bits, True)]
+        # test values: (min, max, result)
+        testValues = [(129.0, 127.0, False), (0, 128, True),
+                      (-32766.0, -32767.0, False), (-32768, 32768, True)]
         for values in testValues:
-            self.assertEqual(values[3], self._uut._areLimitsValid(values[0],
-                                                                  values[1],
-                                                                  values[2]))
+            self.assertEqual(values[2], self._uut._areLimitsValid(values[0],
+                                                                  values[1]))
 
     def test__isDefaultValidReturnValue(self) -> None:
         """
@@ -182,8 +168,10 @@ class TestSignedInteger(TestCase):
         minimum and maximum, included.
         """
         # test values: (min, max, default, result)
-        testValues = [(-128, 127, -129, False), (-128, 127, 128, False),
-                      (-128, 127, -128, True), (-128, 127, 127, True)]
+        testValues = [(-128.0, 127.0, -129.0, False),
+                      (-128.0, 127.0, 128.0, False),
+                      (-128.0, 127.0, -128.0, True),
+                      (-128.0, 127.0, 127.0, True)]
         for values in testValues:
             self.assertEqual(values[3], self._uut._isDefaultValid(values[0],
                                                                   values[1],
@@ -214,7 +202,7 @@ class TestSignedInteger(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(SignedInteger.BASE_ID | index,
+            self.assertEqual(Float.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -261,7 +249,7 @@ class TestSignedInteger(TestCase):
         The setSize method must raise a size error if the given size is
         supported.
         """
-        objectSizes = [3, 5, 6, 7, 9]
+        objectSizes = [1, 2, 3, 5, 6, 7, 9]
         for size in objectSizes:
             errMsg = f"A {size} bytes is not supported"
             with self.assertRaises(SizeError) as context:
@@ -272,7 +260,7 @@ class TestSignedInteger(TestCase):
         """
         The setSize method must save the new object size.
         """
-        objectSizes = [1, 2, 4, 8]
+        objectSizes = [4, 8]
         for size in objectSizes:
             self._uut.setSize(size)
             self.assertEqual(size, self._uut._data.size)
@@ -281,7 +269,7 @@ class TestSignedInteger(TestCase):
         """
         The getMin method must return the object minimum value.
         """
-        objectMinimums = [1, 50, 0]
+        objectMinimums = [1.2, 50.5, 0.0]
         for min in objectMinimums:
             self._uut._data.min = min
             self.assertEqual(min, self._uut.getMin())
@@ -290,7 +278,7 @@ class TestSignedInteger(TestCase):
         """
         The getMax method must return the object maximum value.
         """
-        objectMaximums = [127, 100, 75]
+        objectMaximums = [127.3, 100.8, 75.12]
         for max in objectMaximums:
             self._uut._data.max = max
             self.assertEqual(max, self._uut.getMax())
@@ -301,12 +289,10 @@ class TestSignedInteger(TestCase):
         invalid.
         """
         # Limits: (min, max)
-        objectLimits = [(3, 1), (-129, 127), (10, 256), (10, 65536)]
+        objectLimits = [(3, 1), (-120, -127)]
         for limits in objectLimits:
             errMsg = f"A min of {limits[0]} or a max of " \
                      f"{limits[1]} is not valid"
-            if limits[1] > 65535:
-                self._uut._data.size = 2
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
                 self.assertEqual(errMsg, str(context.exception))
@@ -316,7 +302,8 @@ class TestSignedInteger(TestCase):
         The setLimits method must save the new limits.
         """
         # Limits: (min, max)
-        objectLimits = [(-128, 127), (10, 15), (-30, 75), (-10, 100)]
+        objectLimits = [(-128.1, 127.9), (10.2, 15.8),
+                        (-30.3, 75.7), (-10.5, 100.6)]
         for limits in objectLimits:
             self._uut.setLimits(limits[0], limits[1])
             self.assertEqual(limits[0], self._uut._data.min)
@@ -326,7 +313,7 @@ class TestSignedInteger(TestCase):
         """
         The getDefault method must return the object default value.
         """
-        objectDefaultValues = [127, 100, 75]
+        objectDefaultValues = [127.4, 100.7, 75.2]
         for defaultVal in objectDefaultValues:
             self._uut._data.default = defaultVal
             self.assertEqual(defaultVal, self._uut.getDefault())
@@ -337,8 +324,8 @@ class TestSignedInteger(TestCase):
         outside of the limits.
         """
         # test values: (min, max, default)
-        testValues = [(0, 127, 128), (-128, 15, -129),
-                      (30, 100, 255), (10, 150, 0)]
+        testValues = [(0.0, 127.9, 128.1), (-128.9, 15.5, -129.4),
+                      (30.3, 100.7, 255), (10.5, 150.2, 0.4)]
         for values in testValues:
             errMsg = f"A value of {values[2]} is outside of the " \
                      f"{values[0]} minimum and {values[1]} maximum"
@@ -352,7 +339,7 @@ class TestSignedInteger(TestCase):
         """
         The setDefault method must save the object default value.
         """
-        objectDefaultValues = [127, -128, 75]
+        objectDefaultValues = [127.6, -128.4, 75.4]
         for defaultVal in objectDefaultValues:
             self._uut.setDefault(defaultVal)
             self.assertEqual(defaultVal, self._uut._data.default)
