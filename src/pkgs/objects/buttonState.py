@@ -12,13 +12,13 @@ class ButtonStateEnum(Enum):
     The button state enumeration.
     """
     BUTTON_DEPRESSED = 0
-    BUTTON_PRESSED = 0
+    BUTTON_PRESSED = 1
 
 
 @dataclass
 class ButtonStateData:
     """
-    Signed integer data class.
+    Button state data class.
     """
     name: str
     index: int
