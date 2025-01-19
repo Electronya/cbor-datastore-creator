@@ -13,3 +13,11 @@ class LimitError(Exception):
     """
     def __init__(self, *args):
         super().__init__(*args)
+
+
+class TimeError(Exception):
+    """
+    The object time error
+    """
+    def __init__(self, *args):
+        super().__init__(*args)

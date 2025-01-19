@@ -238,7 +238,7 @@ class SignedInteger:
         Raise
             A limit error if the default value is invalid.
         """
-        if default < self._data.min or default > self._data.max:
+        if not self._isDefaultValid(self._data.min, self._data.max, default):
             raise LimitError(f"A value of {default} is outside of the "
                              f"{self._data.min} minimum and "
                              f"{self._data.max} maximum")
