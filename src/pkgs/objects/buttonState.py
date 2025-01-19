@@ -12,7 +12,7 @@ class ButtonStateEnum(Enum):
     The button state enumeration.
     """
     BUTTON_DEPRESSED = 0
-    BUTTON_PRESSED = 0
+    BUTTON_PRESSED = 1
 
 
 @dataclass
