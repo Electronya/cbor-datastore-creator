@@ -9,7 +9,7 @@ from .objectCommon import LimitError, SizeError
 @dataclass
 class FloatData:
     """
-    Signed integer data class.
+    Float data class.
     """
     name: str
     index: int

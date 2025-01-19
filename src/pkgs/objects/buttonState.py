@@ -18,7 +18,7 @@ class ButtonStateEnum(Enum):
 @dataclass
 class ButtonStateData:
     """
-    Signed integer data class.
+    Button state data class.
     """
     name: str
     index: int
