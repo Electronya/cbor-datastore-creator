@@ -31,12 +31,14 @@ class TestMultiState(TestCase):
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
+                'inNvm': objectData.inNvm,
                 'states': objectData.states,
             }
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
             'id': MultiState.BASE_ID | objectData.index,
+            'inNvm': objectData.inNvm,
             'states': objectData.states,
         }
         self._cborEncoding = cbor2.dumps(objectDict)
@@ -172,6 +174,25 @@ class TestMultiState(TestCase):
             expected.append(newState)
             self._uut.appendState(newState)
             self.assertEqual(expected, self._uut._data.states)
+
+    def test_isInNvmReturnFlag(self) -> None:
+        """
+        The isInNvm method must return True if the object is flag to be save
+        in NVM, False otherwise.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut._data.inNvm = flag
+            self.assertEqual(flag, self._uut.isInNvm())
+
+    def test_setInNvmSaveFlag(self) -> None:
+        """
+        The setInNvmFlag method must save the inNvm flag.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut.setInNvmFlag(flag)
+            self.assertEqual(flag, self._uut._data.inNvm)
 
     def test_getYamlStringReturnYamlString(self) -> None:
         """

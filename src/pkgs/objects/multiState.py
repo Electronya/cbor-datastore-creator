@@ -12,6 +12,7 @@ class MultiStateData:
     name: str
     index: int
     states: list[str] = field(default_factory=list)
+    inNvm: bool = False
 
 
 class MultiState:
@@ -120,6 +121,24 @@ class MultiState:
         """
         self._data.states.append(state)
 
+    def isInNvm(self) -> bool:
+        """
+        Check if the object should be saved in NVM.
+
+        Return
+            True if the object should saved in NVM, False otherwise.
+        """
+        return self._data.inNvm
+
+    def setInNvmFlag(self, inNvm: bool) -> None:
+        """
+        Set the inNvm flag.
+
+        Params
+            inNvm: the inNvm flag.
+        """
+        self._data.inNvm = inNvm
+
     def getYamlString(self) -> str:
         """
         Get the object yaml encoding as a string.
@@ -130,6 +149,7 @@ class MultiState:
         data = {
             self._data.name: {
                 'index': self._data.index,
+                'inNvm': self._data.inNvm,
                 'states': self._data.states,
             }
         }
@@ -144,6 +164,7 @@ class MultiState:
         """
         data = {
             'id': MultiState.BASE_ID | self._data.index,
+            'inNvm': self._data.inNvm,
             'states': self._data.states,
         }
         return cbor2.dumps(data)
