@@ -60,12 +60,13 @@ class TestMultiState(TestCase):
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the multi-state logger.
         """
         objectData = MultiStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             MultiState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+                                                            'multi-state')
 
     def test_constructorSaveObjectData(self) -> None:
         """

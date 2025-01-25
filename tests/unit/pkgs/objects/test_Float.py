@@ -113,12 +113,13 @@ class TestFloat(TestCase):
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the float logger.
         """
         objectData = FloatData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             Float(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+                                                            'float')
 
     def test_constructorSaveObjectData(self) -> None:
         """

@@ -113,12 +113,12 @@ class TestSignedInteger(TestCase):
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the int logger.
         """
         objectData = SignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             SignedInteger(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.objects.int')
 
     def test_constructorSaveObjectData(self) -> None:
         """
