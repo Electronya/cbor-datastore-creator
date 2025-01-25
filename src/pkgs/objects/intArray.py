@@ -9,7 +9,7 @@ from .objectCommon import ElementError
 @dataclass
 class IntArrayElement:
     """
-    The unsigned integer array element.
+    The signed integer array element.
     """
     min: int
     max: int
@@ -19,7 +19,7 @@ class IntArrayElement:
 @dataclass
 class IntArrayData:
     """
-    The unsigned integer array data.
+    The signed integer array data.
     """
     name: str
     index: int
