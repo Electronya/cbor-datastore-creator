@@ -1,5 +1,6 @@
 from .buttonState import ButtonState, ButtonStateData, ButtonStateEnum      # noqa: E501 F401
 from .floatObject import Float, FloatData                                   # noqa: E501 F401
+from .intArray import IntArray, IntArrayData, IntArrayElement               # noqa: E501 F401
 from .multiState import MultiState, MultiStateData                          # noqa: E501 F401
 from .objectCommon import ElementError, LimitError, SizeError, TimeError    # noqa: E501 F401
 from .signedInteger import SignedInteger, SignedIntegerData                 # noqa: E501 F401
