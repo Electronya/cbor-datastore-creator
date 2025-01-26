@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QGridLayout, QGroupBox, QHeaderView
     QMainWindow, QMenu, QMenuBar, QPushButton,
     QSizePolicy, QSpacerItem, QStatusBar, QToolBar,
     QTreeView, QWidget)
-from ..assets import resources_rc
+import resources_rc
 
 class Ui_appWindow(object):
     def setupUi(self, appWindow):
@@ -117,6 +117,13 @@ class Ui_appWindow(object):
         font1.setPointSize(12)
         self.groupBox_2.setFont(font1)
         self.groupBox_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.gridLayout_3 = QGridLayout(self.groupBox_2)
+        self.gridLayout_3.setObjectName(u"gridLayout_3")
+        self.widget = QWidget(self.groupBox_2)
+        self.widget.setObjectName(u"widget")
+
+        self.gridLayout_3.addWidget(self.widget, 0, 0, 1, 1)
+
 
         self.gridLayout.addWidget(self.groupBox_2, 0, 1, 1, 1)
 

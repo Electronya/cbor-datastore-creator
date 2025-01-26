@@ -123,6 +123,11 @@
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
+      <layout class="QGridLayout" name="gridLayout_3">
+       <item row="0" column="0">
+        <widget class="QWidget" name="widget" native="true"/>
+       </item>
+      </layout>
      </widget>
     </item>
    </layout>
