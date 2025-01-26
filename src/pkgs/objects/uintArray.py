@@ -11,6 +11,7 @@ class UintArrayElement:
     """
     The unsigned integer array element.
     """
+    name: str
     min: int
     max: int
     default: int
@@ -254,9 +255,8 @@ class UintArray():
             }
         }
         for element in self._data.elements:
-            data[self._data.name]['elements'].append({'min': element.min,
-                                                      'max': element.max,
-                                                      'default': element.default})  # noqa: E501
+            data[self._data.name]['elements'].append({element.name: {
+                'min': element.min, 'max': element.max, 'default': element.default}})  # noqa: E501
         return yaml.dump(data)
 
     def encodeCbor(self) -> bytes:
