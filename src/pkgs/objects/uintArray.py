@@ -267,7 +267,7 @@ class UintArray():
             The encoded object.
         """
         data = {
-            'id': UintArray.BASE_ID | self._data.index,
+            'id': self.BASE_ID | self._data.index,
             'inNvm': self._data.inNvm,
             'elements': [],
         }
