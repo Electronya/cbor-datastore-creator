@@ -7,9 +7,9 @@ from .objectCommon import TimeError
 
 
 @dataclass
-class ButtonStateData:
+class ButtonData:
     """
-    Button state data class.
+    Button data class.
     """
     name: str
     index: int
@@ -17,22 +17,22 @@ class ButtonStateData:
     inactiveTime: int = 6000
 
 
-class ButtonState:
+class Button:
     """
-    The button state object type class.
+    The button object type class.
     """
     BASE_ID: int = 0x0400
     MIN_TIME: int = 1000
     MAX_TIME: int = 65535
 
-    def __init__(self, data: ButtonStateData):
+    def __init__(self, data: ButtonData):
         """
         Constructor.
 
         Params:
             data: The object data.
         """
-        self._logger = logging.getLogger('app.datastore.buttonState')
+        self._logger = logging.getLogger('app.datastore.button')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -189,7 +189,7 @@ class ButtonState:
             The encoded object.
         """
         data = {
-            'id': ButtonState.BASE_ID | self._data.index,
+            'id': Button.BASE_ID | self._data.index,
             'longPressTime': self._data.longPressTime,
             'inactiveTime': self._data.inactiveTime,
         }

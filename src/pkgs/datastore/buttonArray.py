@@ -5,39 +5,39 @@ import yaml
 
 
 @dataclass
-class ButtonStateArrayElement:
+class ButtonArrayElement:
     """
-    The button state array element.
+    The button array element.
     """
     name: str
 
 
 @dataclass
-class ButtonStateArrayData:
+class ButtonArrayData:
     """
-    The button state array data.
+    The button array data.
     """
     name: str
     index: int
     longPressTime: int
     inactiveTime: int
-    elements: list[ButtonStateArrayElement] = field(default_factory=list)
+    elements: list[ButtonArrayElement] = field(default_factory=list)
 
 
-class ButtonStateArray():
+class ButtonArray():
     """
-    The button state array class.
+    The button array class.
     """
     BASE_ID: int = 0x0900
 
-    def __init__(self, data: ButtonStateArrayData):
+    def __init__(self, data: ButtonArrayData):
         """
         Constructor.
 
         Param
             data: the object data.
         """
-        self._logger = logging.getLogger('app.datastore.buttonStateArray')
+        self._logger = logging.getLogger('app.datastore.buttonArray')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -118,7 +118,7 @@ class ButtonStateArray():
         """
         return len(self._data.elements)
 
-    def getElements(self) -> list[ButtonStateArrayElement]:
+    def getElements(self) -> list[ButtonArrayElement]:
         """
         Get the array elements.
 
@@ -127,7 +127,7 @@ class ButtonStateArray():
         """
         return self._data.elements
 
-    def getElement(self, index: int) -> ButtonStateArrayElement:
+    def getElement(self, index: int) -> ButtonArrayElement:
         """
         Get the element at specified index.
 
@@ -146,7 +146,7 @@ class ButtonStateArray():
             raise IndexError(errMsg)
         return self._data.elements[index]
 
-    def appendElement(self, element: ButtonStateArrayElement) -> None:
+    def appendElement(self, element: ButtonArrayElement) -> None:
         """
         Append a new element to the array.
 
@@ -174,7 +174,7 @@ class ButtonStateArray():
             raise IndexError(errMsg)
         self._data.elements.pop(index)
 
-    def removeElement(self, element: ButtonStateArrayElement) -> None:
+    def removeElement(self, element: ButtonArrayElement) -> None:
         """
         Remove the element from the array.
 
