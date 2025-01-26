@@ -27,9 +27,9 @@ class TestFloatArray(TestCase):
         self._loggingMod = 'pkgs.objects.floatArray.logging'
         self._mockedLogger = Mock()
         self._arrayElements = [
-            FloatArrayElement(-255.0, 100.0, 32.3),
-            FloatArrayElement(-50.4, 255.0, 50.6),
-            FloatArrayElement(-25.0, 75.5, 32.8),
+            FloatArrayElement('float_1', -255.0, 100.0, 32.3),
+            FloatArrayElement('float_2', -50.4, 255.0, 50.6),
+            FloatArrayElement('float_3', -25.0, 75.5, 32.8),
         ]
         objectData = FloatArrayData('testObject', 1, self._arrayElements, True)
         with patch(self._loggingMod) as mockedLogging:
@@ -40,15 +40,21 @@ class TestFloatArray(TestCase):
                 'index': objectData.index,
                 'inNvm': objectData.inNvm,
                 'elements': [
-                    {'min': objectData.elements[0].min,
-                     'max': objectData.elements[0].max,
-                     'default': objectData.elements[0].default},
-                    {'min': objectData.elements[1].min,
-                     'max': objectData.elements[1].max,
-                     'default': objectData.elements[1].default},
-                    {'min': objectData.elements[2].min,
-                     'max': objectData.elements[2].max,
-                     'default': objectData.elements[2].default},
+                    {objectData.elements[0].name: {
+                        'min': objectData.elements[0].min,
+                        'max': objectData.elements[0].max,
+                        'default': objectData.elements[0].default
+                    }},
+                    {objectData.elements[1].name: {
+                        'min': objectData.elements[1].min,
+                        'max': objectData.elements[1].max,
+                        'default': objectData.elements[1].default
+                    }},
+                    {objectData.elements[2].name: {
+                        'min': objectData.elements[2].min,
+                        'max': objectData.elements[2].max,
+                        'default': objectData.elements[2].default
+                    }},
                 ],
             }
         }
@@ -153,7 +159,8 @@ class TestFloatArray(TestCase):
         for values in testValues:
             print(values)
             self.assertEqual(values[3], self._uut
-                             ._isElementValid(FloatArrayElement(values[0],
+                             ._isElementValid(FloatArrayElement('float_4',
+                                                                values[0],
                                                                 values[1],
                                                                 values[2])))
 
@@ -212,8 +219,8 @@ class TestFloatArray(TestCase):
         array.
         """
         count = len(self._arrayElements)
-        elements = [FloatArrayElement(10, 30, 15),
-                    FloatArrayElement(0, 255, 4)]
+        elements = [FloatArrayElement('float_4', 10, 30, 15),
+                    FloatArrayElement('float_5', 0, 255, 4)]
         for element in elements:
             self._uut._data.elements.append(element)
             count += 1
@@ -251,7 +258,7 @@ class TestFloatArray(TestCase):
         The appendElement method must raise an element error if the new
         element is invalid.
         """
-        element = FloatArrayElement(-400.0, 400.0, 400.1)
+        element = FloatArrayElement('float_4', -400.0, 400.0, 400.1)
         errMsg = f"Cannot append element ({element}) because it's invalid"
         with self.assertRaises(ElementError) as context:
             self._uut.appendElement(element)
@@ -263,7 +270,7 @@ class TestFloatArray(TestCase):
         The appendElement method must append the new element.
         """
         newElementIdx = len(self._arrayElements)
-        element = FloatArrayElement(0, 10, 5)
+        element = FloatArrayElement('float_4', 0, 10, 5)
         self._uut.appendElement(element)
         self.assertEqual(element, self._uut._data.elements[newElementIdx])
 
@@ -294,7 +301,7 @@ class TestFloatArray(TestCase):
         The removeElement method must raise a value error when the element is
         not in the array.
         """
-        element = FloatArrayElement(0, 15, 3)
+        element = FloatArrayElement('float_4', 0, 15, 3)
         errMsg = f"Unable to remove element ({element}) because it's not in " \
             f"the array"
         with self.assertRaises(ValueError) as context:
