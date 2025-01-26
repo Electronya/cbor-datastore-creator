@@ -4,7 +4,6 @@ import logging
 import yaml
 
 from .buttonState import ButtonStateEnum
-from .objectCommon import ElementError
 
 
 @dataclass
