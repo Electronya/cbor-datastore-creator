@@ -33,20 +33,14 @@ class TestButtonState(TestCase):
             objectData.name: {
                 'index': objectData.index,
                 'longPressTime': objectData.longPressTime,
-                'isLongPress': objectData.isLongPress,
                 'inactiveTime': objectData.inactiveTime,
-                'isInactive': objectData.isInactive,
-                'state': objectData.state.name,
             }
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
             'id': ButtonState.BASE_ID | objectData.index,
             'longPressTime': objectData.longPressTime,
-            'isLongPress': objectData.isLongPress,
             'inactiveTime': objectData.inactiveTime,
-            'isInactive': objectData.isInactive,
-            'state': objectData.state.value,
         }
         self._cborEncoding = cbor2.dumps(objectDict)
 

@@ -1,18 +1,9 @@
 from dataclasses import dataclass
-from enum import Enum
 import cbor2
 import logging
 import yaml
 
 from .objectCommon import TimeError
-
-
-class ButtonStateEnum(Enum):
-    """
-    The button state enumeration.
-    """
-    BUTTON_DEPRESSED = 0
-    BUTTON_PRESSED = 1
 
 
 @dataclass
@@ -24,9 +15,6 @@ class ButtonStateData:
     index: int
     longPressTime: int = 3000
     inactiveTime: int = 6000
-    isLongPress: bool = False
-    isInactive: bool = False
-    state: ButtonStateEnum = ButtonStateEnum.BUTTON_DEPRESSED
 
 
 class ButtonState:
@@ -188,10 +176,7 @@ class ButtonState:
             self._data.name: {
                 'index': self._data.index,
                 'longPressTime': self._data.longPressTime,
-                'isLongPress': self._data.isLongPress,
                 'inactiveTime': self._data.inactiveTime,
-                'isInactive': self._data.isInactive,
-                'state': self._data.state.name,
             }
         }
         return yaml.dump(data)
@@ -206,9 +191,6 @@ class ButtonState:
         data = {
             'id': ButtonState.BASE_ID | self._data.index,
             'longPressTime': self._data.longPressTime,
-            'isLongPress': self._data.isLongPress,
             'inactiveTime': self._data.inactiveTime,
-            'isInactive': self._data.isInactive,
-            'state': self._data.state.value,
         }
         return cbor2.dumps(data)

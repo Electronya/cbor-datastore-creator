@@ -41,21 +41,9 @@ class TestButtonStateArray(TestCase):
                 'longPressTime': objectData.longPressTime,
                 'inactiveTime': objectData.inactiveTime,
                 'elements': [
-                    {objectData.elements[0].name: {
-                        'isLongPress': objectData.elements[0].isLongPress,
-                        'isInactive': objectData.elements[0].isInactive,
-                        'state': objectData.elements[0].state.name
-                    }},
-                    {objectData.elements[1].name: {
-                        'isLongPress': objectData.elements[1].isLongPress,
-                        'isInactive': objectData.elements[1].isInactive,
-                        'state': objectData.elements[1].state.name
-                    }},
-                    {objectData.elements[2].name: {
-                        'isLongPress': objectData.elements[2].isLongPress,
-                        'isInactive': objectData.elements[2].isInactive,
-                        'state': objectData.elements[2].state.name
-                    }},
+                    objectData.elements[0].name,
+                    objectData.elements[1].name,
+                    objectData.elements[2].name,
                 ],
             }
         }
@@ -64,17 +52,7 @@ class TestButtonStateArray(TestCase):
             'id': ButtonStateArray.BASE_ID | objectData.index,
             'longPressTime': objectData.longPressTime,
             'inactiveTime': objectData.inactiveTime,
-            'elements': [
-                {'isLongPress': objectData.elements[0].isLongPress,
-                 'isInactive': objectData.elements[0].isInactive,
-                 'state': objectData.elements[0].state.value},
-                {'isLongPress': objectData.elements[1].isLongPress,
-                 'isInactive': objectData.elements[1].isInactive,
-                 'state': objectData.elements[1].state.value},
-                {'isLongPress': objectData.elements[2].isLongPress,
-                 'isInactive': objectData.elements[2].isInactive,
-                 'state': objectData.elements[2].state.value},
-            ],
+            'elementCount': len(objectData.elements),
         }
         self._cborEncoding = cbor2.dumps(objectDict)
 

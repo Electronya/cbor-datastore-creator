@@ -3,8 +3,6 @@ import cbor2
 import logging
 import yaml
 
-from .buttonState import ButtonStateEnum
-
 
 @dataclass
 class ButtonStateArrayElement:
@@ -12,9 +10,6 @@ class ButtonStateArrayElement:
     The button state array element.
     """
     name: str
-    isLongPress: bool = False
-    isInactive: bool = False
-    state: ButtonStateEnum = ButtonStateEnum.BUTTON_DEPRESSED
 
 
 @dataclass
@@ -212,10 +207,7 @@ class ButtonStateArray():
             }
         }
         for element in self._data.elements:
-            data[self._data.name]['elements'].append({element.name: {
-                'isLongPress': element.isLongPress,
-                'isInactive': element.isInactive,
-                'state': element.state.name}})
+            data[self._data.name]['elements'].append(element.name)
         return yaml.dump(data)
 
     def encodeCbor(self) -> bytes:
@@ -229,10 +221,6 @@ class ButtonStateArray():
             'id': self.BASE_ID | self._data.index,
             'longPressTime': self._data.longPressTime,
             'inactiveTime': self._data.inactiveTime,
-            'elements': [],
+            'elementCount': len(self._data.elements),
         }
-        for element in self._data.elements:
-            data['elements'].append({'isLongPress': element.isLongPress,
-                                     'isInactive': element.isInactive,
-                                     'state': element.state.value})
         return cbor2.dumps(data)
