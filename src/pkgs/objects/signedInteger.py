@@ -34,7 +34,7 @@ class SignedInteger:
         Params:
             data: The object data dictionary.
         """
-        self._logger = logging.getLogger("app.objects.uint")
+        self._logger = logging.getLogger('app.objects.int')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -60,6 +60,12 @@ class SignedInteger:
     def _isIndexValid(self, index: int) -> bool:
         """
         Check if the Index is valid.
+
+        Param
+            index: the index to validate.
+
+        Return
+            True if the index is valid, false otherwise.
         """
         if index < 1 or index > 255:
             return False

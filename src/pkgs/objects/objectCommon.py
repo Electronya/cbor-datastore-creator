@@ -21,3 +21,11 @@ class TimeError(Exception):
     """
     def __init__(self, *args):
         super().__init__(*args)
+
+
+class ElementError(Exception):
+    """
+    The element error
+    """
+    def __init__(self, *args):
+        super().__init__(*args)

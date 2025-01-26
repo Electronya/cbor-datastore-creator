@@ -31,12 +31,14 @@ class TestMultiState(TestCase):
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
+                'inNvm': objectData.inNvm,
                 'states': objectData.states,
             }
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
             'id': MultiState.BASE_ID | objectData.index,
+            'inNvm': objectData.inNvm,
             'states': objectData.states,
         }
         self._cborEncoding = cbor2.dumps(objectDict)
@@ -58,12 +60,13 @@ class TestMultiState(TestCase):
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the multi-state logger.
         """
         objectData = MultiStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             MultiState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+                                                            'multi-state')
 
     def test_constructorSaveObjectData(self) -> None:
         """
@@ -172,6 +175,25 @@ class TestMultiState(TestCase):
             expected.append(newState)
             self._uut.appendState(newState)
             self.assertEqual(expected, self._uut._data.states)
+
+    def test_isInNvmReturnFlag(self) -> None:
+        """
+        The isInNvm method must return True if the object is flag to be save
+        in NVM, False otherwise.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut._data.inNvm = flag
+            self.assertEqual(flag, self._uut.isInNvm())
+
+    def test_setInNvmSaveFlag(self) -> None:
+        """
+        The setInNvmFlag method must save the inNvm flag.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut.setInNvmFlag(flag)
+            self.assertEqual(flag, self._uut._data.inNvm)
 
     def test_getYamlStringReturnYamlString(self) -> None:
         """

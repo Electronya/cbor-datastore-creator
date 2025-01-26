@@ -97,12 +97,13 @@ class TestButtonState(TestCase):
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the button state logger.
         """
         objectData = ButtonStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             ButtonState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+                                                            'buttonState')
 
     def test_constructorSaveObjectData(self) -> None:
         """
