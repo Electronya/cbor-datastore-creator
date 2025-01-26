@@ -7,41 +7,41 @@ from .objectCommon import ElementError
 
 
 @dataclass
-class IntArrayElement:
+class FloatArrayElement:
     """
-    The signed integer array element.
+    The float array element.
     """
     name: str
-    min: int
+    min: float
     max: int
     default: int
 
 
 @dataclass
-class IntArrayData:
+class FloatArrayData:
     """
-    The signed integer array data.
+    The float array data.
     """
     name: str
     index: int
-    elements: list[IntArrayElement] = field(default_factory=list)
+    elements: list[FloatArrayElement] = field(default_factory=list)
     inNvm: bool = False
 
 
-class IntArray():
+class FloatArray():
     """
-    The signed integer array class.
+    The float array class.
     """
-    BASE_ID: int = 0x0700
+    BASE_ID: int = 0x0800
 
-    def __init__(self, data: IntArrayData):
+    def __init__(self, data: FloatArrayData):
         """
         Constructor.
 
         Param
             data: the object data.
         """
-        self._logger = logging.getLogger('app.objects.intArray')
+        self._logger = logging.getLogger('app.datastore.floatArray')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -69,7 +69,7 @@ class IntArray():
             return False
         return True
 
-    def _isElementValid(self, element: IntArrayElement) -> bool:
+    def _isElementValid(self, element: FloatArrayElement) -> bool:
         """
         Check the validity of one array element.
 
@@ -79,8 +79,7 @@ class IntArray():
         Return
             True if the element is valid, false otherwise.
         """
-        if element.min < -1 * pow(2, 32) or element.max > pow(2, 32) - 1 or \
-                element.min >= element.max or \
+        if element.min >= element.max or \
                 element.default < element.min or \
                 element.default > element.max:
             return False
@@ -145,7 +144,7 @@ class IntArray():
         """
         return len(self._data.elements)
 
-    def getElements(self) -> list[IntArrayElement]:
+    def getElements(self) -> list[FloatArrayElement]:
         """
         Get the array elements.
 
@@ -154,7 +153,7 @@ class IntArray():
         """
         return self._data.elements
 
-    def getElement(self, index: int) -> IntArrayElement:
+    def getElement(self, index: int) -> FloatArrayElement:
         """
         Get the element at specified index.
 
@@ -173,7 +172,7 @@ class IntArray():
             raise IndexError(errMsg)
         return self._data.elements[index]
 
-    def appendElement(self, element: IntArrayElement) -> None:
+    def appendElement(self, element: FloatArrayElement) -> None:
         """
         Append a new element to the array.
 
@@ -205,7 +204,7 @@ class IntArray():
             raise IndexError(errMsg)
         self._data.elements.pop(index)
 
-    def removeElement(self, element: IntArrayElement) -> None:
+    def removeElement(self, element: FloatArrayElement) -> None:
         """
         Remove the element from the array.
 

@@ -28,7 +28,7 @@ class MultiState:
         Params:
             data: The object data.
         """
-        self._logger = logging.getLogger('app.objects.multi-state')
+        self._logger = logging.getLogger('app.datastore.multi-state')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"

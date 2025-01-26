@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     ButtonState,
     ButtonStateData,
     TimeError,
@@ -23,7 +23,7 @@ class TestButtonState(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.buttonState.logging'
+        self._loggingMod = 'pkgs.datastore.buttonState.logging'
         self._mockedLogger = Mock()
         objectData = ButtonStateData('testObject', 1, 4000, 5000)
         with patch(self._loggingMod) as mockedLogging:
@@ -102,7 +102,7 @@ class TestButtonState(TestCase):
         objectData = ButtonStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             ButtonState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
                                                             'buttonState')
 
     def test_constructorSaveObjectData(self) -> None:

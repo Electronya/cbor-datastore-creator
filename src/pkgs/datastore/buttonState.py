@@ -44,7 +44,7 @@ class ButtonState:
         Params:
             data: The object data.
         """
-        self._logger = logging.getLogger('app.objects.buttonState')
+        self._logger = logging.getLogger('app.datastore.buttonState')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"

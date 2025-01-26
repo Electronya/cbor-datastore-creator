@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     LimitError,
     SizeError,
     SignedInteger,
@@ -24,7 +24,7 @@ class TestSignedInteger(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.signedInteger.logging'
+        self._loggingMod = 'pkgs.datastore.signedInteger.logging'
         self._mockedLogger = Mock()
         objectData = SignedIntegerData('testObject', 1, 1, -128, 127, 32)
         with patch(self._loggingMod) as mockedLogging:
@@ -118,7 +118,7 @@ class TestSignedInteger(TestCase):
         objectData = SignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             SignedInteger(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.int')
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.int')
 
     def test_constructorSaveObjectData(self) -> None:
         """

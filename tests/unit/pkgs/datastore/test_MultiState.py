@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     MultiState,
     MultiStateData,
 )
@@ -22,7 +22,7 @@ class TestMultiState(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.multiState.logging'
+        self._loggingMod = 'pkgs.datastore.multiState.logging'
         self._mockedLogger = Mock()
         objectData = MultiStateData('testObject', 1, ['STATE_1', 'STATE_2'])
         with patch(self._loggingMod) as mockedLogging:
@@ -65,7 +65,7 @@ class TestMultiState(TestCase):
         objectData = MultiStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             MultiState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
                                                             'multi-state')
 
     def test_constructorSaveObjectData(self) -> None:

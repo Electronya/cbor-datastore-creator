@@ -8,72 +8,70 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
-    ButtonStateArray,
-    ButtonStateArrayData,
-    ButtonStateArrayElement,
+from pkgs.datastore import (                  # noqa: E402
+    ElementError,
+    UintArray,
+    UintArrayData,
+    UintArrayElement,
 )
 
 
-class TestButtonStateArray(TestCase):
+class TestUintArray(TestCase):
     """
-    ButtonStateArray test cases.
+    UintArray test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.buttonStateArray.logging'
+        self._loggingMod = 'pkgs.datastore.uintArray.logging'
         self._mockedLogger = Mock()
         self._arrayElements = [
-            ButtonStateArrayElement('button_1'),
-            ButtonStateArrayElement('button_2'),
-            ButtonStateArrayElement('button_3'),
+            UintArrayElement('uint_1', 0, 100, 32),
+            UintArrayElement('uint_2', 50, 255, 50),
+            UintArrayElement('uint_3', 25, 75, 32),
         ]
-        objectData = ButtonStateArrayData('testObject', 1, 3000, 6000,
-                                          self._arrayElements)
+        objectData = UintArrayData('testObject', 1, self._arrayElements, True)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = ButtonStateArray(objectData)
+            self._uut = UintArray(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
-                'longPressTime': objectData.longPressTime,
-                'inactiveTime': objectData.inactiveTime,
+                'inNvm': objectData.inNvm,
                 'elements': [
                     {objectData.elements[0].name: {
-                        'isLongPress': objectData.elements[0].isLongPress,
-                        'isInactive': objectData.elements[0].isInactive,
-                        'state': objectData.elements[0].state.name
+                        'min': objectData.elements[0].min,
+                        'max': objectData.elements[0].max,
+                        'default': objectData.elements[0].default
                     }},
                     {objectData.elements[1].name: {
-                        'isLongPress': objectData.elements[1].isLongPress,
-                        'isInactive': objectData.elements[1].isInactive,
-                        'state': objectData.elements[1].state.name
+                        'min': objectData.elements[1].min,
+                        'max': objectData.elements[1].max,
+                        'default': objectData.elements[1].default
                     }},
                     {objectData.elements[2].name: {
-                        'isLongPress': objectData.elements[2].isLongPress,
-                        'isInactive': objectData.elements[2].isInactive,
-                        'state': objectData.elements[2].state.name
+                        'min': objectData.elements[2].min,
+                        'max': objectData.elements[2].max,
+                        'default': objectData.elements[2].default
                     }},
                 ],
             }
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': ButtonStateArray.BASE_ID | objectData.index,
-            'longPressTime': objectData.longPressTime,
-            'inactiveTime': objectData.inactiveTime,
+            'id': UintArray.BASE_ID | objectData.index,
+            'inNvm': objectData.inNvm,
             'elements': [
-                {'isLongPress': objectData.elements[0].isLongPress,
-                 'isInactive': objectData.elements[0].isInactive,
-                 'state': objectData.elements[0].state.value},
-                {'isLongPress': objectData.elements[1].isLongPress,
-                 'isInactive': objectData.elements[1].isInactive,
-                 'state': objectData.elements[1].state.value},
-                {'isLongPress': objectData.elements[2].isLongPress,
-                 'isInactive': objectData.elements[2].isInactive,
-                 'state': objectData.elements[2].state.value},
+                {'min': objectData.elements[0].min,
+                 'max': objectData.elements[0].max,
+                 'default': objectData.elements[0].default},
+                {'min': objectData.elements[1].min,
+                 'max': objectData.elements[1].max,
+                 'default': objectData.elements[1].default},
+                {'min': objectData.elements[2].min,
+                 'max': objectData.elements[2].max,
+                 'default': objectData.elements[2].default},
             ],
         }
         self._cborEncoding = cbor2.dumps(objectDict)
@@ -83,36 +81,52 @@ class TestButtonStateArray(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = ButtonStateArrayData("testObject", 256, 3000, 6000,
-                                          self._arrayElements)
+        objectData = UintArrayData("testObject", 256, self._arrayElements)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            ButtonStateArray(objectData)
+            UintArray(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
+
+    def test_constructorInvalidElements(self) -> None:
+        """
+        The constructor must raise an index error if the object index is not
+        valid.
+        """
+        for elementIdx in range(len(self._arrayElements)):
+            if elementIdx > 0:
+                self._arrayElements[elementIdx - 1].min = 0
+            self._arrayElements[elementIdx].min = -1
+            objectData = UintArrayData("testObject", 1, self._arrayElements)
+            errMsg = f"Cannot create object {objectData.name}: Invalid " \
+                f"element ({self._arrayElements[elementIdx]})"
+            with patch(self._loggingMod) as mockedLogging, \
+                    self.assertRaises(ElementError) as context:
+                mockedLogging.getLogger.return_value = self._mockedLogger
+                UintArray(objectData)
+                self._mockedLogger.error.assert_called_once_with(errMsg)
+                self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
         The constructor must get the uint array logger.
         """
-        objectData = ButtonStateArrayData("testObject", 1, 3000, 6000,
-                                          self._arrayElements)
+        objectData = UintArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod) as mockedLogging:
-            ButtonStateArray(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
-                                                            'buttonStateArray')
+            UintArray(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
+                                                            'uintArray')
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = ButtonStateArrayData("testObject", 1, 3000, 6000,
-                                          self._arrayElements)
+        objectData = UintArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod):
-            testObject = ButtonStateArray(objectData)
+            testObject = UintArray(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -124,6 +138,30 @@ class TestButtonStateArray(TestCase):
         testValues = [(256, False), (0, False), (1, True), (255, True)]
         for values in testValues:
             self.assertEqual(values[1], self._uut._isIndexValid(values[0]))
+
+    def test__isElementValid(self) -> None:
+        """
+        The _isElementValid must return true when the element is valid, false
+        otherwise. To be valid the element must comply to the following
+        conditions:
+          - min >= 0
+          - max <= 2^32 - 1
+          - min < max
+          - min <= default <= max
+        """
+        # test values: (min, max, default, result)
+        testValues = [(-1, 255, 100, False),
+                      (0, pow(2, 32), 100, False),
+                      (0, pow(2, 32) - 1, -1, False),
+                      (0, pow(2, 32) - 1, pow(2, 32), False),
+                      (0, pow(2, 32) - 1, pow(2, 16), True)]
+        for values in testValues:
+            print(values)
+            self.assertEqual(values[3], self._uut
+                             ._isElementValid(UintArrayElement('uint_4',
+                                                               values[0],
+                                                               values[1],
+                                                               values[2])))
 
     def test_getNameReturnName(self) -> None:
         """
@@ -150,7 +188,7 @@ class TestButtonStateArray(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(ButtonStateArray.BASE_ID | index,
+            self.assertEqual(UintArray.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -189,8 +227,8 @@ class TestButtonStateArray(TestCase):
         array.
         """
         count = len(self._arrayElements)
-        elements = [ButtonStateArrayElement('Button_4'),
-                    ButtonStateArrayElement('Button_5')]
+        elements = [UintArrayElement('uint_4', 10, 30, 15),
+                    UintArrayElement('uint_5', 0, 255, 4)]
         for element in elements:
             self._uut._data.elements.append(element)
             count += 1
@@ -223,12 +261,24 @@ class TestButtonStateArray(TestCase):
             self.assertEqual(self._arrayElements[index],
                              self._uut.getElement(index))
 
+    def test_appendElementRaiseElementError(self) -> None:
+        """
+        The appendElement method must raise an element error if the new
+        element is invalid.
+        """
+        element = UintArrayElement('uint_4', -1, 10, 5)
+        errMsg = f"Cannot append element ({element}) because it's invalid"
+        with self.assertRaises(ElementError) as context:
+            self._uut.appendElement(element)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_appendElementAppendNewElement(self) -> None:
         """
         The appendElement method must append the new element.
         """
         newElementIdx = len(self._arrayElements)
-        element = ButtonStateArrayElement('Button_4')
+        element = UintArrayElement('uint_3', 0, 10, 5)
         self._uut.appendElement(element)
         self.assertEqual(element, self._uut._data.elements[newElementIdx])
 
@@ -259,7 +309,7 @@ class TestButtonStateArray(TestCase):
         The removeElement method must raise a value error when the element is
         not in the array.
         """
-        element = ButtonStateArrayElement('Button_4')
+        element = UintArrayElement('uint_4', 0, 15, 3)
         errMsg = f"Unable to remove element ({element}) because it's not in " \
             f"the array"
         with self.assertRaises(ValueError) as context:
@@ -275,6 +325,25 @@ class TestButtonStateArray(TestCase):
         elements = [self._arrayElements[0], self._arrayElements[2]]
         self._uut.removeElement(element)
         self.assertEqual(elements, self._uut._data.elements)
+
+    def test_isInNvmReturnFlag(self) -> None:
+        """
+        The isInNvm method must return True if the object is flag to be save
+        in NVM, False otherwise.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut._data.inNvm = flag
+            self.assertEqual(flag, self._uut.isInNvm())
+
+    def test_setInNvmSaveFlag(self) -> None:
+        """
+        The setInNvmFlag method must save the inNvm flag.
+        """
+        inNvmFlags = [True, False]
+        for flag in inNvmFlags:
+            self._uut.setInNvmFlag(flag)
+            self.assertEqual(flag, self._uut._data.inNvm)
 
     def test_getYamlStringReturnYamlString(self) -> None:
         """

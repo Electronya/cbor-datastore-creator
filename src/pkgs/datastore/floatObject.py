@@ -7,34 +7,34 @@ from .objectCommon import LimitError, SizeError
 
 
 @dataclass
-class SignedIntegerData:
+class FloatData:
     """
-    Signed integer data class.
+    Float data class.
     """
     name: str
     index: int
-    size: int = 1
-    min: int = -128
-    max: int = 127
-    default: int = 0
+    size: int = 4
+    min: float = 0.0
+    max: float = 10.0
+    default: float = 0.0
     inNvm: bool = False
 
 
-class SignedInteger:
+class Float:
     """
     The singed integer object type class.
     """
-    BASE_ID: int = 0x0200
-    VALID_SIZES = (1, 2, 4, 8)
+    BASE_ID: int = 0x0300
+    VALID_SIZES = (4, 8)
 
-    def __init__(self, data: SignedIntegerData):
+    def __init__(self, data: FloatData):
         """
         Constructor.
 
         Params:
             data: The object data dictionary.
         """
-        self._logger = logging.getLogger('app.objects.int')
+        self._logger = logging.getLogger('app.datastore.float')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -45,7 +45,7 @@ class SignedInteger:
                 f"({data.size})"
             self._logger.error(errMsg)
             raise SizeError(errMsg)
-        if not self._areLimitsValid(data.size, data.min, data.max):
+        if not self._areLimitsValid(data.min, data.max):
             errMsg = f"Cannot create object {data.name}: Invalid min " \
                 f"({data.min}) or max ({data.max})"
             self._logger.error(errMsg)
@@ -85,24 +85,22 @@ class SignedInteger:
             return False
         return True
 
-    def _areLimitsValid(self, size: int, min: int, max: int) -> bool:
+    def _areLimitsValid(self, min: float, max: float) -> bool:
         """
         Check if the limits are valid.
 
         Params
-            size: the object size.
             min: the object minimum value.
             max: the object maximum value.
 
         Return
             True if the limits are valid, False otherwise.
         """
-        if min > max or min < int(-1 * pow(2, 8 * size) / 2) or \
-                max > int(pow(2, 8 * size) / 2 - 1):
+        if min > max:
             return False
         return True
 
-    def _isDefaultValid(self, min: int, max: int, default: int) -> None:
+    def _isDefaultValid(self, min: float, max: float, default: float) -> None:
         """
         Check if the default is valid.
 
@@ -191,7 +189,7 @@ class SignedInteger:
             raise SizeError(f"A {size} bytes is not supported")
         self._data.size = size
 
-    def getMin(self) -> int:
+    def getMin(self) -> float:
         """
         Get the object minimum value.
 
@@ -200,7 +198,7 @@ class SignedInteger:
         """
         return self._data.min
 
-    def getMax(self) -> int:
+    def getMax(self) -> float:
         """
         Get the object maximum value.
 
@@ -209,7 +207,7 @@ class SignedInteger:
         """
         return self._data.max
 
-    def setLimits(self, min: int, max: int) -> None:
+    def setLimits(self, min: float, max: float) -> None:
         """
         Set the object limits.
 
@@ -220,12 +218,12 @@ class SignedInteger:
         Raise
             A limit error if the limits are invalid.
         """
-        if not self._areLimitsValid(self._data.size, min, max):
+        if not self._areLimitsValid(min, max):
             raise LimitError(f"A min of {min} or a max of {max} is not valid")
         self._data.min = min
         self._data.max = max
 
-    def getDefault(self) -> int:
+    def getDefault(self) -> float:
         """
         Get the object default value.
 
@@ -234,7 +232,7 @@ class SignedInteger:
         """
         return self._data.default
 
-    def setDefault(self, default: int) -> None:
+    def setDefault(self, default: float) -> None:
         """
         Set the object default value.
 

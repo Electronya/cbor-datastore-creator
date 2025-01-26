@@ -3,56 +3,51 @@ import cbor2
 import logging
 import yaml
 
-from .objectCommon import ElementError
+from .buttonState import ButtonStateEnum
 
 
 @dataclass
-class FloatArrayElement:
+class ButtonStateArrayElement:
     """
-    The float array element.
+    The button state array element.
     """
     name: str
-    min: float
-    max: int
-    default: int
+    isLongPress: bool = False
+    isInactive: bool = False
+    state: ButtonStateEnum = ButtonStateEnum.BUTTON_DEPRESSED
 
 
 @dataclass
-class FloatArrayData:
+class ButtonStateArrayData:
     """
-    The float array data.
+    The button state array data.
     """
     name: str
     index: int
-    elements: list[FloatArrayElement] = field(default_factory=list)
-    inNvm: bool = False
+    longPressTime: int
+    inactiveTime: int
+    elements: list[ButtonStateArrayElement] = field(default_factory=list)
 
 
-class FloatArray():
+class ButtonStateArray():
     """
-    The float array class.
+    The button state array class.
     """
-    BASE_ID: int = 0x0800
+    BASE_ID: int = 0x0900
 
-    def __init__(self, data: FloatArrayData):
+    def __init__(self, data: ButtonStateArrayData):
         """
         Constructor.
 
         Param
             data: the object data.
         """
-        self._logger = logging.getLogger('app.objects.floatArray')
+        self._logger = logging.getLogger('app.datastore.buttonStateArray')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
             self._logger.error(errMsg)
             raise IndexError(errMsg)
-        for element in data.elements:
-            if not self._isElementValid(element):
-                errMsg = f"Cannot create object {data.name}: Invalid " \
-                    f"element ({element})"
-                self._logger.error(errMsg)
-                raise ElementError(errMsg)
         self._data = data
 
     def _isIndexValid(self, index: int) -> bool:
@@ -66,22 +61,6 @@ class FloatArray():
             True if the index is valid, False otherwise.
         """
         if index < 1 or index > 255:
-            return False
-        return True
-
-    def _isElementValid(self, element: FloatArrayElement) -> bool:
-        """
-        Check the validity of one array element.
-
-        Param
-            element: the element to validate.
-
-        Return
-            True if the element is valid, false otherwise.
-        """
-        if element.min >= element.max or \
-                element.default < element.min or \
-                element.default > element.max:
             return False
         return True
 
@@ -144,7 +123,7 @@ class FloatArray():
         """
         return len(self._data.elements)
 
-    def getElements(self) -> list[FloatArrayElement]:
+    def getElements(self) -> list[ButtonStateArrayElement]:
         """
         Get the array elements.
 
@@ -153,7 +132,7 @@ class FloatArray():
         """
         return self._data.elements
 
-    def getElement(self, index: int) -> FloatArrayElement:
+    def getElement(self, index: int) -> ButtonStateArrayElement:
         """
         Get the element at specified index.
 
@@ -172,7 +151,7 @@ class FloatArray():
             raise IndexError(errMsg)
         return self._data.elements[index]
 
-    def appendElement(self, element: FloatArrayElement) -> None:
+    def appendElement(self, element: ButtonStateArrayElement) -> None:
         """
         Append a new element to the array.
 
@@ -182,10 +161,6 @@ class FloatArray():
         Raise
             An element error if the element is invalid.
         """
-        if not self._isElementValid(element):
-            errMsg = f"Cannot append element ({element}) because it's invalid"
-            self._logger.error(errMsg)
-            raise ElementError(errMsg)
         self._data.elements.append(element)
 
     def removeElementAtIndex(self, index: int) -> None:
@@ -204,7 +179,7 @@ class FloatArray():
             raise IndexError(errMsg)
         self._data.elements.pop(index)
 
-    def removeElement(self, element: FloatArrayElement) -> None:
+    def removeElement(self, element: ButtonStateArrayElement) -> None:
         """
         Remove the element from the array.
 
@@ -221,24 +196,6 @@ class FloatArray():
             raise ValueError(errMsg)
         self._data.elements.remove(element)
 
-    def isInNvm(self) -> bool:
-        """
-        Check if the object should be saved in NVM.
-
-        Return
-            True if the object should saved in NVM, False otherwise.
-        """
-        return self._data.inNvm
-
-    def setInNvmFlag(self, inNvm: bool) -> None:
-        """
-        Set the inNvm flag.
-
-        Params
-            inNvm: the inNvm flag.
-        """
-        self._data.inNvm = inNvm
-
     def getYamlString(self) -> str:
         """
         Get the object yaml encoding as a string.
@@ -249,13 +206,16 @@ class FloatArray():
         data = {
             self._data.name: {
                 'index': self._data.index,
-                'inNvm': self._data.inNvm,
+                'longPressTime': self._data.longPressTime,
+                'inactiveTime': self._data.inactiveTime,
                 'elements': [],
             }
         }
         for element in self._data.elements:
             data[self._data.name]['elements'].append({element.name: {
-                'min': element.min, 'max': element.max, 'default': element.default}})  # noqa: E501
+                'isLongPress': element.isLongPress,
+                'isInactive': element.isInactive,
+                'state': element.state.name}})
         return yaml.dump(data)
 
     def encodeCbor(self) -> bytes:
@@ -267,11 +227,12 @@ class FloatArray():
         """
         data = {
             'id': self.BASE_ID | self._data.index,
-            'inNvm': self._data.inNvm,
+            'longPressTime': self._data.longPressTime,
+            'inactiveTime': self._data.inactiveTime,
             'elements': [],
         }
         for element in self._data.elements:
-            data['elements'].append({'min': element.min,
-                                     'max': element.max,
-                                     'default': element.default})
+            data['elements'].append({'isLongPress': element.isLongPress,
+                                     'isInactive': element.isInactive,
+                                     'state': element.state.value})
         return cbor2.dumps(data)

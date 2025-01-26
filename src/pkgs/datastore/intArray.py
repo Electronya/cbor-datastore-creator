@@ -7,9 +7,9 @@ from .objectCommon import ElementError
 
 
 @dataclass
-class UintArrayElement:
+class IntArrayElement:
     """
-    The unsigned integer array element.
+    The signed integer array element.
     """
     name: str
     min: int
@@ -18,30 +18,30 @@ class UintArrayElement:
 
 
 @dataclass
-class UintArrayData:
+class IntArrayData:
     """
-    The unsigned integer array data.
+    The signed integer array data.
     """
     name: str
     index: int
-    elements: list[UintArrayElement] = field(default_factory=list)
+    elements: list[IntArrayElement] = field(default_factory=list)
     inNvm: bool = False
 
 
-class UintArray():
+class IntArray():
     """
-    The unsigned integer array class.
+    The signed integer array class.
     """
-    BASE_ID: int = 0x0600
+    BASE_ID: int = 0x0700
 
-    def __init__(self, data: UintArrayData):
+    def __init__(self, data: IntArrayData):
         """
         Constructor.
 
         Param
             data: the object data.
         """
-        self._logger = logging.getLogger('app.objects.uintArray')
+        self._logger = logging.getLogger('app.datastore.intArray')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -69,7 +69,7 @@ class UintArray():
             return False
         return True
 
-    def _isElementValid(self, element: UintArrayElement) -> bool:
+    def _isElementValid(self, element: IntArrayElement) -> bool:
         """
         Check the validity of one array element.
 
@@ -79,7 +79,7 @@ class UintArray():
         Return
             True if the element is valid, false otherwise.
         """
-        if element.min < 0 or element.max > pow(2, 32) - 1 or \
+        if element.min < -1 * pow(2, 32) or element.max > pow(2, 32) - 1 or \
                 element.min >= element.max or \
                 element.default < element.min or \
                 element.default > element.max:
@@ -145,7 +145,7 @@ class UintArray():
         """
         return len(self._data.elements)
 
-    def getElements(self) -> list[UintArrayElement]:
+    def getElements(self) -> list[IntArrayElement]:
         """
         Get the array elements.
 
@@ -154,7 +154,7 @@ class UintArray():
         """
         return self._data.elements
 
-    def getElement(self, index: int) -> UintArrayElement:
+    def getElement(self, index: int) -> IntArrayElement:
         """
         Get the element at specified index.
 
@@ -173,7 +173,7 @@ class UintArray():
             raise IndexError(errMsg)
         return self._data.elements[index]
 
-    def appendElement(self, element: UintArrayElement) -> None:
+    def appendElement(self, element: IntArrayElement) -> None:
         """
         Append a new element to the array.
 
@@ -205,7 +205,7 @@ class UintArray():
             raise IndexError(errMsg)
         self._data.elements.pop(index)
 
-    def removeElement(self, element: UintArrayElement) -> None:
+    def removeElement(self, element: IntArrayElement) -> None:
         """
         Remove the element from the array.
 

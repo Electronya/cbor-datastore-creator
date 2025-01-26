@@ -8,33 +8,33 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     ElementError,
-    FloatArray,
-    FloatArrayData,
-    FloatArrayElement,
+    IntArray,
+    IntArrayData,
+    IntArrayElement,
 )
 
 
-class TestFloatArray(TestCase):
+class TestIntArray(TestCase):
     """
-    FloatArray test cases.
+    IntArray test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.floatArray.logging'
+        self._loggingMod = 'pkgs.datastore.intArray.logging'
         self._mockedLogger = Mock()
         self._arrayElements = [
-            FloatArrayElement('float_1', -255.0, 100.0, 32.3),
-            FloatArrayElement('float_2', -50.4, 255.0, 50.6),
-            FloatArrayElement('float_3', -25.0, 75.5, 32.8),
+            IntArrayElement('int_1', -255, 100, 32),
+            IntArrayElement('int_2', -50, 255, 50),
+            IntArrayElement('int_3', -25, 75, 32),
         ]
-        objectData = FloatArrayData('testObject', 1, self._arrayElements, True)
+        objectData = IntArrayData('testObject', 1, self._arrayElements, True)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = FloatArray(objectData)
+            self._uut = IntArray(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
@@ -60,7 +60,7 @@ class TestFloatArray(TestCase):
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': FloatArray.BASE_ID | objectData.index,
+            'id': IntArray.BASE_ID | objectData.index,
             'inNvm': objectData.inNvm,
             'elements': [
                 {'min': objectData.elements[0].min,
@@ -81,13 +81,13 @@ class TestFloatArray(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = FloatArrayData("testObject", 256, self._arrayElements)
+        objectData = IntArrayData("testObject", 256, self._arrayElements)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            FloatArray(objectData)
+            IntArray(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
             self.assertEqual(errMsg, str(context.exception))
 
@@ -98,17 +98,15 @@ class TestFloatArray(TestCase):
         """
         for elementIdx in range(len(self._arrayElements)):
             if elementIdx > 0:
-                self._arrayElements[elementIdx - 1].min = 0.0
-                self._arrayElements[elementIdx - 1].max = 100.0
-            self._arrayElements[elementIdx].min = 100.0
-            self._arrayElements[elementIdx].max = -100.0
-            objectData = FloatArrayData("testObject", 1, self._arrayElements)
+                self._arrayElements[elementIdx - 1].min = 0
+            self._arrayElements[elementIdx].min = -1 * pow(2, 32) - 1
+            objectData = IntArrayData("testObject", 1, self._arrayElements)
             errMsg = f"Cannot create object {objectData.name}: Invalid " \
                 f"element ({self._arrayElements[elementIdx]})"
             with patch(self._loggingMod) as mockedLogging, \
                     self.assertRaises(ElementError) as context:
                 mockedLogging.getLogger.return_value = self._mockedLogger
-                FloatArray(objectData)
+                IntArray(objectData)
                 self._mockedLogger.error.assert_called_once_with(errMsg)
                 self.assertEqual(errMsg, str(context.exception))
 
@@ -116,19 +114,19 @@ class TestFloatArray(TestCase):
         """
         The constructor must get the uint array logger.
         """
-        objectData = FloatArrayData("testObject", 1, self._arrayElements)
+        objectData = IntArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod) as mockedLogging:
-            FloatArray(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
-                                                            'floatArray')
+            IntArray(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
+                                                            'intArray')
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = FloatArrayData("testObject", 1, self._arrayElements)
+        objectData = IntArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod):
-            testObject = FloatArray(objectData)
+            testObject = IntArray(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -152,17 +150,18 @@ class TestFloatArray(TestCase):
           - min <= default <= max
         """
         # test values: (min, max, default, result)
-        testValues = [(15.0, -90.0, -1.0, False),
-                      (0.0, 300.5, -0.1, False),
-                      (0.0, 5.0, 5.1, False),
-                      (0.0, 500.0, 345.7, True)]
+        testValues = [(-1 * pow(2, 32) - 1, 255, 100, False),
+                      (0, pow(2, 32), 100, False),
+                      (0, pow(2, 32) - 1, -1, False),
+                      (0, pow(2, 32) - 1, pow(2, 32), False),
+                      (0, pow(2, 32) - 1, pow(2, 16), True)]
         for values in testValues:
             print(values)
             self.assertEqual(values[3], self._uut
-                             ._isElementValid(FloatArrayElement('float_4',
-                                                                values[0],
-                                                                values[1],
-                                                                values[2])))
+                             ._isElementValid(IntArrayElement('int_4',
+                                                              values[0],
+                                                              values[1],
+                                                              values[2])))
 
     def test_getNameReturnName(self) -> None:
         """
@@ -189,7 +188,7 @@ class TestFloatArray(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(FloatArray.BASE_ID | index,
+            self.assertEqual(IntArray.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -228,8 +227,8 @@ class TestFloatArray(TestCase):
         array.
         """
         count = len(self._arrayElements)
-        elements = [FloatArrayElement('float_4', 10, 30, 15),
-                    FloatArrayElement('float_5', 0, 255, 4)]
+        elements = [IntArrayElement('int_4', 10, 30, 15),
+                    IntArrayElement('int_5', 0, 255, 4)]
         for element in elements:
             self._uut._data.elements.append(element)
             count += 1
@@ -267,7 +266,7 @@ class TestFloatArray(TestCase):
         The appendElement method must raise an element error if the new
         element is invalid.
         """
-        element = FloatArrayElement('float_4', -400.0, 400.0, 400.1)
+        element = IntArrayElement('int_4', -1 * pow(2, 32) - 1, 10, 5)
         errMsg = f"Cannot append element ({element}) because it's invalid"
         with self.assertRaises(ElementError) as context:
             self._uut.appendElement(element)
@@ -279,7 +278,7 @@ class TestFloatArray(TestCase):
         The appendElement method must append the new element.
         """
         newElementIdx = len(self._arrayElements)
-        element = FloatArrayElement('float_4', 0, 10, 5)
+        element = IntArrayElement('int_4', 0, 10, 5)
         self._uut.appendElement(element)
         self.assertEqual(element, self._uut._data.elements[newElementIdx])
 
@@ -310,7 +309,7 @@ class TestFloatArray(TestCase):
         The removeElement method must raise a value error when the element is
         not in the array.
         """
-        element = FloatArrayElement('float_4', 0, 15, 3)
+        element = IntArrayElement('int_4', 0, 15, 3)
         errMsg = f"Unable to remove element ({element}) because it's not in " \
             f"the array"
         with self.assertRaises(ValueError) as context:

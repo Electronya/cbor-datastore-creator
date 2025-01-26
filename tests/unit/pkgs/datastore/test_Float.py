@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     LimitError,
     SizeError,
     Float,
@@ -24,7 +24,7 @@ class TestFloat(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.floatObject.logging'
+        self._loggingMod = 'pkgs.datastore.floatObject.logging'
         self._mockedLogger = Mock()
         objectData = FloatData('testObject', 1, 4, -128.5, 128.5, 32.0)
         with patch(self._loggingMod) as mockedLogging:
@@ -118,7 +118,7 @@ class TestFloat(TestCase):
         objectData = FloatData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             Float(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
                                                             'float')
 
     def test_constructorSaveObjectData(self) -> None:

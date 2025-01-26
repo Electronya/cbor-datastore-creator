@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     LimitError,
     SizeError,
     UnsignedInteger,
@@ -24,7 +24,7 @@ class TestUnsignedInteger(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.unsignedInteger.logging'
+        self._loggingMod = 'pkgs.datastore.unsignedInteger.logging'
         self._mockedLogger = Mock()
         objectData = UnsignedIntegerData('testObject', 1, 1, 0, 255, 32)
         with patch(self._loggingMod) as mockedLogging:
@@ -118,7 +118,7 @@ class TestUnsignedInteger(TestCase):
         objectData = UnsignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             UnsignedInteger(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.uint')
 
     def test_constructorSaveObjectData(self) -> None:
         """
