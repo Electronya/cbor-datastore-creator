@@ -212,6 +212,15 @@ class TestUintArray(TestCase):
                 self._uut.setIndex(index)
                 self.assertEqual(errMsg, str(context.exception))
 
+    def test_setIndexSaveIndex(self) -> None:
+        """
+        The setIndex must save the index.
+        """
+        objectIndexes = [2, 3, 4]
+        for index in objectIndexes:
+            self._uut.setIndex(index)
+            self.assertEqual(index, self._uut._data.index)
+
     def test_getElementCount(self) -> None:
         """
         The getElementCount method must return the number of element in the
