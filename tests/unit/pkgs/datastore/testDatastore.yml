@@ -25,7 +25,7 @@ buttonArrays:
         elements:
             - button_5
             - button_6
-float:
+floats:
     - float_1:
         index: 1
         size: 1
