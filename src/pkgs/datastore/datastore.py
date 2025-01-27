@@ -8,7 +8,7 @@ import yaml
 
 from .button import Button, ButtonData
 from .buttonArray import ButtonArray, ButtonArrayData, ButtonArrayElement
-from .floatArray import FloatArray
+from .floatArray import FloatArray, FloatArrayData, FloatArrayElement
 from .floatObject import Float, FloatData
 from .intArray import IntArray
 from .multiState import MultiState
@@ -115,3 +115,25 @@ class Datastore:
             default = floatObj[name]['default']
             data = FloatData(name, index, size, min, max, default, inNvm)
             self._data.floatObjs.append(Float(data))
+
+    def populateFloatArrays(self, floatArrays: list[dict]) -> None:
+        """
+        Populate the datastore float arrays.
+
+        Param
+            floatArrays: The float arrays data.
+        """
+        for array in floatArrays:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            elements = []
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elements.append(FloatArrayElement(elmtName, elmtMin,
+                                                  elmtMax, elmtDefault))
+            data = FloatArrayData(name, index, elements, inNvm)
+            self._data.floatArrays.append(FloatArray(data))

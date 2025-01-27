@@ -30,6 +30,9 @@ class TestDatastore(TestCase):
         self._ButtonArrayElmtCls = 'pkgs.datastore.datastore.ButtonArrayElement'    # noqa: E501
         self._FloatCls = 'pkgs.datastore.datastore.Float'
         self._FloatDataCls = 'pkgs.datastore.datastore.FloatData'
+        self._FloatArrayCls = 'pkgs.datastore.datastore.FloatArray'
+        self._FloatArrayDataCls = 'pkgs.datastore.datastore.FloatArrayData'
+        self._FloatArrayElmtCls = 'pkgs.datastore.datastore.FloatArrayElement'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -160,3 +163,37 @@ class TestDatastore(TestCase):
                              mockedFloatData.call_count)
             mockedFloatData.assert_has_calls(calls)
             mockedFloat.assert_called_with(mockedData)
+
+    def test_populateFloatArraysCreateArrays(self) -> None:
+        """
+        The populateFloatArrays method must populate the datastore float
+        arrays with he given data.
+        """
+        mockedArrayData = Mock()
+        elementCalls = []
+        arrayDataCalls = []
+        for array in self._yml['floatArrays']:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elementCalls.append(call(elmtName, elmtMin,
+                                         elmtMax, elmtDefault))
+            arrayDataCalls.append(call(name, index, ANY, inNvm))
+        self.assertEqual(0, len(self._uut._data.floatArrays))
+        with patch(self._FloatArrayCls) as mockedFloatArray, \
+                patch(self._FloatArrayDataCls) as mockedData, \
+                patch(self._FloatArrayElmtCls) as mockedElement:
+            mockedData.return_value = mockedArrayData
+            self._uut.populateFloatArrays(self._yml['floatArrays'])
+            self.assertEqual(len(self._yml['floatArrays']),
+                             len(self._uut._data.floatArrays))
+            self.assertEqual(len(elementCalls), mockedElement.call_count)
+            mockedElement.assert_has_calls(elementCalls)
+            self.assertEqual(len(arrayDataCalls), mockedData.call_count)
+            mockedData.assert_has_calls(arrayDataCalls)
+            mockedFloatArray.assert_called_with(mockedArrayData)
