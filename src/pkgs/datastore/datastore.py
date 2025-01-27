@@ -9,7 +9,7 @@ import yaml
 from .button import Button, ButtonData
 from .buttonArray import ButtonArray, ButtonArrayData, ButtonArrayElement
 from .floatArray import FloatArray
-from .floatObject import Float
+from .floatObject import Float, FloatData
 from .intArray import IntArray
 from .multiState import MultiState
 from .signedInteger import SignedInteger
@@ -97,3 +97,21 @@ class Datastore:
             data = ButtonArrayData(name, index, longPressTime,
                                    inactiveTime, elements)
             self._data.buttonArrays.append(ButtonArray(data))
+
+    def populateFloats(self, floats: list[dict]) -> None:
+        """
+        Populate the datastore floats.
+
+        Param
+            floats: The floats array.
+        """
+        for floatObj in floats:
+            name = list(floatObj.keys())[0]
+            index = floatObj[name]['index']
+            size = floatObj[name]['size']
+            inNvm = floatObj[name]['inNvm']
+            min = floatObj[name]['min']
+            max = floatObj[name]['max']
+            default = floatObj[name]['default']
+            data = FloatData(name, index, size, min, max, default, inNvm)
+            self._data.floatObjs.append(Float(data))

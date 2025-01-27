@@ -28,6 +28,8 @@ class TestDatastore(TestCase):
         self._ButtonArrayCls = 'pkgs.datastore.datastore.ButtonArray'
         self._ButtonArrayDataCls = 'pkgs.datastore.datastore.ButtonArrayData'
         self._ButtonArrayElmtCls = 'pkgs.datastore.datastore.ButtonArrayElement'    # noqa: E501
+        self._FloatCls = 'pkgs.datastore.datastore.Float'
+        self._FloatDataCls = 'pkgs.datastore.datastore.FloatData'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -130,3 +132,31 @@ class TestDatastore(TestCase):
             self.assertEqual(len(arrayDataCalls), mockedData.call_count)
             mockedData.assert_has_calls(arrayDataCalls)
             mockedButtonArray.assert_called_with(mockedArrayData)
+
+    def test_populateFloatsCreateFloats(self) -> None:
+        """
+        The populateFloats method must populate the datastore floats
+        with the given data.
+        """
+        mockedData = Mock()
+        calls = []
+        for floatObj in self._yml['floats']:
+            name = list(floatObj.keys())[0]
+            index = floatObj[name]['index']
+            size = floatObj[name]['size']
+            inNvm = floatObj[name]['inNvm']
+            min = floatObj[name]['min']
+            max = floatObj[name]['max']
+            default = floatObj[name]['default']
+            calls.append(call(name, index, size, min, max, default, inNvm))
+        self.assertEqual(0, len(self._uut._data.floatObjs))
+        with patch(self._FloatCls) as mockedFloat, \
+                patch(self._FloatDataCls) as mockedFloatData:
+            mockedFloatData.return_value = mockedData
+            self._uut.populateFloats(self._yml['floats'])
+            self.assertEqual(len(self._yml['floats']),
+                             len(self._uut._data.floatObjs))
+            self.assertEqual(len(self._yml['floats']),
+                             mockedFloatData.call_count)
+            mockedFloatData.assert_has_calls(calls)
+            mockedFloat.assert_called_with(mockedData)
