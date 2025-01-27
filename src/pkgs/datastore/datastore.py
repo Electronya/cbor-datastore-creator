@@ -64,7 +64,7 @@ class Datastore:
         newStore = Datastore(data)
         return newStore
 
-    def populateButtons(self, buttons: dict) -> None:
+    def populateButtons(self, buttons: list[dict]) -> None:
         """
         Populate the datastore buttons.
 
@@ -77,9 +77,9 @@ class Datastore:
             longPressTime = button[name]['longPressTime']
             inactiveTime = button[name]['inactiveTime']
             data = ButtonData(name, index, longPressTime, inactiveTime)
-            self._data.buttons.append(data)
+            self._data.buttons.append(Button(data))
 
-    def populateButtonArrays(self, buttonArrays: dict) -> None:
+    def populateButtonArrays(self, buttonArrays: list[dict]) -> None:
         """
         Populate the datastore button arrays.
 

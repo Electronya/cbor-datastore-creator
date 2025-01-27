@@ -1,6 +1,6 @@
-from datetime import date
+from datetime import date, datetime
 from unittest import TestCase
-from unittest.mock import call, Mock, patch
+from unittest.mock import ANY, call, Mock, patch
 import cbor2
 import yaml
 
@@ -10,7 +10,6 @@ import sys
 sys.path.append(os.path.abspath('./src'))
 
 from pkgs.datastore import (                  # noqa: E402
-    Button,
     Datastore,
     DatastoreData,
 )
@@ -24,7 +23,8 @@ class TestDatastore(TestCase):
         """
         Test cases set up.
         """
-        self._mockedButtonDataCls = 'pkgs.datastore.datastore.ButtonData'
+        self._ButtonCls = 'pkgs.datastore.datastore.Button'
+        self._ButtonDataCls = 'pkgs.datastore.datastore.ButtonData'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -52,7 +52,9 @@ class TestDatastore(TestCase):
         """
         The constructor must save the datastore data and log its creation.
         """
-        data = DatastoreData('testDatastore', self._yml['lasModified'],
+        modifiedDate = datetime.strptime(self._yml['lasModified'],
+                                         "%d-%m-%Y").date()
+        data = DatastoreData('testDatastore', modifiedDate,
                              self._yml['workingDir'])
         logMsg = f"Datastore {data.name} created"
         mockedLogger = Mock()
@@ -75,6 +77,7 @@ class TestDatastore(TestCase):
         The populateButtons method must populate the datastore buttons
         with the given data.
         """
+        mockedData = Mock()
         calls = []
         for button in self._yml['buttons']:
             name = list(button.keys())[0]
@@ -83,10 +86,13 @@ class TestDatastore(TestCase):
             inactiveTime = button[name]['inactiveTime']
             calls.append(call(name, index, longPressTime, inactiveTime))
         self.assertEqual(0, len(self._uut._data.buttons))
-        with patch(self._mockedButtonDataCls) as mockedButtonData:
+        with patch(self._ButtonCls) as mockedButton, \
+                patch(self._ButtonDataCls) as mockedButtonData:
+            mockedButtonData.return_value = mockedData
             self._uut.populateButtons(self._yml['buttons'])
             self.assertEqual(len(self._yml['buttons']),
                              len(self._uut._data.buttons))
             self.assertEqual(len(self._yml['buttons']),
                              mockedButtonData.call_count)
             mockedButtonData.assert_has_calls(calls)
+            mockedButton.assert_called_with(mockedData)
