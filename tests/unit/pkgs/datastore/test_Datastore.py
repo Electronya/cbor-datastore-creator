@@ -25,6 +25,9 @@ class TestDatastore(TestCase):
         """
         self._ButtonCls = 'pkgs.datastore.datastore.Button'
         self._ButtonDataCls = 'pkgs.datastore.datastore.ButtonData'
+        self._ButtonArrayCls = 'pkgs.datastore.datastore.ButtonArray'
+        self._ButtonArrayDataCls = 'pkgs.datastore.datastore.ButtonArrayData'
+        self._ButtonArrayElmtCls = 'pkgs.datastore.datastore.ButtonArrayElement'    # noqa: E501
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -96,3 +99,34 @@ class TestDatastore(TestCase):
                              mockedButtonData.call_count)
             mockedButtonData.assert_has_calls(calls)
             mockedButton.assert_called_with(mockedData)
+
+    def test_populateButtonArraysCreateArrays(self) -> None:
+        """
+        The populateButtonArrays method must populate the datastore button
+        arrays with he given data.
+        """
+        mockedArrayData = Mock()
+        elementCalls = []
+        arrayDataCalls = []
+        for array in self._yml['buttonArrays']:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            longPressTime = array[name]['longPressTime']
+            inactiveTime = array[name]['inactiveTime']
+            for element in array[name]['elements']:
+                elementCalls.append(call(element))
+            arrayDataCalls.append(call(name, index, longPressTime,
+                                       inactiveTime, ANY))
+        self.assertEqual(0, len(self._uut._data.buttonArrays))
+        with patch(self._ButtonArrayCls) as mockedButtonArray, \
+                patch(self._ButtonArrayDataCls) as mockedData, \
+                patch(self._ButtonArrayElmtCls) as mockedElement:
+            mockedData.return_value = mockedArrayData
+            self._uut.populateButtonArrays(self._yml['buttonArrays'])
+            self.assertEqual(len(self._yml['buttonArrays']),
+                             len(self._uut._data.buttonArrays))
+            self.assertEqual(len(elementCalls), mockedElement.call_count)
+            mockedElement.assert_has_calls(elementCalls)
+            self.assertEqual(len(arrayDataCalls), mockedData.call_count)
+            mockedData.assert_has_calls(arrayDataCalls)
+            mockedButtonArray.assert_called_with(mockedArrayData)

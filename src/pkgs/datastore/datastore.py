@@ -7,7 +7,7 @@ import logging
 import yaml
 
 from .button import Button, ButtonData
-from .buttonArray import ButtonArray
+from .buttonArray import ButtonArray, ButtonArrayData, ButtonArrayElement
 from .floatArray import FloatArray
 from .floatObject import Float
 from .intArray import IntArray
@@ -86,3 +86,14 @@ class Datastore:
         Param
             buttonArrays: The button arrays data.
         """
+        for array in buttonArrays:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            longPressTime = array[name]['longPressTime']
+            inactiveTime = array[name]['inactiveTime']
+            elements = []
+            for element in array[name]['elements']:
+                elements.append(ButtonArrayElement(element))
+            data = ButtonArrayData(name, index, longPressTime,
+                                   inactiveTime, elements)
+            self._data.buttonArrays.append(ButtonArray(data))
