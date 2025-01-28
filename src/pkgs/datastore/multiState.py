@@ -12,6 +12,7 @@ class MultiStateData:
     name: str
     index: int
     states: list[str] = field(default_factory=list)
+    default: str = ''
     inNvm: bool = False
 
 
@@ -47,6 +48,20 @@ class MultiState:
             True if the index is valid, false otherwise.
         """
         if index < 1 or index > 255:
+            return False
+        return True
+
+    def _isDefaultValid(self, default: str) -> bool:
+        """
+        Check if the default is valid.
+
+        Param
+            default: the default to validate.
+
+        Return
+            True if the default is valid, false otherwise.
+        """
+        if default not in self._data.states:
             return False
         return True
 

@@ -87,6 +87,18 @@ class TestMultiState(TestCase):
         for values in testValues:
             self.assertEqual(values[1], self._uut._isIndexValid(values[0]))
 
+    def test__isDefaultValid(self) -> None:
+        """
+        The _isDefaultValid method must return true when the default is valid,
+        false otherwise. To be valid the default must be included in
+        the states.
+        """
+        # test values: (default, result)
+        testValues = [(self._uut._data.states[0], True), ('STATE_3', False),
+                      (self._uut._data.states[1], True)]
+        for values in testValues:
+            self.assertEqual(values[1], self._uut._isDefaultValid(values[0]))
+
     def test_getNameReturnName(self) -> None:
         """
         The getName method must return the object name.
