@@ -33,6 +33,8 @@ class TestDatastore(TestCase):
         self._FloatArrayCls = 'pkgs.datastore.datastore.FloatArray'
         self._FloatArrayDataCls = 'pkgs.datastore.datastore.FloatArrayData'
         self._FloatArrayElmtCls = 'pkgs.datastore.datastore.FloatArrayElement'
+        self._MultiStateCls = 'pkgs.datastore.datastore.MultiState'
+        self._MultiStateDataCls = 'pkgs.datastore.datastore.MultiStateData'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -197,3 +199,29 @@ class TestDatastore(TestCase):
             self.assertEqual(len(arrayDataCalls), mockedData.call_count)
             mockedData.assert_has_calls(arrayDataCalls)
             mockedFloatArray.assert_called_with(mockedArrayData)
+
+    def test_populateMultiStatesCreateMultiStates(self) -> None:
+        """
+        The populateMultiStates method must populate the datastore multi-states
+        with the given data.
+        """
+        mockedData = Mock()
+        calls = []
+        for multiState in self._yml['multiStates']:
+            name = list(multiState.keys())[0]
+            index = multiState[name]['index']
+            inNvm = multiState[name]['inNvm']
+            states = multiState[name]['states']
+            default = multiState[name]['default']
+            calls.append(call(name, index, states, default, inNvm))
+        self.assertEqual(0, len(self._uut._data.multiStates))
+        with patch(self._MultiStateCls) as mockedMultiState, \
+                patch(self._MultiStateDataCls) as mockedMultiStateData:
+            mockedMultiStateData.return_value = mockedData
+            self._uut.populateMultiStates(self._yml['multiStates'])
+            self.assertEqual(len(self._yml['multiStates']),
+                             len(self._uut._data.multiStates))
+            self.assertEqual(len(self._yml['multiStates']),
+                             mockedMultiStateData.call_count)
+            mockedMultiStateData.assert_has_calls(calls)
+            mockedMultiState.assert_called_with(mockedData)

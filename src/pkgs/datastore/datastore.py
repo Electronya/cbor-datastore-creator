@@ -11,7 +11,7 @@ from .buttonArray import ButtonArray, ButtonArrayData, ButtonArrayElement
 from .floatArray import FloatArray, FloatArrayData, FloatArrayElement
 from .floatObject import Float, FloatData
 from .intArray import IntArray
-from .multiState import MultiState
+from .multiState import MultiState, MultiStateData
 from .signedInteger import SignedInteger
 from .uintArray import UintArray
 from .unsignedInteger import UnsignedInteger
@@ -137,3 +137,19 @@ class Datastore:
                                                   elmtMax, elmtDefault))
             data = FloatArrayData(name, index, elements, inNvm)
             self._data.floatArrays.append(FloatArray(data))
+
+    def populateMultiStates(self, multiStates: list[dict]) -> None:
+        """
+        Populate the datastore multi-states.
+
+        Param
+            multiStates: the multi-states array.
+        """
+        for multiState in multiStates:
+            name = list(multiState.keys())[0]
+            index = multiState[name]['index']
+            inNvm = multiState[name]['inNvm']
+            default = multiState[name]['default']
+            states = multiState[name]['states']
+            data = MultiStateData(name, index, states, default, inNvm)
+            self._data.multiStates.append(MultiState(data))
