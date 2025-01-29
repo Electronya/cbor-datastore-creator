@@ -51,7 +51,9 @@ class TestDatastore(TestCase):
                                      'testDatastore.yml')
         with open(testStoreFile, 'r') as storeFile:
             self._yml = yaml.safe_load(storeFile)
-        data = DatastoreData('testDatastore', self._yml['lasModified'],
+            modifiedDate = datetime.strptime(self._yml['lasModified'],
+                                             "%d-%m-%Y").date()
+        data = DatastoreData('testDatastore', modifiedDate,
                              self._yml['workingDir'])
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
@@ -61,7 +63,9 @@ class TestDatastore(TestCase):
         """
         The constructor must get the datastore logger.
         """
-        data = DatastoreData('testDatastore', self._yml['lasModified'],
+        modifiedDate = datetime.strptime(self._yml['lasModified'],
+                                         "%d-%m-%Y").date()
+        data = DatastoreData('testDatastore', modifiedDate,
                              self._yml['workingDir'])
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
@@ -377,3 +381,25 @@ class TestDatastore(TestCase):
         for name in names:
             self._uut.setName(name)
             self.assertEqual(name, self._uut._data.name)
+
+    def test_getLastModifiedReturnDate(self) -> None:
+        """
+        The getLastModified method must return the last modified date
+        as a string with the format dd-mm-yyyy.
+        """
+        dates = ['29-01-2025', '01-02-2025']
+        for dateStr in dates:
+            self._uut._data.lastModified = datetime \
+                .strptime(dateStr, '%d-%m-%Y').date()
+            self.assertEqual(dateStr, self._uut.getLastModified())
+
+    def test_setLastModifiedSaveDate(self) -> None:
+        """
+        The setLastModified method must save the new last modified date
+        from a string with the format dd-mm-yyyy.
+        """
+        dates = ['29-01-2025', '01-02-2025']
+        for dateStr in dates:
+            lastModified = datetime.strptime(dateStr, '%d-%m-%Y').date()
+            self._uut.setLastModified(dateStr)
+            self.assertEqual(lastModified, self._uut._data.lastModified)

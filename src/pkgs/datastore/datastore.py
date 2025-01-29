@@ -1,5 +1,5 @@
 from dataclasses import dataclass, field
-from datetime import date
+from datetime import date, datetime
 from typing import Self
 import cbor2
 import logging
@@ -58,7 +58,8 @@ class Datastore:
         Param
             yml: The datastore dictionary from the yaml encoding.
         """
-        data = DatastoreData(yml['name'], yml['lasModified'],
+        lastModified = datetime.strptime(yml['lasModified'], "%d-%m-%Y").date()
+        data = DatastoreData(yml['name'], lastModified,
                              yml['workingDir'])
         newStore = Datastore(data)
         return newStore
@@ -252,3 +253,23 @@ class Datastore:
             name: the new datastore name.
         """
         self._data.name = name
+
+    def getLastModified(self) -> str:
+        """
+        Get the last modified date as a string with the format dd-mm-yyyy.
+
+        Return
+            The last modified date.
+        """
+        return self._data.lastModified.strftime("%d-%m-%Y")
+
+    def setLastModified(self, dateStr: str) -> None:
+        """
+        Set the last modified date.
+
+        Param
+            dateStr: The last modified date as string with the format
+                     dd-mm-yyyy.
+        """
+        lastModified = datetime.strptime(dateStr, "%d-%m-%Y").date()
+        self._data.lastModified = lastModified
