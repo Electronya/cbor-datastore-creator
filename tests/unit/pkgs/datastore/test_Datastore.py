@@ -359,3 +359,21 @@ class TestDatastore(TestCase):
             self.assertEqual(len(arrayDataCalls), mockedData.call_count)
             mockedData.assert_has_calls(arrayDataCalls)
             mockedUintArray.assert_called_with(mockedArrayData)
+
+    def test_getNameReturnName(self) -> None:
+        """
+        The getName method must return the datastore name.
+        """
+        names = ['datastore_1, datastore_2']
+        for name in names:
+            self._uut._data.name = name
+            self.assertEqual(name, self._uut.getName())
+
+    def test_setNameSaveNewName(self) -> None:
+        """
+        The setName method must save the new datastore name.
+        """
+        names = ['datastore_1, datastore_2']
+        for name in names:
+            self._uut.setName(name)
+            self.assertEqual(name, self._uut._data.name)

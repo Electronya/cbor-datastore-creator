@@ -1,6 +1,5 @@
 from dataclasses import dataclass, field
 from datetime import date
-from os import path
 from typing import Self
 import cbor2
 import logging
@@ -235,3 +234,21 @@ class Datastore:
                                                  elmtMax, elmtDefault))
             data = UintArrayData(name, index, elements, inNvm)
             self._data.uintArrays.append(UintArray(data))
+
+    def getName(self) -> str:
+        """
+        Get the datastore name.
+
+        Return
+            The datastore name.
+        """
+        return self._data.name
+
+    def setName(self, name: str) -> None:
+        """
+        Set the datastore name.
+
+        Param
+            name: the new datastore name.
+        """
+        self._data.name = name
