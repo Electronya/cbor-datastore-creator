@@ -35,6 +35,8 @@ class TestDatastore(TestCase):
         self._FloatArrayElmtCls = 'pkgs.datastore.datastore.FloatArrayElement'
         self._MultiStateCls = 'pkgs.datastore.datastore.MultiState'
         self._MultiStateDataCls = 'pkgs.datastore.datastore.MultiStateData'
+        self._SignedIntegerCls = 'pkgs.datastore.datastore.SignedInteger'
+        self._SignedIntegerDataCls = 'pkgs.datastore.datastore.SignedIntegerData'   # noqa: E501
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -225,3 +227,31 @@ class TestDatastore(TestCase):
                              mockedMultiStateData.call_count)
             mockedMultiStateData.assert_has_calls(calls)
             mockedMultiState.assert_called_with(mockedData)
+
+    def test_populateSignedIntegersCreateSignedIntegers(self) -> None:
+        """
+        The populateSignedIntegers method must populate the datastore
+        signed integers with the given data.
+        """
+        mockedData = Mock()
+        calls = []
+        for signedInteger in self._yml['signedIntegers']:
+            name = list(signedInteger.keys())[0]
+            index = signedInteger[name]['index']
+            size = signedInteger[name]['size']
+            inNvm = signedInteger[name]['inNvm']
+            min = signedInteger[name]['min']
+            max = signedInteger[name]['max']
+            default = signedInteger[name]['default']
+            calls.append(call(name, index, size, min, max, default, inNvm))
+        self.assertEqual(0, len(self._uut._data.signedIntegers))
+        with patch(self._SignedIntegerCls) as mockedSignedInteger, \
+                patch(self._SignedIntegerDataCls) as mockedSignedIntegerData:
+            mockedSignedIntegerData.return_value = mockedData
+            self._uut.populateSignedIntegers(self._yml['signedIntegers'])
+            self.assertEqual(len(self._yml['signedIntegers']),
+                             len(self._uut._data.signedIntegers))
+            self.assertEqual(len(self._yml['signedIntegers']),
+                             mockedSignedIntegerData.call_count)
+            mockedSignedIntegerData.assert_has_calls(calls)
+            mockedSignedInteger.assert_called_with(mockedData)

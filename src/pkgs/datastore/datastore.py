@@ -12,7 +12,7 @@ from .floatArray import FloatArray, FloatArrayData, FloatArrayElement
 from .floatObject import Float, FloatData
 from .intArray import IntArray
 from .multiState import MultiState, MultiStateData
-from .signedInteger import SignedInteger
+from .signedInteger import SignedInteger, SignedIntegerData
 from .uintArray import UintArray
 from .unsignedInteger import UnsignedInteger
 
@@ -103,7 +103,7 @@ class Datastore:
         Populate the datastore floats.
 
         Param
-            floats: The floats array.
+            floats: The floats data.
         """
         for floatObj in floats:
             name = list(floatObj.keys())[0]
@@ -143,7 +143,7 @@ class Datastore:
         Populate the datastore multi-states.
 
         Param
-            multiStates: the multi-states array.
+            multiStates: the multi-states data.
         """
         for multiState in multiStates:
             name = list(multiState.keys())[0]
@@ -153,3 +153,22 @@ class Datastore:
             states = multiState[name]['states']
             data = MultiStateData(name, index, states, default, inNvm)
             self._data.multiStates.append(MultiState(data))
+
+    def populateSignedIntegers(self, signedIntegers: list[dict]) -> None:
+        """
+        Populate the datastore signed integers.
+
+        Param
+            signedIntegers: the signed integer data.
+        """
+        for signedInteger in signedIntegers:
+            name = list(signedInteger.keys())[0]
+            index = signedInteger[name]['index']
+            size = signedInteger[name]['size']
+            inNvm = signedInteger[name]['inNvm']
+            min = signedInteger[name]['min']
+            max = signedInteger[name]['max']
+            default = signedInteger[name]['default']
+            data = SignedIntegerData(name, index, size, min,
+                                     max, default, inNvm)
+            self._data.signedIntegers.append(SignedInteger(data))
