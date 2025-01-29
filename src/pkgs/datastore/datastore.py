@@ -13,7 +13,7 @@ from .floatObject import Float, FloatData
 from .intArray import IntArray, IntArrayData, IntArrayElement
 from .multiState import MultiState, MultiStateData
 from .signedInteger import SignedInteger, SignedIntegerData
-from .uintArray import UintArray
+from .uintArray import UintArray, UintArrayData, UintArrayElement
 from .unsignedInteger import UnsignedInteger, UnsignedIntegerData
 
 
@@ -213,3 +213,25 @@ class Datastore:
             data = UnsignedIntegerData(name, index, size, min,
                                        max, default, inNvm)
             self._data.unsignedIntegers.append(UnsignedInteger(data))
+
+    def populateUintArrays(self, uintArrays: list[dict]) -> None:
+        """
+        Populate the datastore uint arrays.
+
+        Param
+            uintArrays: The uint arrays data.
+        """
+        for array in uintArrays:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            elements = []
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elements.append(UintArrayElement(elmtName, elmtMin,
+                                                 elmtMax, elmtDefault))
+            data = UintArrayData(name, index, elements, inNvm)
+            self._data.uintArrays.append(UintArray(data))

@@ -42,6 +42,9 @@ class TestDatastore(TestCase):
         self._IntArrayElementCls = 'pkgs.datastore.datastore.IntArrayElement'
         self._UnsignedIntegerCls = 'pkgs.datastore.datastore.UnsignedInteger'
         self._UnsignedIntegerDataCls = 'pkgs.datastore.datastore.UnsignedIntegerData'   # noqa: E501
+        self._UintArrayCls = 'pkgs.datastore.datastore.UintArray'
+        self._UintArrayDataCls = 'pkgs.datastore.datastore.UintArrayData'
+        self._UintArrayElementCls = 'pkgs.datastore.datastore.UintArrayElement'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -322,3 +325,37 @@ class TestDatastore(TestCase):
                              mockedUnsignedIntegerData.call_count)
             mockedUnsignedIntegerData.assert_has_calls(calls)
             mockedUnsignedInteger.assert_called_with(mockedData)
+
+    def test_populateUintArraysCreateArrays(self) -> None:
+        """
+        The populateUintArrays method must populate the datastore int
+        arrays with he given data.
+        """
+        mockedArrayData = Mock()
+        elementCalls = []
+        arrayDataCalls = []
+        for array in self._yml['uintArrays']:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elementCalls.append(call(elmtName, elmtMin,
+                                         elmtMax, elmtDefault))
+            arrayDataCalls.append(call(name, index, ANY, inNvm))
+        self.assertEqual(0, len(self._uut._data.uintArrays))
+        with patch(self._UintArrayCls) as mockedUintArray, \
+                patch(self._UintArrayDataCls) as mockedData, \
+                patch(self._UintArrayElementCls) as mockedElement:
+            mockedData.return_value = mockedArrayData
+            self._uut.populateUintArrays(self._yml['uintArrays'])
+            self.assertEqual(len(self._yml['uintArrays']),
+                             len(self._uut._data.uintArrays))
+            self.assertEqual(len(elementCalls), mockedElement.call_count)
+            mockedElement.assert_has_calls(elementCalls)
+            self.assertEqual(len(arrayDataCalls), mockedData.call_count)
+            mockedData.assert_has_calls(arrayDataCalls)
+            mockedUintArray.assert_called_with(mockedArrayData)
