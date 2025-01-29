@@ -10,7 +10,7 @@ from .button import Button, ButtonData
 from .buttonArray import ButtonArray, ButtonArrayData, ButtonArrayElement
 from .floatArray import FloatArray, FloatArrayData, FloatArrayElement
 from .floatObject import Float, FloatData
-from .intArray import IntArray
+from .intArray import IntArray, IntArrayData, IntArrayElement
 from .multiState import MultiState, MultiStateData
 from .signedInteger import SignedInteger, SignedIntegerData
 from .uintArray import UintArray
@@ -172,3 +172,25 @@ class Datastore:
             data = SignedIntegerData(name, index, size, min,
                                      max, default, inNvm)
             self._data.signedIntegers.append(SignedInteger(data))
+
+    def populateIntArrays(self, intArrays: list[dict]) -> None:
+        """
+        Populate the datastore int arrays.
+
+        Param
+            intArrays: The int arrays data.
+        """
+        for array in intArrays:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            elements = []
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elements.append(IntArrayElement(elmtName, elmtMin,
+                                                elmtMax, elmtDefault))
+            data = IntArrayData(name, index, elements, inNvm)
+            self._data.intArrays.append(IntArray(data))

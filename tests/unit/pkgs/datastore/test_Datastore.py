@@ -37,6 +37,9 @@ class TestDatastore(TestCase):
         self._MultiStateDataCls = 'pkgs.datastore.datastore.MultiStateData'
         self._SignedIntegerCls = 'pkgs.datastore.datastore.SignedInteger'
         self._SignedIntegerDataCls = 'pkgs.datastore.datastore.SignedIntegerData'   # noqa: E501
+        self._IntArrayCls = 'pkgs.datastore.datastore.IntArray'
+        self._IntArrayDataCls = 'pkgs.datastore.datastore.IntArrayData'
+        self._IntArrayElementCls = 'pkgs.datastore.datastore.IntArrayElement'
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -255,3 +258,37 @@ class TestDatastore(TestCase):
                              mockedSignedIntegerData.call_count)
             mockedSignedIntegerData.assert_has_calls(calls)
             mockedSignedInteger.assert_called_with(mockedData)
+
+    def test_populateIntArraysCreateArrays(self) -> None:
+        """
+        The populateIntArrays method must populate the datastore int
+        arrays with he given data.
+        """
+        mockedArrayData = Mock()
+        elementCalls = []
+        arrayDataCalls = []
+        for array in self._yml['intArrays']:
+            name = list(array.keys())[0]
+            index = array[name]['index']
+            inNvm = array[name]['inNvm']
+            for element in array[name]['elements']:
+                elmtName = list(element.keys())[0]
+                elmtMin = element[elmtName]['min']
+                elmtMax = element[elmtName]['max']
+                elmtDefault = element[elmtName]['default']
+                elementCalls.append(call(elmtName, elmtMin,
+                                         elmtMax, elmtDefault))
+            arrayDataCalls.append(call(name, index, ANY, inNvm))
+        self.assertEqual(0, len(self._uut._data.intArrays))
+        with patch(self._IntArrayCls) as mockedIntArray, \
+                patch(self._IntArrayDataCls) as mockedData, \
+                patch(self._IntArrayElementCls) as mockedElement:
+            mockedData.return_value = mockedArrayData
+            self._uut.populateIntArrays(self._yml['intArrays'])
+            self.assertEqual(len(self._yml['intArrays']),
+                             len(self._uut._data.intArrays))
+            self.assertEqual(len(elementCalls), mockedElement.call_count)
+            mockedElement.assert_has_calls(elementCalls)
+            self.assertEqual(len(arrayDataCalls), mockedData.call_count)
+            mockedData.assert_has_calls(arrayDataCalls)
+            mockedIntArray.assert_called_with(mockedArrayData)
