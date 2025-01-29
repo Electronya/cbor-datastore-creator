@@ -27,7 +27,7 @@ class TestDatastore(TestCase):
         self._ButtonDataCls = 'pkgs.datastore.datastore.ButtonData'
         self._ButtonArrayCls = 'pkgs.datastore.datastore.ButtonArray'
         self._ButtonArrayDataCls = 'pkgs.datastore.datastore.ButtonArrayData'
-        self._ButtonArrayElmtCls = 'pkgs.datastore.datastore.ButtonArrayElement'    # noqa: E501
+        self._ButtonArrayElmtCls = 'pkgs.datastore.datastore.ButtonArrayElement'        # noqa: E501
         self._FloatCls = 'pkgs.datastore.datastore.Float'
         self._FloatDataCls = 'pkgs.datastore.datastore.FloatData'
         self._FloatArrayCls = 'pkgs.datastore.datastore.FloatArray'
@@ -36,10 +36,12 @@ class TestDatastore(TestCase):
         self._MultiStateCls = 'pkgs.datastore.datastore.MultiState'
         self._MultiStateDataCls = 'pkgs.datastore.datastore.MultiStateData'
         self._SignedIntegerCls = 'pkgs.datastore.datastore.SignedInteger'
-        self._SignedIntegerDataCls = 'pkgs.datastore.datastore.SignedIntegerData'   # noqa: E501
+        self._SignedIntegerDataCls = 'pkgs.datastore.datastore.SignedIntegerData'       # noqa: E501
         self._IntArrayCls = 'pkgs.datastore.datastore.IntArray'
         self._IntArrayDataCls = 'pkgs.datastore.datastore.IntArrayData'
         self._IntArrayElementCls = 'pkgs.datastore.datastore.IntArrayElement'
+        self._UnsignedIntegerCls = 'pkgs.datastore.datastore.UnsignedInteger'
+        self._UnsignedIntegerDataCls = 'pkgs.datastore.datastore.UnsignedIntegerData'   # noqa: E501
         self._loggingMod = 'pkgs.datastore.datastore.logging'
         self._mockedLogger = Mock()
         testStoreFile = os.path.join('./tests/unit/pkgs/datastore',
@@ -292,3 +294,31 @@ class TestDatastore(TestCase):
             self.assertEqual(len(arrayDataCalls), mockedData.call_count)
             mockedData.assert_has_calls(arrayDataCalls)
             mockedIntArray.assert_called_with(mockedArrayData)
+
+    def test_populateUnsignedIntegersCreateUnsignedIntegers(self) -> None:
+        """
+        The populateUnsignedIntegers method must populate the datastore
+        unsigned integers with the given data.
+        """
+        mockedData = Mock()
+        calls = []
+        for signedInteger in self._yml['unsignedIntegers']:
+            name = list(signedInteger.keys())[0]
+            index = signedInteger[name]['index']
+            size = signedInteger[name]['size']
+            inNvm = signedInteger[name]['inNvm']
+            min = signedInteger[name]['min']
+            max = signedInteger[name]['max']
+            default = signedInteger[name]['default']
+            calls.append(call(name, index, size, min, max, default, inNvm))
+        self.assertEqual(0, len(self._uut._data.unsignedIntegers))
+        with patch(self._UnsignedIntegerCls) as mockedUnsignedInteger, \
+                patch(self._UnsignedIntegerDataCls) as mockedUnsignedIntegerData:       # noqa: E501
+            mockedUnsignedIntegerData.return_value = mockedData
+            self._uut.populateUnsignedIntegers(self._yml['unsignedIntegers'])
+            self.assertEqual(len(self._yml['unsignedIntegers']),
+                             len(self._uut._data.unsignedIntegers))
+            self.assertEqual(len(self._yml['unsignedIntegers']),
+                             mockedUnsignedIntegerData.call_count)
+            mockedUnsignedIntegerData.assert_has_calls(calls)
+            mockedUnsignedInteger.assert_called_with(mockedData)

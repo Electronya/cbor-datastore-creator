@@ -14,7 +14,7 @@ from .intArray import IntArray, IntArrayData, IntArrayElement
 from .multiState import MultiState, MultiStateData
 from .signedInteger import SignedInteger, SignedIntegerData
 from .uintArray import UintArray
-from .unsignedInteger import UnsignedInteger
+from .unsignedInteger import UnsignedInteger, UnsignedIntegerData
 
 
 @dataclass
@@ -194,3 +194,22 @@ class Datastore:
                                                 elmtMax, elmtDefault))
             data = IntArrayData(name, index, elements, inNvm)
             self._data.intArrays.append(IntArray(data))
+
+    def populateUnsignedIntegers(self, unsignedIntegers: list[dict]) -> None:
+        """
+        Populate the datastore unsigned integers.
+
+        Param
+            unsignedIntegers: the unsigned integer data.
+        """
+        for unsignedInteger in unsignedIntegers:
+            name = list(unsignedInteger.keys())[0]
+            index = unsignedInteger[name]['index']
+            size = unsignedInteger[name]['size']
+            inNvm = unsignedInteger[name]['inNvm']
+            min = unsignedInteger[name]['min']
+            max = unsignedInteger[name]['max']
+            default = unsignedInteger[name]['default']
+            data = UnsignedIntegerData(name, index, size, min,
+                                       max, default, inNvm)
+            self._data.unsignedIntegers.append(UnsignedInteger(data))
