@@ -403,3 +403,21 @@ class TestDatastore(TestCase):
             lastModified = datetime.strptime(dateStr, '%d-%m-%Y').date()
             self._uut.setLastModified(dateStr)
             self.assertEqual(lastModified, self._uut._data.lastModified)
+
+    def test_getWorkingDirReturnWorkingDir(self) -> None:
+        """
+        The getWorkingDir must return the datastore working directory.
+        """
+        dirs = ['/home/testDir1/workingDir1', '/home/testDir2/workingDir2']
+        for dir in dirs:
+            self._uut._data.workingDir = dir
+            self.assertEqual(dir, self._uut.getWorkingDir())
+
+    def test_setWorkingDirSaveNewWorkingDir(self) -> None:
+        """
+        The setWorkingDir must save the datastore new working directory.
+        """
+        dirs = ['/home/testDir1/workingDir1', '/home/testDir2/workingDir2']
+        for dir in dirs:
+            self._uut.setWorkingDir(dir)
+            self.assertEqual(dir, self._uut._data.workingDir)

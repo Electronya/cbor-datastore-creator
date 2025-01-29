@@ -273,3 +273,21 @@ class Datastore:
         """
         lastModified = datetime.strptime(dateStr, "%d-%m-%Y").date()
         self._data.lastModified = lastModified
+
+    def getWorkingDir(self) -> str:
+        """
+        Get the working directory.
+
+        Return
+            The working directory.
+        """
+        return self._data.workingDir
+
+    def setWorkingDir(self, workingDir: str) -> None:
+        """
+        Set the working directory.
+
+        Param
+            workingDir: the working directory.
+        """
+        self._data.workingDir = workingDir

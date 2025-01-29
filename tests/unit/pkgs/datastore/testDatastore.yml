@@ -1,6 +1,6 @@
 name: 'testDatastore'
 lasModified: '25-01-2025'
-workingDir: './workingDir'
+workingDir: '/home/test/workingDir'
 buttons:
     - button_1:
         index: 1
