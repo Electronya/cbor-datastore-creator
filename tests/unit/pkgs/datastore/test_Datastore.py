@@ -113,6 +113,7 @@ class TestDatastore(TestCase):
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
             self._uut = Datastore(data)
+        self._initObjectLists()
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -148,14 +149,32 @@ class TestDatastore(TestCase):
         The parse class method must instantiate a new datastore based
         on the yaml encoding.
         """
+        self._deInitObjectLists()
         newStore = Datastore.parse(self._yml)
         self.assertEqual(self._uut._data, newStore._data)
+
+    def test_populateButtonsError(self) -> None:
+        """
+        The populateButtons method must raise any error raised by creating
+        the buttons.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._ButtonCls) as mockedButton, \
+                patch(self._ButtonDataCls) as mockedButtonData, \
+                self.assertRaises(IndexError) as context:
+            mockedButtonData.return_value = mockedData
+            mockedButton.side_effect = IndexError(errMsg)
+            self._uut.populateButtons(self._yml['buttons'])
+            mockedButton.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_populateButtonsCreateButtons(self) -> None:
         """
         The populateButtons method must populate the datastore buttons
         with the given data.
         """
+        self._deInitObjectLists()
         mockedData = Mock()
         calls = []
         for button in self._yml['buttons']:
@@ -176,11 +195,29 @@ class TestDatastore(TestCase):
             mockedButtonData.assert_has_calls(calls)
             mockedButton.assert_called_with(mockedData)
 
+    def test_populateButtonArraysError(self) -> None:
+        """
+        The populateButtonArrays method must raise any error raised by creating
+        the button arrays.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._ButtonArrayCls) as mockedButtonArray, \
+                patch(self._ButtonArrayDataCls) as mockedArrayData, \
+                patch(self._ButtonArrayElmtCls), \
+                self.assertRaises(IndexError) as context:
+            mockedArrayData.return_value = mockedData
+            mockedButtonArray.side_effect = IndexError(errMsg)
+            self._uut.populateButtonArrays(self._yml['buttonArrays'])
+            mockedButtonArray.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateButtonArraysCreateArrays(self) -> None:
         """
         The populateButtonArrays method must populate the datastore button
         arrays with he given data.
         """
+        self._deInitObjectLists()
         mockedArrayData = Mock()
         elementCalls = []
         arrayDataCalls = []
@@ -207,11 +244,28 @@ class TestDatastore(TestCase):
             mockedData.assert_has_calls(arrayDataCalls)
             mockedButtonArray.assert_called_with(mockedArrayData)
 
+    def test_populateFloatsError(self) -> None:
+        """
+        The populateFloats method must raise any error raised by creating
+        the floats.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._FloatCls) as mockedFloat, \
+                patch(self._FloatDataCls) as mockedFloatData, \
+                self.assertRaises(IndexError) as context:
+            mockedFloatData.return_value = mockedData
+            mockedFloat.side_effect = IndexError(errMsg)
+            self._uut.populateFloats(self._yml['floats'])
+            mockedFloat.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateFloatsCreateFloats(self) -> None:
         """
         The populateFloats method must populate the datastore floats
         with the given data.
         """
+        self._deInitObjectLists()
         mockedData = Mock()
         calls = []
         for floatObj in self._yml['floats']:
@@ -235,11 +289,29 @@ class TestDatastore(TestCase):
             mockedFloatData.assert_has_calls(calls)
             mockedFloat.assert_called_with(mockedData)
 
+    def test_populateFloatArraysError(self) -> None:
+        """
+        The populateFloatArrays method must raise any error raised by creating
+        the float arrays.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._FloatArrayCls) as mockedFloatArray, \
+                patch(self._FloatArrayDataCls) as mockedArrayData, \
+                patch(self._FloatArrayElmtCls), \
+                self.assertRaises(IndexError) as context:
+            mockedArrayData.return_value = mockedData
+            mockedFloatArray.side_effect = IndexError(errMsg)
+            self._uut.populateFloatArrays(self._yml['floatArrays'])
+            mockedFloatArray.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateFloatArraysCreateArrays(self) -> None:
         """
         The populateFloatArrays method must populate the datastore float
         arrays with he given data.
         """
+        self._deInitObjectLists()
         mockedArrayData = Mock()
         elementCalls = []
         arrayDataCalls = []
@@ -269,11 +341,28 @@ class TestDatastore(TestCase):
             mockedData.assert_has_calls(arrayDataCalls)
             mockedFloatArray.assert_called_with(mockedArrayData)
 
+    def test_populateMultiStatesError(self) -> None:
+        """
+        The populateMultiStates method must raise any error raised by creating
+        the multi-states.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._MultiStateCls) as mockedMultiState, \
+                patch(self._MultiStateDataCls) as mockedMultiStateData, \
+                self.assertRaises(IndexError) as context:
+            mockedMultiStateData.return_value = mockedData
+            mockedMultiState.side_effect = IndexError(errMsg)
+            self._uut.populateMultiStates(self._yml['multiStates'])
+            mockedMultiState.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateMultiStatesCreateMultiStates(self) -> None:
         """
         The populateMultiStates method must populate the datastore multi-states
         with the given data.
         """
+        self._deInitObjectLists()
         mockedData = Mock()
         calls = []
         for multiState in self._yml['multiStates']:
@@ -295,11 +384,28 @@ class TestDatastore(TestCase):
             mockedMultiStateData.assert_has_calls(calls)
             mockedMultiState.assert_called_with(mockedData)
 
+    def test_populateSignedIntegersError(self) -> None:
+        """
+        The populateSignedIntegers method must raise any error raised by
+        creating the signed integers.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._SignedIntegerCls) as mockedSignedInteger, \
+                patch(self._SignedIntegerDataCls) as mockedSignedIntegerData, \
+                self.assertRaises(IndexError) as context:
+            mockedSignedIntegerData.return_value = mockedData
+            mockedSignedInteger.side_effect = IndexError(errMsg)
+            self._uut.populateSignedIntegers(self._yml['signedIntegers'])
+            mockedSignedInteger.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateSignedIntegersCreateSignedIntegers(self) -> None:
         """
         The populateSignedIntegers method must populate the datastore
         signed integers with the given data.
         """
+        self._deInitObjectLists()
         mockedData = Mock()
         calls = []
         for signedInteger in self._yml['signedIntegers']:
@@ -323,11 +429,29 @@ class TestDatastore(TestCase):
             mockedSignedIntegerData.assert_has_calls(calls)
             mockedSignedInteger.assert_called_with(mockedData)
 
+    def test_populateIntArraysError(self) -> None:
+        """
+        The populateIntArrays method must raise any error raised by
+        creating the signed integer arrays.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._IntArrayCls) as mockedIntArray, \
+                patch(self._IntArrayDataCls) as mockedArrayData, \
+                patch(self._IntArrayElementCls), \
+                self.assertRaises(IndexError) as context:
+            mockedArrayData.return_value = mockedData
+            mockedIntArray.side_effect = IndexError(errMsg)
+            self._uut.populateIntArrays(self._yml['intArrays'])
+            mockedIntArray.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateIntArraysCreateArrays(self) -> None:
         """
         The populateIntArrays method must populate the datastore int
         arrays with he given data.
         """
+        self._deInitObjectLists()
         mockedArrayData = Mock()
         elementCalls = []
         arrayDataCalls = []
@@ -357,11 +481,28 @@ class TestDatastore(TestCase):
             mockedData.assert_has_calls(arrayDataCalls)
             mockedIntArray.assert_called_with(mockedArrayData)
 
+    def test_populateUnsignedIntegersError(self) -> None:
+        """
+        The populateUnsignedIntegers method must raise any error raised by
+        creating the signed integers.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._UnsignedIntegerCls) as mockedUnsignedInteger, \
+                patch(self._UnsignedIntegerDataCls) as mockedUintData, \
+                self.assertRaises(IndexError) as context:
+            mockedUintData.return_value = mockedData
+            mockedUnsignedInteger.side_effect = IndexError(errMsg)
+            self._uut.populateUnsignedIntegers(self._yml['unsignedIntegers'])
+            mockedUnsignedInteger.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateUnsignedIntegersCreateUnsignedIntegers(self) -> None:
         """
         The populateUnsignedIntegers method must populate the datastore
         unsigned integers with the given data.
         """
+        self._deInitObjectLists()
         mockedData = Mock()
         calls = []
         for signedInteger in self._yml['unsignedIntegers']:
@@ -385,11 +526,29 @@ class TestDatastore(TestCase):
             mockedUnsignedIntegerData.assert_has_calls(calls)
             mockedUnsignedInteger.assert_called_with(mockedData)
 
+    def test_populateUintArraysError(self) -> None:
+        """
+        The populateUintArrays method must raise any error raised by
+        creating the signed integer arrays.
+        """
+        mockedData = Mock()
+        errMsg = 'error message'
+        with patch(self._UintArrayCls) as mockedUintArray, \
+                patch(self._UintArrayDataCls) as mockedArrayData, \
+                patch(self._UintArrayElementCls), \
+                self.assertRaises(IndexError) as context:
+            mockedArrayData.return_value = mockedData
+            mockedUintArray.side_effect = IndexError(errMsg)
+            self._uut.populateUintArrays(self._yml['uintArrays'])
+            mockedUintArray.assert_called_once()
+            self.assertEqual(errMsg, str(context.exception))
+
     def test_populateUintArraysCreateArrays(self) -> None:
         """
         The populateUintArrays method must populate the datastore int
         arrays with he given data.
         """
+        self._deInitObjectLists()
         mockedArrayData = Mock()
         elementCalls = []
         arrayDataCalls = []
