@@ -291,3 +291,28 @@ class Datastore:
             workingDir: the working directory.
         """
         self._data.workingDir = workingDir
+
+    def getButtons(self) -> list[Button]:
+        """
+        Get the datastore buttons.
+
+        Return
+            The datastore buttons.
+        """
+        return self._data.buttons
+
+    def getButtonAtIndex(self, index: int) -> Button:
+        """
+        Get the button at the specified index.
+
+        Param
+            index: the button index.
+
+        Return
+            The button at the given index.
+        """
+        if index >= len(self._data.buttons):
+            errMsg = f"No button at index {index}"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.buttons[index]

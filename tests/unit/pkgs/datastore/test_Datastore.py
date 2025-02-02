@@ -635,3 +635,31 @@ class TestDatastore(TestCase):
         for dir in dirs:
             self._uut.setWorkingDir(dir)
             self.assertEqual(dir, self._uut._data.workingDir)
+
+    def test_getButtonsReturnButtons(self) -> None:
+        """
+        The getButtons method must return the datastore list of buttons.
+        """
+        buttons = self._uut.getButtons()
+        self.assertEqual(self._uut._data.buttons, buttons)
+
+    def test_getButtonAtIndexOutOfBound(self) -> None:
+        """
+        The getButtonAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = 4
+        errMsg = f"No button at index {index}"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getButtonAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+            self.assertEqual(errMsg, str(context.exception))
+
+    def test_getButtonAtIndexReturnButton(self) -> None:
+        """
+        The getButtonAtIndex must return the button at the given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            button = self._uut.getButtonAtIndex(index)
+            self.assertEqual(self._uut._data.buttons[index], button)
