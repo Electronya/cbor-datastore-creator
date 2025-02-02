@@ -19,6 +19,61 @@ class TestDatastore(TestCase):
     """
     Datastore test cases.
     """
+    def _initObjectLists(self):
+        """
+        Initialize the unit under test object lists.
+        """
+        self._mockedButtons = []
+        for button in self._yml['buttons']:
+            self._mockedButtons.append(Mock())
+        self._mockedButtonArrays = []
+        for buttonArray in self._yml['buttonArrays']:
+            self._mockedButtonArrays.append(Mock())
+        self._mockedFloats = []
+        for floatObj in self._yml['floats']:
+            self._mockedFloats.append(Mock())
+        self._mockedFloatArrays = []
+        for floatArray in self._yml['floatArrays']:
+            self._mockedFloatArrays.append(Mock())
+        self._mockedMultiStates = []
+        for multiState in self._yml['multiStates']:
+            self._mockedMultiStates.append(Mock())
+        self._mockedSignedIntegers = []
+        for signedInt in self._yml['signedIntegers']:
+            self._mockedSignedIntegers.append(Mock())
+        self._mockedIntArrays = []
+        for intArray in self._yml['intArrays']:
+            self._mockedIntArrays.append(Mock())
+        self._mockedUnsignedIntegers = []
+        for unsignedInt in self._yml['unsignedIntegers']:
+            self._mockedUnsignedIntegers.append(Mock())
+        self._mockedUintArrays = []
+        for uintArray in self._yml['uintArrays']:
+            self._mockedUintArrays.append(Mock())
+        self._uut._data.buttons = self._mockedButtons
+        self._uut._data.buttonArrays = self._mockedButtonArrays
+        self._uut._data.floats = self._mockedFloats
+        self._uut._data.floatArrays = self._mockedFloatArrays
+        self._uut._data.multiStates = self._mockedMultiStates
+        self._uut._data.signedIntegers = self._mockedSignedIntegers
+        self._uut._data.intArrays = self._mockedIntArrays
+        self._uut._data.unsignedIntegers = self._mockedUnsignedIntegers
+        self._uut._data.uintArrays = self._mockedUintArrays
+
+    def _deInitObjectLists(self):
+        """
+        De-initialize the unit under test object lists.
+        """
+        self._uut._data.buttons = []
+        self._uut._data.buttonArrays = []
+        self._uut._data.floats = []
+        self._uut._data.floatArrays = []
+        self._uut._data.multiStates = []
+        self._uut._data.signedIntegers = []
+        self._uut._data.intArrays = []
+        self._uut._data.unsignedIntegers = []
+        self._uut._data.uintArrays = []
+
     def setUp(self) -> None:
         """
         Test cases set up.
