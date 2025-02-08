@@ -64,7 +64,7 @@ class TestFloat(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidSize(self) -> None:
         """
@@ -79,7 +79,7 @@ class TestFloat(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLimits(self) -> None:
         """
@@ -94,7 +94,7 @@ class TestFloat(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidDefault(self) -> None:
         """
@@ -109,7 +109,7 @@ class TestFloat(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Float(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -225,7 +225,7 @@ class TestFloat(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
@@ -255,7 +255,7 @@ class TestFloat(TestCase):
             errMsg = f"A {size} bytes is not supported"
             with self.assertRaises(SizeError) as context:
                 self._uut.setSize(size)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setSizeSaveNewObjectSave(self) -> None:
         """
@@ -296,7 +296,7 @@ class TestFloat(TestCase):
                      f"{limits[1]} is not valid"
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLimitsSaveLimits(self) -> None:
         """
@@ -334,7 +334,7 @@ class TestFloat(TestCase):
             self._uut._data.max = values[1]
             with self.assertRaises(LimitError) as context:
                 self._uut.setDefault(values[2])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setDefaultSaveDefault(self) -> None:
         """

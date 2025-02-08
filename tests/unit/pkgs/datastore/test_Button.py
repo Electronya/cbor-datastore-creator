@@ -57,7 +57,7 @@ class TestButton(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLongPressTime(self) -> None:
         """
@@ -72,7 +72,7 @@ class TestButton(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidInactiveTime(self) -> None:
         """
@@ -87,7 +87,7 @@ class TestButton(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -177,7 +177,7 @@ class TestButton(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
@@ -207,7 +207,7 @@ class TestButton(TestCase):
             errMsg = f"A long press time of {time}ms is invalid"
             with self.assertRaises(TimeError) as context:
                 self._uut.setLongPressTime(time)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLongPressTimeSaveNewLongPressTime(self) -> None:
         """
@@ -228,7 +228,7 @@ class TestButton(TestCase):
             errMsg = f"An inactive time of {time}ms is invalid"
             with self.assertRaises(TimeError) as context:
                 self._uut.setInactiveTime(time)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setInactiveTimeSaveNewInactiveTime(self) -> None:
         """

@@ -215,12 +215,13 @@ class IntArray():
         Raise
             A value error if the element is not in the array.
         """
-        if element not in self._data.elements:
+        try:
+            self._data.elements.remove(element)
+        except ValueError:
             errMsg = f"Unable to remove element ({element}) because it's " \
                 f"not in the array"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
-        self._data.elements.remove(element)
 
     def isInNvm(self) -> bool:
         """

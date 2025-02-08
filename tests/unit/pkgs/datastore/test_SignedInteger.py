@@ -64,7 +64,7 @@ class TestSignedInteger(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidSize(self) -> None:
         """
@@ -79,7 +79,7 @@ class TestSignedInteger(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLimits(self) -> None:
         """
@@ -94,7 +94,7 @@ class TestSignedInteger(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidDefault(self) -> None:
         """
@@ -109,7 +109,7 @@ class TestSignedInteger(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -118,7 +118,7 @@ class TestSignedInteger(TestCase):
         objectData = SignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             SignedInteger(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.datastore.int')
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.int')    # noqa: E501
 
     def test_constructorSaveObjectData(self) -> None:
         """
@@ -236,7 +236,7 @@ class TestSignedInteger(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
@@ -266,7 +266,7 @@ class TestSignedInteger(TestCase):
             errMsg = f"A {size} bytes is not supported"
             with self.assertRaises(SizeError) as context:
                 self._uut.setSize(size)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setSizeSaveNewObjectSave(self) -> None:
         """
@@ -309,7 +309,7 @@ class TestSignedInteger(TestCase):
                 self._uut._data.size = 2
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLimitsSaveLimits(self) -> None:
         """
@@ -346,7 +346,7 @@ class TestSignedInteger(TestCase):
             self._uut._data.max = values[1]
             with self.assertRaises(LimitError) as context:
                 self._uut.setDefault(values[2])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setDefaultSaveDefault(self) -> None:
         """

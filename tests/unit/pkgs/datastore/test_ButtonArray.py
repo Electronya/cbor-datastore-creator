@@ -70,7 +70,7 @@ class TestButtonArray(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             ButtonArray(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -150,7 +150,7 @@ class TestButtonArray(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveIndex(self) -> None:
         """
@@ -187,11 +187,11 @@ class TestButtonArray(TestCase):
         is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.getElement(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_getElementReturnElement(self) -> None:
         """
@@ -216,11 +216,11 @@ class TestButtonArray(TestCase):
         index is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.removeElementAtIndex(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementAtIndexRemoveElement(self) -> None:
         """
@@ -243,7 +243,7 @@ class TestButtonArray(TestCase):
         with self.assertRaises(ValueError) as context:
             self._uut.removeElement(element)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertSetEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementRemoveElement(self) -> None:
         """
