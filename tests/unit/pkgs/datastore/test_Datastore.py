@@ -1377,3 +1377,97 @@ class TestDatastore(TestCase):
         self._uut.removeUnsignedInteger(removedMultiState)
         self.assertEqual(length - 1, len(self._uut._data.unsignedIntegers))
         self.assertFalse(removedMultiState in self._uut._data.unsignedIntegers)
+
+    def test_getUintArraysReturnArrays(self) -> None:
+        """
+        The getUintArrays method must return the datastore list of unsigned
+        integer arrays.
+        """
+        arrays = self._uut.getUintArrays()
+        self.assertEqual(self._uut._data.uintArrays, arrays)
+
+    def test_getUintArrayAtIndexOutOfRange(self) -> None:
+        """
+        The getUintArrayAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedUintArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getUintArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getUintArrayAtIndexReturnArray(self) -> None:
+        """
+        The getUintArrayAtIndex must return the unsigned integer array at the
+        given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            uintArray = self._uut.getUintArrayAtIndex(index)
+            self.assertEqual(self._uut._data.uintArrays[index], uintArray)
+
+    def test_appendUintArraySaveNewArray(self) -> None:
+        """
+        The appendUintArray method must append the new unsigned integer array
+        to the datastore unsigned integer array list.
+        """
+        uintArray = Mock()
+        self.assertEqual(len(self._yml['uintArrays']),
+                         len(self._uut._data.uintArrays))
+        self._uut.appendUintArray(uintArray)
+        self.assertEqual(len(self._yml['uintArrays']) + 1,
+                         len(self._uut._data.uintArrays))
+        self.assertEqual(uintArray, self._uut._data.uintArrays[-1])
+
+    def test_removeUintArrayAtIndexOutOfRange(self) -> None:
+        """
+        The removeUintArrayAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedUintArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeUintArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeUintArrayAtIndexRemove(self) -> None:
+        """
+        The removeUintArrayAtIndex method must remove the unsigned integer
+        array at the given index.
+        """
+        length = len(self._mockedUintArrays)
+        index = length - 1
+        removedArray = self._mockedUintArrays[index]
+        self.assertEqual(length, len(self._uut._data.uintArrays))
+        self._uut.removeUintArrayAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.uintArrays))
+        self.assertFalse(removedArray in self._uut._data.uintArrays)
+
+    def test_removeUintArrayNotPresent(self) -> None:
+        """
+        The removeUintArray method must raise a value error if the given
+        unsigned integer array is not present in the datastore.
+        """
+        uintArrayName = 'testUintArray'
+        uintArray = Mock()
+        uintArray.getName.return_value = uintArrayName
+        errMsg = f"Unsigned integer array {uintArrayName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeUintArray(uintArray)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeUintArrayRemove(self) -> None:
+        """
+        The removeUintArray method must remove the given unsigned integer
+        array.
+        """
+        length = len(self._mockedUintArrays)
+        removedArray = self._mockedUintArrays[-1]
+        self.assertEqual(length, len(self._uut._data.uintArrays))
+        self._uut.removeUintArray(removedArray)
+        self.assertEqual(length - 1, len(self._uut._data.uintArrays))
+        self.assertFalse(removedArray in self._uut._data.uintArrays)

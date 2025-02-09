@@ -845,6 +845,78 @@ class Datastore:
         try:
             self._data.unsignedIntegers.remove(unsignedInteger)
         except ValueError:
-            errMsg = f"Unsigned integer {unsignedInteger.getName()} not present"
+            errMsg = f"Unsigned integer {unsignedInteger.getName()} " \
+                f"not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)
+
+    def getUintArrays(self) -> list[UintArray]:
+        """
+        Get the datastore unsigned integer arrays.
+
+        Return
+            The datastore unsigned integer arrays
+        """
+        return self._data.uintArrays
+
+    def getUintArrayAtIndex(self, index: int) -> UintArray:
+        """
+        Get the integer array at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The integer array at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.uintArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.uintArrays[index]
+
+    def appendUintArray(self, uintArray: UintArray) -> None:
+        """
+        Append a new unsigned integer array to the datastore.
+
+        Param
+            intArray: The unsigned integer array to append.
+        """
+        self._data.uintArrays.append(uintArray)
+
+    def removeUintArrayAtIndex(self, index: int) -> None:
+        """
+        Remove the unsigned integer array at given index.
+
+        Params
+            index: The index of the unsigned integer array to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.uintArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.uintArrays.pop(index)
+
+    def removeUintArray(self, uintArray: UintArray) -> None:
+        """
+        Remove the given unsigned integer array.
+
+        Params
+            intArray: The unsigned integer array to remove.
+
+        Raise
+            A value error if the unsigned integer array is not in the
+            datastore.
+        """
+        try:
+            self._data.uintArrays.remove(uintArray)
+        except ValueError:
+            errMsg = f"Unsigned integer array {uintArray.getName()} not present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
