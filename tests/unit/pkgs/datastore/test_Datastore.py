@@ -820,9 +820,9 @@ class TestDatastore(TestCase):
         self.assertEqual(length - 1, len(self._uut._data.buttonArrays))
         self.assertFalse(removedArray in self._uut._data.buttonArrays)
 
-    def test_getButtonFloatsReturn(self) -> None:
+    def test_getFloatsReturn(self) -> None:
         """
-        The getButtonFloats method must return the datastore list of floats.
+        The getFloats method must return the datastore list of floats.
         """
         floats = self._uut.getFloats()
         self.assertEqual(self._uut._data.floats, floats)
@@ -885,3 +885,28 @@ class TestDatastore(TestCase):
         self._uut.removeFloatAtIndex(index)
         self.assertEqual(length - 1, len(self._uut._data.floats))
         self.assertFalse(removedArray in self._uut._data.floats)
+
+    def test_removeFloatNotPresent(self) -> None:
+        """
+        The removeFloat method must raise a value error if the given
+        float is not present in the datastore.
+        """
+        floatName = 'testFloat'
+        floatObj = Mock()
+        floatObj.getName.return_value = floatName
+        errMsg = f"Float {floatName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeFloat(floatObj)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeFloatRemove(self) -> None:
+        """
+        The removeFloat method must remove the given float.
+        """
+        length = len(self._mockedFloats)
+        removedFloat = self._mockedFloats[-1]
+        self.assertEqual(length, len(self._uut._data.floats))
+        self._uut.removeFloat(removedFloat)
+        self.assertEqual(length - 1, len(self._uut._data.floats))
+        self.assertFalse(removedFloat in self._uut._data.floats)

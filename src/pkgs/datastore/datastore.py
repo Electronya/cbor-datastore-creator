@@ -356,6 +356,7 @@ class Datastore:
             self._data.buttons.remove(button)
         except ValueError:
             errMsg = f"Button {button.getName()} not present"
+            self._logger.error(errMsg)
             raise ValueError(errMsg)
 
     def getButtonArrays(self) -> list[ButtonArray]:
@@ -425,6 +426,7 @@ class Datastore:
             self._data.buttonArrays.remove(buttonArray)
         except ValueError:
             errMsg = f"Button array {buttonArray.getName()} not present"
+            self._logger.error(errMsg)
             raise ValueError(errMsg)
 
     def getFloats(self) -> list[Float]:
@@ -479,3 +481,20 @@ class Datastore:
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         self._data.floats.pop(index)
+
+    def removeFloat(self, floatObj: Float) -> None:
+        """
+        Remove the given float.
+
+        Params
+            floatObj: The float to remove.
+
+        Raise
+            A value error if the float is not in the datastore.
+        """
+        try:
+            self._data.floats.remove(floatObj)
+        except ValueError:
+            errMsg = f"Float {floatObj.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)
