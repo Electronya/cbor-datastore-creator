@@ -354,3 +354,12 @@ class Datastore:
         except ValueError:
             errMsg = f"Button {button.getName()} not present"
             raise ValueError(errMsg)
+
+    def getButtonArrays(self) -> list[ButtonArray]:
+        """
+        Get the datastore button arrays.
+
+        Return
+            The datastore button arrays
+        """
+        return self._data.buttonArrays

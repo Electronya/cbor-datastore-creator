@@ -725,3 +725,11 @@ class TestDatastore(TestCase):
         self._uut.removeButton(removedButton)
         self.assertEqual(length - 1, len(self._uut._data.buttons))
         self.assertFalse(removedButton in self._uut._data.buttons)
+
+    def test_getButtonArraysReturnArrays(self) -> None:
+        """
+        The getButtonArrays method must return the datastore list of button
+        arrays.
+        """
+        arrays = self._uut.getButtonArrays()
+        self.assertEqual(self._uut._data.buttonArrays, arrays)
