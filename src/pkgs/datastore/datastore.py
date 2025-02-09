@@ -460,6 +460,22 @@ class Datastore:
         Append a new float to the datastore.
 
         Param
-            buttonArray: The float to append.
+            floatObj: The float to append.
         """
         self._data.floats.append(floatObj)
+
+    def removeFloatAtIndex(self, index: int) -> None:
+        """
+        Remove the float at given index.
+
+        Params
+            index: The index of the float to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.floats):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.floats.pop(index)

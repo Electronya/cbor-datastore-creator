@@ -784,7 +784,7 @@ class TestDatastore(TestCase):
 
     def test_removeButtonArrayAtIndexRemove(self) -> None:
         """
-        The removeButtonArrayAtIndex method must remove the button at the
+        The removeButtonArrayAtIndex method must remove the button array at the
         given index.
         """
         length = len(self._mockedButtonArrays)
@@ -811,7 +811,7 @@ class TestDatastore(TestCase):
 
     def test_removeButtonArrayRemove(self) -> None:
         """
-        The removeButtonArray method must remove the given button.
+        The removeButtonArray method must remove the given button array.
         """
         length = len(self._mockedButtonArrays)
         removedArray = self._mockedButtonArrays[-1]
@@ -860,3 +860,28 @@ class TestDatastore(TestCase):
         self.assertEqual(len(self._yml['floats']) + 1,
                          len(self._uut._data.floats))
         self.assertEqual(floatObj, self._uut._data.floats[-1])
+
+    def test_removeFloatAtIndexOutOfRange(self) -> None:
+        """
+        The removeFloatAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedFloats)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeFloatAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeFloatAtIndexRemove(self) -> None:
+        """
+        The removeFloatAtIndex method must remove the float at the
+        given index.
+        """
+        length = len(self._mockedFloats)
+        index = length - 1
+        removedArray = self._mockedFloats[index]
+        self.assertEqual(length, len(self._uut._data.floats))
+        self._uut.removeFloatAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.floats))
+        self.assertFalse(removedArray in self._uut._data.floats)
