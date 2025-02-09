@@ -910,3 +910,96 @@ class TestDatastore(TestCase):
         self._uut.removeFloat(removedFloat)
         self.assertEqual(length - 1, len(self._uut._data.floats))
         self.assertFalse(removedFloat in self._uut._data.floats)
+
+    def test_getFloatArraysReturnArrays(self) -> None:
+        """
+        The getFloatArrays method must return the datastore list of float
+        arrays.
+        """
+        arrays = self._uut.getFloatArrays()
+        self.assertEqual(self._uut._data.floatArrays, arrays)
+
+    def test_getFloatArrayAtIndexOutOfRange(self) -> None:
+        """
+        The getfloatArrayAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedFloatArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getFloatArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getFloatArrayAtIndexReturnArray(self) -> None:
+        """
+        The getFloatArrayAtIndex must return the float array at the
+        given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            floatArray = self._uut.getFloatArrayAtIndex(index)
+            self.assertEqual(self._uut._data.floatArrays[index], floatArray)
+
+    def test_appendFloatArraySaveNewArray(self) -> None:
+        """
+        The appendFloatArray method must append the new float array to the
+        datastore float array list.
+        """
+        floatArray = Mock()
+        self.assertEqual(len(self._yml['floatArrays']),
+                         len(self._uut._data.floatArrays))
+        self._uut.appendFloatArray(floatArray)
+        self.assertEqual(len(self._yml['floatArrays']) + 1,
+                         len(self._uut._data.floatArrays))
+        self.assertEqual(floatArray, self._uut._data.floatArrays[-1])
+
+    def test_removeFloatArrayAtIndexOutOfRange(self) -> None:
+        """
+        The removeFloatArrayAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedFloatArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeFloatArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeFloatArrayAtIndexRemove(self) -> None:
+        """
+        The removeFloatArrayAtIndex method must remove the float array at the
+        given index.
+        """
+        length = len(self._mockedFloatArrays)
+        index = length - 1
+        removedArray = self._mockedFloatArrays[index]
+        self.assertEqual(length, len(self._uut._data.floatArrays))
+        self._uut.removeFloatArrayAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.floatArrays))
+        self.assertFalse(removedArray in self._uut._data.floatArrays)
+
+    def test_removeFloatArrayNotPresent(self) -> None:
+        """
+        The removeFloatArray method must raise a value error if the given
+        float array is not present in the datastore.
+        """
+        floatArrayName = 'testFloatArray'
+        floatArray = Mock()
+        floatArray.getName.return_value = floatArrayName
+        errMsg = f"Float array {floatArrayName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeFloatArray(floatArray)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeFloatArrayRemove(self) -> None:
+        """
+        The removeFloatArray method must remove the given float array.
+        """
+        length = len(self._mockedFloatArrays)
+        removedArray = self._mockedFloatArrays[-1]
+        self.assertEqual(length, len(self._uut._data.floatArrays))
+        self._uut.removeFloatArray(removedArray)
+        self.assertEqual(length - 1, len(self._uut._data.floatArrays))
+        self.assertFalse(removedArray in self._uut._data.floatArrays)

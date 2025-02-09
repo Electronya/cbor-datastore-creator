@@ -498,3 +498,73 @@ class Datastore:
             errMsg = f"Float {floatObj.getName()} not present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
+
+    def getFloatArrays(self) -> list[FloatArray]:
+        """
+        Get the datastore float arrays.
+
+        Return
+            The datastore float arrays
+        """
+        return self._data.floatArrays
+
+    def getFloatArrayAtIndex(self, index: int) -> FloatArray:
+        """
+        Get the float array at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The float array at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.floatArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.floatArrays[index]
+
+    def appendFloatArray(self, floatArray: FloatArray) -> None:
+        """
+        Append a new float array to the datastore.
+
+        Param
+            floatArray: The float array to append.
+        """
+        self._data.floatArrays.append(floatArray)
+
+    def removeFloatArrayAtIndex(self, index: int) -> None:
+        """
+        Remove the float array at given index.
+
+        Params
+            index: The index of the float array to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.floatArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.floatArrays.pop(index)
+
+    def removeFloatArray(self, floatArray: FloatArray) -> None:
+        """
+        Remove the given float array.
+
+        Params
+            floatArray: The float array to remove.
+
+        Raise
+            A value error if the float array is not in the datastore.
+        """
+        try:
+            self._data.floatArrays.remove(floatArray)
+        except ValueError:
+            errMsg = f"Float array {floatArray.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)
