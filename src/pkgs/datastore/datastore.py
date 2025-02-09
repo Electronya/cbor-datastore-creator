@@ -410,3 +410,19 @@ class Datastore:
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         self._data.buttonArrays.pop(index)
+
+    def removeButtonArray(self, buttonArray: ButtonArray) -> None:
+        """
+        Remove the given button array.
+
+        Params
+            buttonArray: The button array to remove.
+
+        Raise
+            A value error if the button array is not in the datastore.
+        """
+        try:
+            self._data.buttonArrays.remove(buttonArray)
+        except ValueError:
+            errMsg = f"Button array {buttonArray.getName()} not present"
+            raise ValueError(errMsg)

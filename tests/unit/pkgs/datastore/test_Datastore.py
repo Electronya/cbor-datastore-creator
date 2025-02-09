@@ -794,3 +794,28 @@ class TestDatastore(TestCase):
         self._uut.removeButtonArrayAtIndex(index)
         self.assertEqual(length - 1, len(self._uut._data.buttonArrays))
         self.assertFalse(removedArray in self._uut._data.buttonArrays)
+
+    def test_removeButtonArrayNotPresent(self) -> None:
+        """
+        The removeButtonArray method must raise a value error if the given
+        button array is not present in the datastore.
+        """
+        buttonArrayName = 'testButtonArray'
+        buttonArray = Mock()
+        buttonArray.getName.return_value = buttonArrayName
+        errMsg = f"Button array {buttonArrayName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeButtonArray(buttonArray)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeButtonArrayRemove(self) -> None:
+        """
+        The removeButtonArray method must remove the given button.
+        """
+        length = len(self._mockedButtonArrays)
+        removedArray = self._mockedButtonArrays[-1]
+        self.assertEqual(length, len(self._uut._data.buttonArrays))
+        self._uut.removeButtonArray(removedArray)
+        self.assertEqual(length - 1, len(self._uut._data.buttonArrays))
+        self.assertFalse(removedArray in self._uut._data.buttonArrays)
