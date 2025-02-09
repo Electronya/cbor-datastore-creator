@@ -325,3 +325,19 @@ class Datastore:
             button: The button to append.
         """
         self._data.buttons.append(button)
+
+    def removeButtonAtIndex(self, index: int) -> None:
+        """
+        Remove the button at given index.
+
+        Params
+            index: The index of the button to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.buttons):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.buttons.pop(index)

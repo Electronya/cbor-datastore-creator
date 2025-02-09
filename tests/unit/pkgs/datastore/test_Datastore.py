@@ -541,7 +541,7 @@ class TestDatastore(TestCase):
             mockedUintArray.side_effect = IndexError(errMsg)
             self._uut.populateUintArrays(self._yml['uintArrays'])
             mockedUintArray.assert_called_once()
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_populateUintArraysCreateArrays(self) -> None:
         """
@@ -653,7 +653,7 @@ class TestDatastore(TestCase):
         with self.assertRaises(IndexError) as context:
             self._uut.getButtonAtIndex(index)
             self._mockedLogger.error.assert_Called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_getButtonAtIndexReturnButton(self) -> None:
         """
@@ -676,3 +676,28 @@ class TestDatastore(TestCase):
         self.assertEqual(len(self._yml['buttons']) + 1,
                          len(self._uut._data.buttons))
         self.assertEqual(button, self._uut._data.buttons[-1])
+
+    def test_removeButtonAtIndexOutOfRange(self) -> None:
+        """
+        The removeButtonAtIndex method must raise an index error if the given
+        index is out of range.
+        """
+        index = len(self._mockedButtons)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeButtonAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeButtonAtIndexRemoveButton(self) -> None:
+        """
+        The removeButtonAtIndex method must remove the button at the
+        given index.
+        """
+        length = len(self._mockedButtons)
+        index = length - 1
+        removedButton = self._mockedButtons[index]
+        self.assertEqual(length, len(self._uut._data.buttons))
+        self._uut.removeButtonAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.buttons))
+        self.assertFalse(removedButton in self._uut._data.buttons)
