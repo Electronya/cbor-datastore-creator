@@ -7,34 +7,34 @@ from .objectCommon import LimitError, SizeError
 
 
 @dataclass
-class FloatData:
+class UnsignedIntegerData:
     """
-    Float data class.
+    Unsigned integer data class.
     """
     name: str
     index: int
-    size: int = 4
-    min: float = 0.0
-    max: float = 10.0
-    default: float = 0.0
+    size: int = 1
+    min: int = 0
+    max: int = 255
+    default: int = 0
     inNvm: bool = False
 
 
-class Float:
+class UnsignedInteger:
     """
-    The singed integer object type class.
+    The unsigned integer object type class.
     """
-    BASE_ID: int = 0x0300
-    VALID_SIZES = (4, 8)
+    BASE_ID: int = 0x0100
+    VALID_SIZES = (1, 2, 4, 8)
 
-    def __init__(self, data: FloatData):
+    def __init__(self, data: UnsignedIntegerData):
         """
         Constructor.
 
         Params:
             data: The object data dictionary.
         """
-        self._logger = logging.getLogger('app.objects.float')
+        self._logger = logging.getLogger('app.datastore.uint')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -45,7 +45,7 @@ class Float:
                 f"({data.size})"
             self._logger.error(errMsg)
             raise SizeError(errMsg)
-        if not self._areLimitsValid(data.min, data.max):
+        if not self._areLimitsValid(data.size, data.min, data.max):
             errMsg = f"Cannot create object {data.name}: Invalid min " \
                 f"({data.min}) or max ({data.max})"
             self._logger.error(errMsg)
@@ -85,22 +85,23 @@ class Float:
             return False
         return True
 
-    def _areLimitsValid(self, min: float, max: float) -> bool:
+    def _areLimitsValid(self, size: int, min: int, max: int) -> bool:
         """
         Check if the limits are valid.
 
         Params
+            size: the object size.
             min: the object minimum value.
             max: the object maximum value.
 
         Return
             True if the limits are valid, False otherwise.
         """
-        if min > max:
+        if min > max or min < 0 or max > pow(2, 8 * size) - 1:
             return False
         return True
 
-    def _isDefaultValid(self, min: float, max: float, default: float) -> None:
+    def _isDefaultValid(self, min: int, max: int, default: int) -> None:
         """
         Check if the default is valid.
 
@@ -189,7 +190,7 @@ class Float:
             raise SizeError(f"A {size} bytes is not supported")
         self._data.size = size
 
-    def getMin(self) -> float:
+    def getMin(self) -> int:
         """
         Get the object minimum value.
 
@@ -198,7 +199,7 @@ class Float:
         """
         return self._data.min
 
-    def getMax(self) -> float:
+    def getMax(self) -> int:
         """
         Get the object maximum value.
 
@@ -207,7 +208,7 @@ class Float:
         """
         return self._data.max
 
-    def setLimits(self, min: float, max: float) -> None:
+    def setLimits(self, min: int, max: int) -> None:
         """
         Set the object limits.
 
@@ -218,12 +219,12 @@ class Float:
         Raise
             A limit error if the limits are invalid.
         """
-        if not self._areLimitsValid(min, max):
+        if not self._areLimitsValid(self._data.size, min, max):
             raise LimitError(f"A min of {min} or a max of {max} is not valid")
         self._data.min = min
         self._data.max = max
 
-    def getDefault(self) -> float:
+    def getDefault(self) -> int:
         """
         Get the object default value.
 
@@ -232,7 +233,7 @@ class Float:
         """
         return self._data.default
 
-    def setDefault(self, default: float) -> None:
+    def setDefault(self, default: int) -> None:
         """
         Set the object default value.
 

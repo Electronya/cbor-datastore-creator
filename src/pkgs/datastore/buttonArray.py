@@ -3,56 +3,46 @@ import cbor2
 import logging
 import yaml
 
-from .objectCommon import ElementError
-
 
 @dataclass
-class UintArrayElement:
+class ButtonArrayElement:
     """
-    The unsigned integer array element.
+    The button array element.
     """
     name: str
-    min: int
-    max: int
-    default: int
 
 
 @dataclass
-class UintArrayData:
+class ButtonArrayData:
     """
-    The unsigned integer array data.
+    The button array data.
     """
     name: str
     index: int
-    elements: list[UintArrayElement] = field(default_factory=list)
-    inNvm: bool = False
+    longPressTime: int
+    inactiveTime: int
+    elements: list[ButtonArrayElement] = field(default_factory=list)
 
 
-class UintArray():
+class ButtonArray():
     """
-    The unsigned integer array class.
+    The button array class.
     """
-    BASE_ID: int = 0x0600
+    BASE_ID: int = 0x0900
 
-    def __init__(self, data: UintArrayData):
+    def __init__(self, data: ButtonArrayData):
         """
         Constructor.
 
         Param
             data: the object data.
         """
-        self._logger = logging.getLogger('app.objects.uintArray')
+        self._logger = logging.getLogger('app.datastore.buttonArray')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
             self._logger.error(errMsg)
             raise IndexError(errMsg)
-        for element in data.elements:
-            if not self._isElementValid(element):
-                errMsg = f"Cannot create object {data.name}: Invalid " \
-                    f"element ({element})"
-                self._logger.error(errMsg)
-                raise ElementError(errMsg)
         self._data = data
 
     def _isIndexValid(self, index: int) -> bool:
@@ -66,23 +56,6 @@ class UintArray():
             True if the index is valid, False otherwise.
         """
         if index < 1 or index > 255:
-            return False
-        return True
-
-    def _isElementValid(self, element: UintArrayElement) -> bool:
-        """
-        Check the validity of one array element.
-
-        Param
-            element: the element to validate.
-
-        Return
-            True if the element is valid, false otherwise.
-        """
-        if element.min < 0 or element.max > pow(2, 32) - 1 or \
-                element.min >= element.max or \
-                element.default < element.min or \
-                element.default > element.max:
             return False
         return True
 
@@ -145,7 +118,7 @@ class UintArray():
         """
         return len(self._data.elements)
 
-    def getElements(self) -> list[UintArrayElement]:
+    def getElements(self) -> list[ButtonArrayElement]:
         """
         Get the array elements.
 
@@ -154,7 +127,7 @@ class UintArray():
         """
         return self._data.elements
 
-    def getElement(self, index: int) -> UintArrayElement:
+    def getElement(self, index: int) -> ButtonArrayElement:
         """
         Get the element at specified index.
 
@@ -173,7 +146,7 @@ class UintArray():
             raise IndexError(errMsg)
         return self._data.elements[index]
 
-    def appendElement(self, element: UintArrayElement) -> None:
+    def appendElement(self, element: ButtonArrayElement) -> None:
         """
         Append a new element to the array.
 
@@ -183,10 +156,6 @@ class UintArray():
         Raise
             An element error if the element is invalid.
         """
-        if not self._isElementValid(element):
-            errMsg = f"Cannot append element ({element}) because it's invalid"
-            self._logger.error(errMsg)
-            raise ElementError(errMsg)
         self._data.elements.append(element)
 
     def removeElementAtIndex(self, index: int) -> None:
@@ -205,7 +174,7 @@ class UintArray():
             raise IndexError(errMsg)
         self._data.elements.pop(index)
 
-    def removeElement(self, element: UintArrayElement) -> None:
+    def removeElement(self, element: ButtonArrayElement) -> None:
         """
         Remove the element from the array.
 
@@ -215,30 +184,13 @@ class UintArray():
         Raise
             A value error if the element is not in the array.
         """
-        if element not in self._data.elements:
+        try:
+            self._data.elements.remove(element)
+        except ValueError:
             errMsg = f"Unable to remove element ({element}) because it's " \
                 f"not in the array"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
-        self._data.elements.remove(element)
-
-    def isInNvm(self) -> bool:
-        """
-        Check if the object should be saved in NVM.
-
-        Return
-            True if the object should saved in NVM, False otherwise.
-        """
-        return self._data.inNvm
-
-    def setInNvmFlag(self, inNvm: bool) -> None:
-        """
-        Set the inNvm flag.
-
-        Params
-            inNvm: the inNvm flag.
-        """
-        self._data.inNvm = inNvm
 
     def getYamlString(self) -> str:
         """
@@ -250,13 +202,13 @@ class UintArray():
         data = {
             self._data.name: {
                 'index': self._data.index,
-                'inNvm': self._data.inNvm,
+                'longPressTime': self._data.longPressTime,
+                'inactiveTime': self._data.inactiveTime,
                 'elements': [],
             }
         }
         for element in self._data.elements:
-            data[self._data.name]['elements'].append({element.name: {
-                'min': element.min, 'max': element.max, 'default': element.default}})  # noqa: E501
+            data[self._data.name]['elements'].append(element.name)
         return yaml.dump(data)
 
     def encodeCbor(self) -> bytes:
@@ -268,11 +220,8 @@ class UintArray():
         """
         data = {
             'id': self.BASE_ID | self._data.index,
-            'inNvm': self._data.inNvm,
-            'elements': [],
+            'longPressTime': self._data.longPressTime,
+            'inactiveTime': self._data.inactiveTime,
+            'elementCount': len(self._data.elements),
         }
-        for element in self._data.elements:
-            data['elements'].append({'min': element.min,
-                                     'max': element.max,
-                                     'default': element.default})
         return cbor2.dumps(data)

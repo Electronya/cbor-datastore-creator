@@ -8,33 +8,33 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     ElementError,
-    UintArray,
-    UintArrayData,
-    UintArrayElement,
+    IntArray,
+    IntArrayData,
+    IntArrayElement,
 )
 
 
-class TestUintArray(TestCase):
+class TestIntArray(TestCase):
     """
-    UintArray test cases.
+    IntArray test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.uintArray.logging'
+        self._loggingMod = 'pkgs.datastore.intArray.logging'
         self._mockedLogger = Mock()
         self._arrayElements = [
-            UintArrayElement('uint_1', 0, 100, 32),
-            UintArrayElement('uint_2', 50, 255, 50),
-            UintArrayElement('uint_3', 25, 75, 32),
+            IntArrayElement('int_1', -255, 100, 32),
+            IntArrayElement('int_2', -50, 255, 50),
+            IntArrayElement('int_3', -25, 75, 32),
         ]
-        objectData = UintArrayData('testObject', 1, self._arrayElements, True)
+        objectData = IntArrayData('testObject', 1, self._arrayElements, True)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = UintArray(objectData)
+            self._uut = IntArray(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
@@ -60,7 +60,7 @@ class TestUintArray(TestCase):
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': UintArray.BASE_ID | objectData.index,
+            'id': IntArray.BASE_ID | objectData.index,
             'inNvm': objectData.inNvm,
             'elements': [
                 {'min': objectData.elements[0].min,
@@ -81,15 +81,15 @@ class TestUintArray(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = UintArrayData("testObject", 256, self._arrayElements)
+        objectData = IntArrayData("testObject", 256, self._arrayElements)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            UintArray(objectData)
+            IntArray(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidElements(self) -> None:
         """
@@ -99,34 +99,34 @@ class TestUintArray(TestCase):
         for elementIdx in range(len(self._arrayElements)):
             if elementIdx > 0:
                 self._arrayElements[elementIdx - 1].min = 0
-            self._arrayElements[elementIdx].min = -1
-            objectData = UintArrayData("testObject", 1, self._arrayElements)
+            self._arrayElements[elementIdx].min = -1 * pow(2, 32) - 1
+            objectData = IntArrayData("testObject", 1, self._arrayElements)
             errMsg = f"Cannot create object {objectData.name}: Invalid " \
                 f"element ({self._arrayElements[elementIdx]})"
             with patch(self._loggingMod) as mockedLogging, \
                     self.assertRaises(ElementError) as context:
                 mockedLogging.getLogger.return_value = self._mockedLogger
-                UintArray(objectData)
+                IntArray(objectData)
                 self._mockedLogger.error.assert_called_once_with(errMsg)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
         The constructor must get the uint array logger.
         """
-        objectData = UintArrayData("testObject", 1, self._arrayElements)
+        objectData = IntArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod) as mockedLogging:
-            UintArray(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
-                                                            'uintArray')
+            IntArray(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
+                                                            'intArray')
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = UintArrayData("testObject", 1, self._arrayElements)
+        objectData = IntArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod):
-            testObject = UintArray(objectData)
+            testObject = IntArray(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -144,13 +144,13 @@ class TestUintArray(TestCase):
         The _isElementValid must return true when the element is valid, false
         otherwise. To be valid the element must comply to the following
         conditions:
-          - min >= 0
+          - min >= -1 * 2^32
           - max <= 2^32 - 1
           - min < max
           - min <= default <= max
         """
         # test values: (min, max, default, result)
-        testValues = [(-1, 255, 100, False),
+        testValues = [(-1 * pow(2, 32) - 1, 255, 100, False),
                       (0, pow(2, 32), 100, False),
                       (0, pow(2, 32) - 1, -1, False),
                       (0, pow(2, 32) - 1, pow(2, 32), False),
@@ -158,10 +158,10 @@ class TestUintArray(TestCase):
         for values in testValues:
             print(values)
             self.assertEqual(values[3], self._uut
-                             ._isElementValid(UintArrayElement('uint_4',
-                                                               values[0],
-                                                               values[1],
-                                                               values[2])))
+                             ._isElementValid(IntArrayElement('int_4',
+                                                              values[0],
+                                                              values[1],
+                                                              values[2])))
 
     def test_getNameReturnName(self) -> None:
         """
@@ -188,7 +188,7 @@ class TestUintArray(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(UintArray.BASE_ID | index,
+            self.assertEqual(IntArray.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -210,7 +210,7 @@ class TestUintArray(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveIndex(self) -> None:
         """
@@ -227,8 +227,8 @@ class TestUintArray(TestCase):
         array.
         """
         count = len(self._arrayElements)
-        elements = [UintArrayElement('uint_4', 10, 30, 15),
-                    UintArrayElement('uint_5', 0, 255, 4)]
+        elements = [IntArrayElement('int_4', 10, 30, 15),
+                    IntArrayElement('int_5', 0, 255, 4)]
         for element in elements:
             self._uut._data.elements.append(element)
             count += 1
@@ -247,11 +247,11 @@ class TestUintArray(TestCase):
         is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.getElement(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_getElementReturnElement(self) -> None:
         """
@@ -266,19 +266,19 @@ class TestUintArray(TestCase):
         The appendElement method must raise an element error if the new
         element is invalid.
         """
-        element = UintArrayElement('uint_4', -1, 10, 5)
+        element = IntArrayElement('int_4', -1 * pow(2, 32) - 1, 10, 5)
         errMsg = f"Cannot append element ({element}) because it's invalid"
         with self.assertRaises(ElementError) as context:
             self._uut.appendElement(element)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_appendElementAppendNewElement(self) -> None:
         """
         The appendElement method must append the new element.
         """
         newElementIdx = len(self._arrayElements)
-        element = UintArrayElement('uint_3', 0, 10, 5)
+        element = IntArrayElement('int_4', 0, 10, 5)
         self._uut.appendElement(element)
         self.assertEqual(element, self._uut._data.elements[newElementIdx])
 
@@ -288,11 +288,11 @@ class TestUintArray(TestCase):
         index is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.removeElementAtIndex(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementAtIndexRemoveElement(self) -> None:
         """
@@ -309,13 +309,13 @@ class TestUintArray(TestCase):
         The removeElement method must raise a value error when the element is
         not in the array.
         """
-        element = UintArrayElement('uint_4', 0, 15, 3)
+        element = IntArrayElement('int_4', 0, 15, 3)
         errMsg = f"Unable to remove element ({element}) because it's not in " \
             f"the array"
         with self.assertRaises(ValueError) as context:
             self._uut.removeElement(element)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertSetEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementRemoveElement(self) -> None:
         """

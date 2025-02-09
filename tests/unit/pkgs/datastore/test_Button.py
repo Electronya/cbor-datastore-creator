@@ -8,45 +8,39 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
-    ButtonState,
-    ButtonStateData,
+from pkgs.datastore import (                  # noqa: E402
+    Button,
+    ButtonData,
     TimeError,
 )
 
 
-class TestButtonState(TestCase):
+class TestButton(TestCase):
     """
-    ButtonState test cases.
+    Button test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.buttonState.logging'
+        self._loggingMod = 'pkgs.datastore.button.logging'
         self._mockedLogger = Mock()
-        objectData = ButtonStateData('testObject', 1, 4000, 5000)
+        objectData = ButtonData('testObject', 1, 4000, 5000)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = ButtonState(objectData)
+            self._uut = Button(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
                 'longPressTime': objectData.longPressTime,
-                'isLongPress': objectData.isLongPress,
                 'inactiveTime': objectData.inactiveTime,
-                'isInactive': objectData.isInactive,
-                'state': objectData.state.name,
             }
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': ButtonState.BASE_ID | objectData.index,
+            'id': Button.BASE_ID | objectData.index,
             'longPressTime': objectData.longPressTime,
-            'isLongPress': objectData.isLongPress,
             'inactiveTime': objectData.inactiveTime,
-            'isInactive': objectData.isInactive,
-            'state': objectData.state.value,
         }
         self._cborEncoding = cbor2.dumps(objectDict)
 
@@ -55,63 +49,63 @@ class TestButtonState(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = ButtonStateData("testObject", 256)
+        objectData = ButtonData("testObject", 256)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            ButtonState(objectData)
+            Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLongPressTime(self) -> None:
         """
         The constructor must raise a time error if the long press time used to
         initialize the object is invalid.
         """
-        objectData = ButtonStateData('testObject', 1, 65536, 5000)
+        objectData = ButtonData('testObject', 1, 65536, 5000)
         errMsg = f"Cannot create object {objectData.name}: Invalid long " \
             f"press time ({objectData.longPressTime})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(TimeError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            ButtonState(objectData)
+            Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidInactiveTime(self) -> None:
         """
         The constructor must raise a time error if the inactive time used to
         initialize the object is invalid.
         """
-        objectData = ButtonStateData('testObject', 1, 6000, 999)
+        objectData = ButtonData('testObject', 1, 6000, 999)
         errMsg = f"Cannot create object {objectData.name}: Invalid inactive " \
             f"time ({objectData.inactiveTime})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(TimeError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            ButtonState(objectData)
+            Button(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the button state logger.
+        The constructor must get the button logger.
         """
-        objectData = ButtonStateData("testObject", 1)
+        objectData = ButtonData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
-            ButtonState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
-                                                            'buttonState')
+            Button(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
+                                                            'button')
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = ButtonStateData("testObject", 1)
+        objectData = ButtonData("testObject", 1)
         with patch(self._loggingMod):
-            testObject = ButtonState(objectData)
+            testObject = Button(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -161,7 +155,7 @@ class TestButtonState(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(ButtonState.BASE_ID | index,
+            self.assertEqual(Button.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -183,7 +177,7 @@ class TestButtonState(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
@@ -213,7 +207,7 @@ class TestButtonState(TestCase):
             errMsg = f"A long press time of {time}ms is invalid"
             with self.assertRaises(TimeError) as context:
                 self._uut.setLongPressTime(time)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLongPressTimeSaveNewLongPressTime(self) -> None:
         """
@@ -234,7 +228,7 @@ class TestButtonState(TestCase):
             errMsg = f"An inactive time of {time}ms is invalid"
             with self.assertRaises(TimeError) as context:
                 self._uut.setInactiveTime(time)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setInactiveTimeSaveNewInactiveTime(self) -> None:
         """

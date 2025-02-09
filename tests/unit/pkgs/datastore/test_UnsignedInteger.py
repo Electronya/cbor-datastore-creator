@@ -8,28 +8,28 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     LimitError,
     SizeError,
-    Float,
-    FloatData
+    UnsignedInteger,
+    UnsignedIntegerData
 )
 
 
-class TestFloat(TestCase):
+class TestUnsignedInteger(TestCase):
     """
-    Float test cases.
+    UnsignedInteger test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.floatObject.logging'
+        self._loggingMod = 'pkgs.datastore.unsignedInteger.logging'
         self._mockedLogger = Mock()
-        objectData = FloatData('testObject', 1, 4, -128.5, 128.5, 32.0)
+        objectData = UnsignedIntegerData('testObject', 1, 1, 0, 255, 32)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = Float(objectData)
+            self._uut = UnsignedInteger(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
@@ -42,7 +42,7 @@ class TestFloat(TestCase):
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': Float.BASE_ID | objectData.index,
+            'id': UnsignedInteger.BASE_ID | objectData.index,
             'size': objectData.size,
             'min': objectData.min,
             'max': objectData.max,
@@ -56,78 +56,77 @@ class TestFloat(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = FloatData("testObject", 256)
+        objectData = UnsignedIntegerData("testObject", 256)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            Float(objectData)
+            UnsignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidSize(self) -> None:
         """
         The constructor must raise a size error if the size used to initialize
         the object is invalid.
         """
-        objectData = FloatData("testObject", 1, 3, 0.0, 255.0, 32.0)
+        objectData = UnsignedIntegerData("testObject", 1, 3, 0, 255, 32)
         errMsg = f"Cannot create object {objectData.name}: Invalid size " \
             f"({objectData.size})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(SizeError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            Float(objectData)
+            UnsignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLimits(self) -> None:
         """
         The constructor must raise a limit error if the limits used to
         initialize the object are invalid.
         """
-        objectData = FloatData("testObject", 1, 4, 1.0, -1.0, 0.0)
+        objectData = UnsignedIntegerData("testObject", 1, 1, -1, 255, 32)
         errMsg = f"Cannot create object {objectData.name}: Invalid min " \
             f"({objectData.min}) or max ({objectData.max})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            Float(objectData)
+            UnsignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidDefault(self) -> None:
         """
         The constructor must raise a limit error if the default value used to
         initialize the object is invalid.
         """
-        objectData = FloatData("testObject", 1, 8, -128.0, 127.0, 128.0)
+        objectData = UnsignedIntegerData("testObject", 1, 1, 0, 255, 256)
         errMsg = f"Cannot create object {objectData.name}: Invalid default " \
             f"({objectData.default})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            Float(objectData)
+            UnsignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the float logger.
+        The constructor must get the uint logger.
         """
-        objectData = FloatData("testObject", 1)
+        objectData = UnsignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
-            Float(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
-                                                            'float')
+            UnsignedInteger(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.uint')   # noqa: E501
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = FloatData("testObject", 1)
+        objectData = UnsignedIntegerData("testObject", 1)
         with patch(self._loggingMod):
-            testObject = Float(objectData)
+            testObject = UnsignedInteger(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -145,7 +144,7 @@ class TestFloat(TestCase):
         The _isSizeValid method must return true when the size is valid and
         false otherwise. To be valid the size must either 1, 2, 4 or 8.
         """
-        results = [False, False, False, True, False, False, False, True, False]
+        results = [True, True, False, True, False, False, False, True, False]
         for idx, result in enumerate(results):
             size = idx + 1
             self.assertEqual(result, self._uut._isSizeValid(size))
@@ -153,14 +152,21 @@ class TestFloat(TestCase):
     def test__areLimitsValidReturnValue(self) -> None:
         """
         The _areLimitsValid method return true when the limits are valid and
-        false otherwise. to be valid the minimum must be less than the maximum.
+        false otherwise. to be valid the minimum must be 0 or greater, the
+        maximum must be 2^(8 * size) - 1 or smaller and the minimum must be
+        less than the maximum.
         """
-        # test values: (min, max, result)
-        testValues = [(129.0, 127.0, False), (0, 128, True),
-                      (-32766.0, -32767.0, False), (-32768, 32768, True)]
+        # test values: (size, min, max, result)
+        testValues = [(1, -1, 255, False), (1, 0, 256, False),
+                      (2, 0, 65536, False), (4, 0, pow(2, 8 * 4), False),
+                      (8, 0, pow(2, 8 * 8), False), (1, 200, 199, False),
+                      (1, 0, 255, True), (2, 0, 65535, True),
+                      (4, 0, pow(2, 8 * 4) - 1, True),
+                      (8, 0, pow(2, 8 * 8) - 1, True)]
         for values in testValues:
-            self.assertEqual(values[2], self._uut._areLimitsValid(values[0],
-                                                                  values[1]))
+            self.assertEqual(values[3], self._uut._areLimitsValid(values[0],
+                                                                  values[1],
+                                                                  values[2]))
 
     def test__isDefaultValidReturnValue(self) -> None:
         """
@@ -169,10 +175,8 @@ class TestFloat(TestCase):
         minimum and maximum, included.
         """
         # test values: (min, max, default, result)
-        testValues = [(-128.0, 127.0, -129.0, False),
-                      (-128.0, 127.0, 128.0, False),
-                      (-128.0, 127.0, -128.0, True),
-                      (-128.0, 127.0, 127.0, True)]
+        testValues = [(0, 255, -1, False), (0, 255, 256, False),
+                      (0, 255, 0, True), (0, 255, 255, True)]
         for values in testValues:
             self.assertEqual(values[3], self._uut._isDefaultValid(values[0],
                                                                   values[1],
@@ -203,7 +207,7 @@ class TestFloat(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(Float.BASE_ID | index,
+            self.assertEqual(UnsignedInteger.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -225,14 +229,14 @@ class TestFloat(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
         The setIndex method must save the new object ID based on the new index.
         """
-        objectIndexes = [1, 255]
-        for index in objectIndexes:
+        indexes = [0x01, 0xff]
+        for index in indexes:
             self._uut.setIndex(index)
             self.assertEqual(index, self._uut._data.index)
 
@@ -250,18 +254,18 @@ class TestFloat(TestCase):
         The setSize method must raise a size error if the given size is
         supported.
         """
-        objectSizes = [1, 2, 3, 5, 6, 7, 9]
+        objectSizes = [3, 5, 6, 7, 9]
         for size in objectSizes:
             errMsg = f"A {size} bytes is not supported"
             with self.assertRaises(SizeError) as context:
                 self._uut.setSize(size)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setSizeSaveNewObjectSave(self) -> None:
         """
         The setSize method must save the new object size.
         """
-        objectSizes = [4, 8]
+        objectSizes = [1, 2, 4, 8]
         for size in objectSizes:
             self._uut.setSize(size)
             self.assertEqual(size, self._uut._data.size)
@@ -270,7 +274,7 @@ class TestFloat(TestCase):
         """
         The getMin method must return the object minimum value.
         """
-        objectMinimums = [1.2, 50.5, 0.0]
+        objectMinimums = [1, 50, 0]
         for min in objectMinimums:
             self._uut._data.min = min
             self.assertEqual(min, self._uut.getMin())
@@ -279,7 +283,7 @@ class TestFloat(TestCase):
         """
         The getMax method must return the object maximum value.
         """
-        objectMaximums = [127.3, 100.8, 75.12]
+        objectMaximums = [255, 100, 75]
         for max in objectMaximums:
             self._uut._data.max = max
             self.assertEqual(max, self._uut.getMax())
@@ -290,21 +294,22 @@ class TestFloat(TestCase):
         invalid.
         """
         # Limits: (min, max)
-        objectLimits = [(3, 1), (-120, -127)]
+        objectLimits = [(3, 1), (-1, 255), (10, 256), (10, 65536)]
         for limits in objectLimits:
             errMsg = f"A min of {limits[0]} or a max of " \
                      f"{limits[1]} is not valid"
+            if limits[1] > 65535:
+                self._uut._data.size = 2
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLimitsSaveLimits(self) -> None:
         """
         The setLimits method must save the new limits.
         """
         # Limits: (min, max)
-        objectLimits = [(-128.1, 127.9), (10.2, 15.8),
-                        (-30.3, 75.7), (-10.5, 100.6)]
+        objectLimits = [(0, 255), (10, 15), (30, 200), (10, 150)]
         for limits in objectLimits:
             self._uut.setLimits(limits[0], limits[1])
             self.assertEqual(limits[0], self._uut._data.min)
@@ -314,7 +319,7 @@ class TestFloat(TestCase):
         """
         The getDefault method must return the object default value.
         """
-        objectDefaultValues = [127.4, 100.7, 75.2]
+        objectDefaultValues = [255, 100, 75]
         for defaultVal in objectDefaultValues:
             self._uut._data.default = defaultVal
             self.assertEqual(defaultVal, self._uut.getDefault())
@@ -325,8 +330,7 @@ class TestFloat(TestCase):
         outside of the limits.
         """
         # test values: (min, max, default)
-        testValues = [(0.0, 127.9, 128.1), (-128.9, 15.5, -129.4),
-                      (30.3, 100.7, 255), (10.5, 150.2, 0.4)]
+        testValues = [(0, 255, 256), (10, 15, 5), (30, 200, 255), (10, 150, 0)]
         for values in testValues:
             errMsg = f"A value of {values[2]} is outside of the " \
                      f"{values[0]} minimum and {values[1]} maximum"
@@ -334,13 +338,13 @@ class TestFloat(TestCase):
             self._uut._data.max = values[1]
             with self.assertRaises(LimitError) as context:
                 self._uut.setDefault(values[2])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setDefaultSaveDefault(self) -> None:
         """
         The setDefault method must save the object default value.
         """
-        objectDefaultValues = [127.6, -128.4, 75.4]
+        objectDefaultValues = [255, 100, 75]
         for defaultVal in objectDefaultValues:
             self._uut.setDefault(defaultVal)
             self.assertEqual(defaultVal, self._uut._data.default)

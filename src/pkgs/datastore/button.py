@@ -1,5 +1,4 @@
 from dataclasses import dataclass
-from enum import Enum
 import cbor2
 import logging
 import yaml
@@ -7,44 +6,33 @@ import yaml
 from .objectCommon import TimeError
 
 
-class ButtonStateEnum(Enum):
-    """
-    The button state enumeration.
-    """
-    BUTTON_DEPRESSED = 0
-    BUTTON_PRESSED = 1
-
-
 @dataclass
-class ButtonStateData:
+class ButtonData:
     """
-    Button state data class.
+    Button data class.
     """
     name: str
     index: int
     longPressTime: int = 3000
     inactiveTime: int = 6000
-    isLongPress: bool = False
-    isInactive: bool = False
-    state: ButtonStateEnum = ButtonStateEnum.BUTTON_DEPRESSED
 
 
-class ButtonState:
+class Button:
     """
-    The button state object type class.
+    The button object type class.
     """
     BASE_ID: int = 0x0400
     MIN_TIME: int = 1000
     MAX_TIME: int = 65535
 
-    def __init__(self, data: ButtonStateData):
+    def __init__(self, data: ButtonData):
         """
         Constructor.
 
         Params:
             data: The object data.
         """
-        self._logger = logging.getLogger('app.objects.buttonState')
+        self._logger = logging.getLogger('app.datastore.button')
         if not self._isIndexValid(data.index):
             errMsg = f"Cannot create object {data.name}: Invalid index " \
                 f"({data.index})"
@@ -188,10 +176,7 @@ class ButtonState:
             self._data.name: {
                 'index': self._data.index,
                 'longPressTime': self._data.longPressTime,
-                'isLongPress': self._data.isLongPress,
                 'inactiveTime': self._data.inactiveTime,
-                'isInactive': self._data.isInactive,
-                'state': self._data.state.name,
             }
         }
         return yaml.dump(data)
@@ -204,11 +189,8 @@ class ButtonState:
             The encoded object.
         """
         data = {
-            'id': ButtonState.BASE_ID | self._data.index,
+            'id': Button.BASE_ID | self._data.index,
             'longPressTime': self._data.longPressTime,
-            'isLongPress': self._data.isLongPress,
             'inactiveTime': self._data.inactiveTime,
-            'isInactive': self._data.isInactive,
-            'state': self._data.state.value,
         }
         return cbor2.dumps(data)

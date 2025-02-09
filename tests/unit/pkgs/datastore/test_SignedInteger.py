@@ -8,28 +8,28 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     LimitError,
     SizeError,
-    UnsignedInteger,
-    UnsignedIntegerData
+    SignedInteger,
+    SignedIntegerData
 )
 
 
-class TestUnsignedInteger(TestCase):
+class TestSignedInteger(TestCase):
     """
-    UnsignedInteger test cases.
+    SignedInteger test cases.
     """
     def setUp(self) -> None:
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.unsignedInteger.logging'
+        self._loggingMod = 'pkgs.datastore.signedInteger.logging'
         self._mockedLogger = Mock()
-        objectData = UnsignedIntegerData('testObject', 1, 1, 0, 255, 32)
+        objectData = SignedIntegerData('testObject', 1, 1, -128, 127, 32)
         with patch(self._loggingMod) as mockedLogging:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            self._uut = UnsignedInteger(objectData)
+            self._uut = SignedInteger(objectData)
         objectDict = {
             objectData.name: {
                 'index': objectData.index,
@@ -42,7 +42,7 @@ class TestUnsignedInteger(TestCase):
         }
         self._ymlString = yaml.dump(objectDict)
         objectDict = {
-            'id': UnsignedInteger.BASE_ID | objectData.index,
+            'id': SignedInteger.BASE_ID | objectData.index,
             'size': objectData.size,
             'min': objectData.min,
             'max': objectData.max,
@@ -56,77 +56,77 @@ class TestUnsignedInteger(TestCase):
         The constructor must raise an index error if the object index is not
         valid.
         """
-        objectData = UnsignedIntegerData("testObject", 256)
+        objectData = SignedIntegerData("testObject", 256)
         errMsg = f"Cannot create object {objectData.name}: Invalid index " \
             f"({objectData.index})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(IndexError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            UnsignedInteger(objectData)
+            SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidSize(self) -> None:
         """
         The constructor must raise a size error if the size used to initialize
         the object is invalid.
         """
-        objectData = UnsignedIntegerData("testObject", 1, 3, 0, 255, 32)
+        objectData = SignedIntegerData("testObject", 1, 3, 0, 255, 32)
         errMsg = f"Cannot create object {objectData.name}: Invalid size " \
             f"({objectData.size})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(SizeError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            UnsignedInteger(objectData)
+            SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidLimits(self) -> None:
         """
         The constructor must raise a limit error if the limits used to
         initialize the object are invalid.
         """
-        objectData = UnsignedIntegerData("testObject", 1, 1, -1, 255, 32)
+        objectData = SignedIntegerData("testObject", 1, 1, -1, 255, 32)
         errMsg = f"Cannot create object {objectData.name}: Invalid min " \
             f"({objectData.min}) or max ({objectData.max})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            UnsignedInteger(objectData)
+            SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidDefault(self) -> None:
         """
         The constructor must raise a limit error if the default value used to
         initialize the object is invalid.
         """
-        objectData = UnsignedIntegerData("testObject", 1, 1, 0, 255, 256)
+        objectData = SignedIntegerData("testObject", 1, 1, -128, 127, 128)
         errMsg = f"Cannot create object {objectData.name}: Invalid default " \
             f"({objectData.default})"
         with patch(self._loggingMod) as mockedLogging, \
                 self.assertRaises(LimitError) as context:
             mockedLogging.getLogger.return_value = self._mockedLogger
-            UnsignedInteger(objectData)
+            SignedInteger(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
-        The constructor must get the uint logger.
+        The constructor must get the int logger.
         """
-        objectData = UnsignedIntegerData("testObject", 1)
+        objectData = SignedIntegerData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
-            UnsignedInteger(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.uint')
+            SignedInteger(objectData)
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.int')    # noqa: E501
 
     def test_constructorSaveObjectData(self) -> None:
         """
         The constructor must save the object data.
         """
-        objectData = UnsignedIntegerData("testObject", 1)
+        objectData = SignedIntegerData("testObject", 1)
         with patch(self._loggingMod):
-            testObject = UnsignedInteger(objectData)
+            testObject = SignedInteger(objectData)
         self.assertEqual(objectData, testObject._data)
 
     def test__isIndexValid(self) -> None:
@@ -152,17 +152,24 @@ class TestUnsignedInteger(TestCase):
     def test__areLimitsValidReturnValue(self) -> None:
         """
         The _areLimitsValid method return true when the limits are valid and
-        false otherwise. to be valid the minimum must be 0 or greater, the
-        maximum must be 2^(8 * size) - 1 or smaller and the minimum must be
-        less than the maximum.
+        false otherwise. to be valid the minimum must be -1 * 2^(8 * size) / 2
+        or greater, the maximum must be 2^(8 * size) / 2 - 1 or smaller and the
+        minimum must be less than the maximum.
         """
+        min4bits = int(-1 * pow(2, 8 * 4) / 2)
+        max4bits = int(pow(2, 8 * 4) / 2 - 1)
+        min8bits = int(-1 * pow(2, 8 * 8) / 2)
+        max8bits = int(pow(2, 8 * 8) / 2 - 1)
         # test values: (size, min, max, result)
-        testValues = [(1, -1, 255, False), (1, 0, 256, False),
-                      (2, 0, 65536, False), (4, 0, pow(2, 8 * 4), False),
-                      (8, 0, pow(2, 8 * 8), False), (1, 200, 199, False),
-                      (1, 0, 255, True), (2, 0, 65535, True),
-                      (4, 0, pow(2, 8 * 4) - 1, True),
-                      (8, 0, pow(2, 8 * 8) - 1, True)]
+        testValues = [(1, -129, 127, False), (1, 0, 128, False),
+                      (2, -32769, 32767, False), (2, -32768, 32768, False),
+                      (4, min4bits - 1, max4bits, False),
+                      (4, min4bits, max4bits + 1, False),
+                      (8, min8bits - 1, max8bits, False),    # noqa: E501
+                      (8, min8bits, max8bits + 1, False),
+                      (1, 1, -1, False), (1, -128, 127, True),
+                      (2, -32768, 32767, True), (4, min4bits, max4bits, True),
+                      (8, min8bits, max8bits, True)]
         for values in testValues:
             self.assertEqual(values[3], self._uut._areLimitsValid(values[0],
                                                                   values[1],
@@ -175,8 +182,8 @@ class TestUnsignedInteger(TestCase):
         minimum and maximum, included.
         """
         # test values: (min, max, default, result)
-        testValues = [(0, 255, -1, False), (0, 255, 256, False),
-                      (0, 255, 0, True), (0, 255, 255, True)]
+        testValues = [(-128, 127, -129, False), (-128, 127, 128, False),
+                      (-128, 127, -128, True), (-128, 127, 127, True)]
         for values in testValues:
             self.assertEqual(values[3], self._uut._isDefaultValid(values[0],
                                                                   values[1],
@@ -207,7 +214,7 @@ class TestUnsignedInteger(TestCase):
         indexes = [1, 2]
         for index in indexes:
             self._uut._data.index = index
-            self.assertEqual(UnsignedInteger.BASE_ID | index,
+            self.assertEqual(SignedInteger.BASE_ID | index,
                              self._uut.getId())
 
     def test_getIndexReturnIndex(self) -> None:
@@ -229,14 +236,14 @@ class TestUnsignedInteger(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """
         The setIndex method must save the new object ID based on the new index.
         """
-        indexes = [0x01, 0xff]
-        for index in indexes:
+        objectIndexes = [1, 255]
+        for index in objectIndexes:
             self._uut.setIndex(index)
             self.assertEqual(index, self._uut._data.index)
 
@@ -259,7 +266,7 @@ class TestUnsignedInteger(TestCase):
             errMsg = f"A {size} bytes is not supported"
             with self.assertRaises(SizeError) as context:
                 self._uut.setSize(size)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setSizeSaveNewObjectSave(self) -> None:
         """
@@ -283,7 +290,7 @@ class TestUnsignedInteger(TestCase):
         """
         The getMax method must return the object maximum value.
         """
-        objectMaximums = [255, 100, 75]
+        objectMaximums = [127, 100, 75]
         for max in objectMaximums:
             self._uut._data.max = max
             self.assertEqual(max, self._uut.getMax())
@@ -294,7 +301,7 @@ class TestUnsignedInteger(TestCase):
         invalid.
         """
         # Limits: (min, max)
-        objectLimits = [(3, 1), (-1, 255), (10, 256), (10, 65536)]
+        objectLimits = [(3, 1), (-129, 127), (10, 256), (10, 65536)]
         for limits in objectLimits:
             errMsg = f"A min of {limits[0]} or a max of " \
                      f"{limits[1]} is not valid"
@@ -302,14 +309,14 @@ class TestUnsignedInteger(TestCase):
                 self._uut._data.size = 2
             with self.assertRaises(LimitError) as context:
                 self._uut.setLimits(limits[0], limits[1])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setLimitsSaveLimits(self) -> None:
         """
         The setLimits method must save the new limits.
         """
         # Limits: (min, max)
-        objectLimits = [(0, 255), (10, 15), (30, 200), (10, 150)]
+        objectLimits = [(-128, 127), (10, 15), (-30, 75), (-10, 100)]
         for limits in objectLimits:
             self._uut.setLimits(limits[0], limits[1])
             self.assertEqual(limits[0], self._uut._data.min)
@@ -319,7 +326,7 @@ class TestUnsignedInteger(TestCase):
         """
         The getDefault method must return the object default value.
         """
-        objectDefaultValues = [255, 100, 75]
+        objectDefaultValues = [127, 100, 75]
         for defaultVal in objectDefaultValues:
             self._uut._data.default = defaultVal
             self.assertEqual(defaultVal, self._uut.getDefault())
@@ -330,7 +337,8 @@ class TestUnsignedInteger(TestCase):
         outside of the limits.
         """
         # test values: (min, max, default)
-        testValues = [(0, 255, 256), (10, 15, 5), (30, 200, 255), (10, 150, 0)]
+        testValues = [(0, 127, 128), (-128, 15, -129),
+                      (30, 100, 255), (10, 150, 0)]
         for values in testValues:
             errMsg = f"A value of {values[2]} is outside of the " \
                      f"{values[0]} minimum and {values[1]} maximum"
@@ -338,13 +346,13 @@ class TestUnsignedInteger(TestCase):
             self._uut._data.max = values[1]
             with self.assertRaises(LimitError) as context:
                 self._uut.setDefault(values[2])
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setDefaultSaveDefault(self) -> None:
         """
         The setDefault method must save the object default value.
         """
-        objectDefaultValues = [255, 100, 75]
+        objectDefaultValues = [127, -128, 75]
         for defaultVal in objectDefaultValues:
             self._uut.setDefault(defaultVal)
             self.assertEqual(defaultVal, self._uut._data.default)

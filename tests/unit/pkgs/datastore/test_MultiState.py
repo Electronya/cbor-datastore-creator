@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     MultiState,
     MultiStateData,
 )
@@ -22,7 +22,7 @@ class TestMultiState(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.multiState.logging'
+        self._loggingMod = 'pkgs.datastore.multiState.logging'
         self._mockedLogger = Mock()
         objectData = MultiStateData('testObject', 1, ['STATE_1', 'STATE_2'])
         with patch(self._loggingMod) as mockedLogging:
@@ -56,7 +56,7 @@ class TestMultiState(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             MultiState(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -65,7 +65,7 @@ class TestMultiState(TestCase):
         objectData = MultiStateData("testObject", 1)
         with patch(self._loggingMod) as mockedLogging:
             MultiState(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
                                                             'multi-state')
 
     def test_constructorSaveObjectData(self) -> None:
@@ -86,6 +86,18 @@ class TestMultiState(TestCase):
         testValues = [(256, False), (0, False), (1, True), (255, True)]
         for values in testValues:
             self.assertEqual(values[1], self._uut._isIndexValid(values[0]))
+
+    def test__isDefaultValid(self) -> None:
+        """
+        The _isDefaultValid method must return true when the default is valid,
+        false otherwise. To be valid the default must be included in
+        the states.
+        """
+        # test values: (default, result)
+        testValues = [(self._uut._data.states[0], True), ('STATE_3', False),
+                      (self._uut._data.states[1], True)]
+        for values in testValues:
+            self.assertEqual(values[1], self._uut._isDefaultValid(values[0]))
 
     def test_getNameReturnName(self) -> None:
         """
@@ -134,7 +146,7 @@ class TestMultiState(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveNewObjectId(self) -> None:
         """

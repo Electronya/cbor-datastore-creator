@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.objects import (                  # noqa: E402
+from pkgs.datastore import (                  # noqa: E402
     ElementError,
     FloatArray,
     FloatArrayData,
@@ -24,7 +24,7 @@ class TestFloatArray(TestCase):
         """
         Test cases set up.
         """
-        self._loggingMod = 'pkgs.objects.floatArray.logging'
+        self._loggingMod = 'pkgs.datastore.floatArray.logging'
         self._mockedLogger = Mock()
         self._arrayElements = [
             FloatArrayElement('float_1', -255.0, 100.0, 32.3),
@@ -89,7 +89,7 @@ class TestFloatArray(TestCase):
             mockedLogging.getLogger.return_value = self._mockedLogger
             FloatArray(objectData)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorInvalidElements(self) -> None:
         """
@@ -110,7 +110,7 @@ class TestFloatArray(TestCase):
                 mockedLogging.getLogger.return_value = self._mockedLogger
                 FloatArray(objectData)
                 self._mockedLogger.error.assert_called_once_with(errMsg)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -119,7 +119,7 @@ class TestFloatArray(TestCase):
         objectData = FloatArrayData("testObject", 1, self._arrayElements)
         with patch(self._loggingMod) as mockedLogging:
             FloatArray(objectData)
-            mockedLogging.getLogger.assert_called_once_with('app.objects.'
+            mockedLogging.getLogger.assert_called_once_with('app.datastore.'
                                                             'floatArray')
 
     def test_constructorSaveObjectData(self) -> None:
@@ -211,7 +211,7 @@ class TestFloatArray(TestCase):
         for index in objectIndexes:
             with self.assertRaises(IndexError) as context:
                 self._uut.setIndex(index)
-                self.assertEqual(errMsg, str(context.exception))
+            self.assertEqual(errMsg, str(context.exception))
 
     def test_setIndexSaveIndex(self) -> None:
         """
@@ -248,11 +248,11 @@ class TestFloatArray(TestCase):
         is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.getElement(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_getElementReturnElement(self) -> None:
         """
@@ -272,7 +272,7 @@ class TestFloatArray(TestCase):
         with self.assertRaises(ElementError) as context:
             self._uut.appendElement(element)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_appendElementAppendNewElement(self) -> None:
         """
@@ -289,11 +289,11 @@ class TestFloatArray(TestCase):
         index is out of range.
         """
         index = len(self._arrayElements) + 1
-        errMsg = f"Element index out of range ({self._arrayElements})"
+        errMsg = f"Element index out of range ({index})"
         with self.assertRaises(IndexError) as context:
             self._uut.removeElementAtIndex(index)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementAtIndexRemoveElement(self) -> None:
         """
@@ -316,7 +316,7 @@ class TestFloatArray(TestCase):
         with self.assertRaises(ValueError) as context:
             self._uut.removeElement(element)
             self._mockedLogger.error.assert_called_once_with(errMsg)
-            self.assertSetEqual(errMsg, str(context.exception))
+        self.assertEqual(errMsg, str(context.exception))
 
     def test_removeElementRemoveElement(self) -> None:
         """
