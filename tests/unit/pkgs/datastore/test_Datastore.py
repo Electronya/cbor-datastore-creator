@@ -847,3 +847,16 @@ class TestDatastore(TestCase):
         for index in indexes:
             buttonArray = self._uut.getFloatAtIndex(index)
             self.assertEqual(self._uut._data.floats[index], buttonArray)
+
+    def test_appendFloatSaveNewFloat(self) -> None:
+        """
+        The appendFloat method must append the new button array to the
+        datastore button array list.
+        """
+        floatObj = Mock()
+        self.assertEqual(len(self._yml['floats']),
+                         len(self._uut._data.floats))
+        self._uut.appendFloat(floatObj)
+        self.assertEqual(len(self._yml['floats']) + 1,
+                         len(self._uut._data.floats))
+        self.assertEqual(floatObj, self._uut._data.floats[-1])

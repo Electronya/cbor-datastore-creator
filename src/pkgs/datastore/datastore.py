@@ -454,3 +454,12 @@ class Datastore:
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         return self._data.floats[index]
+
+    def appendFloat(self, floatObj: Float) -> None:
+        """
+        Append a new float to the datastore.
+
+        Param
+            buttonArray: The float to append.
+        """
+        self._data.floats.append(floatObj)
