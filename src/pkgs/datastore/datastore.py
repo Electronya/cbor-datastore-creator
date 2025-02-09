@@ -917,6 +917,7 @@ class Datastore:
         try:
             self._data.uintArrays.remove(uintArray)
         except ValueError:
-            errMsg = f"Unsigned integer array {uintArray.getName()} not present"
+            errMsg = f"Unsigned integer array {uintArray.getName()} not " \
+                f"present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
