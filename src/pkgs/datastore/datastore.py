@@ -708,3 +708,74 @@ class Datastore:
             errMsg = f"Signed integer {signedInteger.getName()} not present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
+
+    def getIntArrays(self) -> list[IntArray]:
+        """
+        Get the datastore singed integer arrays.
+
+        Return
+            The datastore signed integer arrays
+        """
+        return self._data.intArrays
+
+    def getIntArrayAtIndex(self, index: int) -> IntArray:
+        """
+        Get the integer array at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The integer array at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.intArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.intArrays[index]
+
+    def appendIntArray(self, intArray: IntArray) -> None:
+        """
+        Append a new signed integer array to the datastore.
+
+        Param
+            intArray: The signed integer array to append.
+        """
+        self._data.intArrays.append(intArray)
+
+    def removeIntArrayAtIndex(self, index: int) -> None:
+        """
+        Remove the signed integer array at given index.
+
+        Params
+            index: The index of the signed integer array to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.intArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.intArrays.pop(index)
+
+    def removeIntArray(self, intArray: IntArray) -> None:
+        """
+        Remove the given signed integer array.
+
+        Params
+            intArray: The signed integer array to remove.
+
+        Raise
+            A value error if the signed integer array is not in the datastore.
+        """
+        try:
+            self._data.intArrays.remove(intArray)
+        except ValueError:
+            errMsg = f"Signed integer array {intArray.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)
+

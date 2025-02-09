@@ -921,7 +921,7 @@ class TestDatastore(TestCase):
 
     def test_getFloatArrayAtIndexOutOfRange(self) -> None:
         """
-        The getfloatArrayAtIndex must raise an index error if the requested
+        The getFloatArrayAtIndex must raise an index error if the requested
         index is out of bound.
         """
         index = len(self._mockedFloatArrays)
@@ -1189,3 +1189,96 @@ class TestDatastore(TestCase):
         self._uut.removeSignedInteger(removedMultiState)
         self.assertEqual(length - 1, len(self._uut._data.signedIntegers))
         self.assertFalse(removedMultiState in self._uut._data.signedIntegers)
+
+    def test_getIntArraysReturnArrays(self) -> None:
+        """
+        The getIntArrays method must return the datastore list of signed
+        integer arrays.
+        """
+        arrays = self._uut.getIntArrays()
+        self.assertEqual(self._uut._data.intArrays, arrays)
+
+    def test_getIntArrayAtIndexOutOfRange(self) -> None:
+        """
+        The getIntArrayAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedIntArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getIntArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getIntArrayAtIndexReturnArray(self) -> None:
+        """
+        The getintArrayAtIndex must return the signed integer array at the
+        given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            intArray = self._uut.getIntArrayAtIndex(index)
+            self.assertEqual(self._uut._data.intArrays[index], intArray)
+
+    def test_appendIntArraySaveNewArray(self) -> None:
+        """
+        The appendIntArray method must append the new signed integer array to
+        the datastore signed integer array list.
+        """
+        intArray = Mock()
+        self.assertEqual(len(self._yml['intArrays']),
+                         len(self._uut._data.intArrays))
+        self._uut.appendIntArray(intArray)
+        self.assertEqual(len(self._yml['intArrays']) + 1,
+                         len(self._uut._data.intArrays))
+        self.assertEqual(intArray, self._uut._data.intArrays[-1])
+
+    def test_removeIntArrayAtIndexOutOfRange(self) -> None:
+        """
+        The removeIntArrayAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedIntArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeIntArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeIntArrayAtIndexRemove(self) -> None:
+        """
+        The removeIntArrayAtIndex method must remove the signed integer array
+        at the given index.
+        """
+        length = len(self._mockedIntArrays)
+        index = length - 1
+        removedArray = self._mockedIntArrays[index]
+        self.assertEqual(length, len(self._uut._data.intArrays))
+        self._uut.removeIntArrayAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.intArrays))
+        self.assertFalse(removedArray in self._uut._data.intArrays)
+
+    def test_removeIntArrayNotPresent(self) -> None:
+        """
+        The removeIntArray method must raise a value error if the given
+        signed integer array is not present in the datastore.
+        """
+        intArrayName = 'testIntArray'
+        intArray = Mock()
+        intArray.getName.return_value = intArrayName
+        errMsg = f"Signed integer array {intArrayName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeIntArray(intArray)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeIntArrayRemove(self) -> None:
+        """
+        The removeIntArray method must remove the given signed integer array.
+        """
+        length = len(self._mockedIntArrays)
+        removedArray = self._mockedIntArrays[-1]
+        self.assertEqual(length, len(self._uut._data.intArrays))
+        self._uut.removeIntArray(removedArray)
+        self.assertEqual(length - 1, len(self._uut._data.intArrays))
+        self.assertFalse(removedArray in self._uut._data.intArrays)
