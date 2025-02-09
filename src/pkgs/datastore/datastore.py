@@ -638,3 +638,73 @@ class Datastore:
             errMsg = f"Multi-state {multiState.getName()} not present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
+
+    def getSignedIntegers(self) -> list[SignedInteger]:
+        """
+        Get the datastore signed integer.
+
+        Return
+            The datastore signed integer.
+        """
+        return self._data.signedIntegers
+
+    def getSignedIntegerAtIndex(self, index: int) -> SignedInteger:
+        """
+        Get the signed integer at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The signed integer at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.signedIntegers):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.signedIntegers[index]
+
+    def appendSignedInteger(self, signedInteger: SignedInteger) -> None:
+        """
+        Append a new signed integer to the datastore.
+
+        Param
+            signedInteger: The signed integer to append.
+        """
+        self._data.signedIntegers.append(signedInteger)
+
+    def removeSignedIntegerAtIndex(self, index: int) -> None:
+        """
+        Remove the signed integer at given index.
+
+        Params
+            index: The index of the signed integer to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.signedIntegers):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.signedIntegers.pop(index)
+
+    def removeSignedInteger(self, signedInteger: SignedInteger) -> None:
+        """
+        Remove the given signed integer.
+
+        Params
+            signedInteger: The signed integer to remove.
+
+        Raise
+            A value error if the signed integer is not in the datastore.
+        """
+        try:
+            self._data.signedIntegers.remove(signedInteger)
+        except ValueError:
+            errMsg = f"Signed integer {signedInteger.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)

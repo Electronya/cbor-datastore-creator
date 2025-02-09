@@ -1031,8 +1031,8 @@ class TestDatastore(TestCase):
         """
         indexes = [0, 1]
         for index in indexes:
-            multiState = self._uut.getFloatAtIndex(index)
-            self.assertEqual(self._uut._data.floats[index], multiState)
+            multiState = self._uut.getMultiStateAtIndex(index)
+            self.assertEqual(self._uut._data.multiStates[index], multiState)
 
     def test_appendMultiStateSaveNewMultiState(self) -> None:
         """
@@ -1096,3 +1096,96 @@ class TestDatastore(TestCase):
         self._uut.removeMultiState(removedMultiState)
         self.assertEqual(length - 1, len(self._uut._data.multiStates))
         self.assertFalse(removedMultiState in self._uut._data.multiStates)
+
+    def test_getSignedIntegersReturn(self) -> None:
+        """
+        The getSignedIntegers method must return the datastore list of
+        signed integers.
+        """
+        signedIntegers = self._uut.getSignedIntegers()
+        self.assertEqual(self._uut._data.signedIntegers, signedIntegers)
+
+    def test_getSignedIntegerAtIndexOutOfRange(self) -> None:
+        """
+        The getSignedIntegerAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedSignedIntegers)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getSignedIntegerAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getSignedIntegerAtIndexReturnArray(self) -> None:
+        """
+        The getSignedIntegerAtIndex must return the signed integer at the given
+        index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            multiState = self._uut.getSignedIntegerAtIndex(index)
+            self.assertEqual(self._uut._data.signedIntegers[index], multiState)
+
+    def test_appendSignedIntegerSaveNewSignedInteger(self) -> None:
+        """
+        The appendSignedInteger method must append the new signed integer to
+        the datastore signed integer list.
+        """
+        signedInteger = Mock()
+        self.assertEqual(len(self._yml['signedIntegers']),
+                         len(self._uut._data.signedIntegers))
+        self._uut.appendSignedInteger(signedInteger)
+        self.assertEqual(len(self._yml['signedIntegers']) + 1,
+                         len(self._uut._data.signedIntegers))
+        self.assertEqual(signedInteger, self._uut._data.signedIntegers[-1])
+
+    def test_removeSignedIntegerAtIndexOutOfRange(self) -> None:
+        """
+        The removeSignedIntegerAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedSignedIntegers)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeSignedIntegerAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeSignedIntegerAtIndexRemove(self) -> None:
+        """
+        The removeSignedIntegerAtIndex method must remove the signed integer at
+        the given index.
+        """
+        length = len(self._mockedSignedIntegers)
+        index = length - 1
+        removedSignedInteger = self._mockedSignedIntegers[index]
+        self.assertEqual(length, len(self._uut._data.signedIntegers))
+        self._uut.removeSignedIntegerAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.signedIntegers))
+        self.assertFalse(removedSignedInteger in self._uut._data.signedIntegers)    # noqa: E501
+
+    def test_removeSignedIntegerNotPresent(self) -> None:
+        """
+        The removeSignedInteger method must raise a value error if the given
+        signed integer is not present in the datastore.
+        """
+        signedIntegerName = 'testSignedInteger'
+        signedInteger = Mock()
+        signedInteger.getName.return_value = signedIntegerName
+        errMsg = f"Signed integer {signedIntegerName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeSignedInteger(signedInteger)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeSignedIntegerRemove(self) -> None:
+        """
+        The removeSignedInteger method must remove the given signed integer.
+        """
+        length = len(self._mockedSignedIntegers)
+        removedMultiState = self._mockedSignedIntegers[-1]
+        self.assertEqual(length, len(self._uut._data.signedIntegers))
+        self._uut.removeSignedInteger(removedMultiState)
+        self.assertEqual(length - 1, len(self._uut._data.signedIntegers))
+        self.assertFalse(removedMultiState in self._uut._data.signedIntegers)
