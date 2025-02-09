@@ -382,3 +382,12 @@ class Datastore:
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         return self._data.buttonArrays[index]
+
+    def appendButtonArray(self, buttonArray: ButtonArray) -> None:
+        """
+        Append a new button array to the datastore.
+
+        Param
+            buttonArray: The button array to append.
+        """
+        self._data.buttonArrays.append(buttonArray)

@@ -755,3 +755,16 @@ class TestDatastore(TestCase):
         for index in indexes:
             buttonArray = self._uut.getButtonArrayAtIndex(index)
             self.assertEqual(self._uut._data.buttonArrays[index], buttonArray)
+
+    def test_appendButtonArraySaveNewButton(self) -> None:
+        """
+        The appendButtonArray method must append the new button array to the
+        datastore button array list.
+        """
+        buttonArray = Mock()
+        self.assertEqual(len(self._yml['buttonArrays']),
+                         len(self._uut._data.buttonArrays))
+        self._uut.appendButtonArray(buttonArray)
+        self.assertEqual(len(self._yml['buttonArrays']) + 1,
+                         len(self._uut._data.buttonArrays))
+        self.assertEqual(buttonArray, self._uut._data.buttonArrays[-1])
