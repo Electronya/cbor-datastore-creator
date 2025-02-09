@@ -348,6 +348,9 @@ class Datastore:
 
         Params
             button: The button to remove.
+
+        Raise
+            A value error if the button is present in the datastore.
         """
         try:
             self._data.buttons.remove(button)
@@ -391,3 +394,19 @@ class Datastore:
             buttonArray: The button array to append.
         """
         self._data.buttonArrays.append(buttonArray)
+
+    def removeButtonArrayAtIndex(self, index: int) -> None:
+        """
+        Remove the button array at given index.
+
+        Params
+            index: The index of the button array to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.buttonArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.buttonArrays.pop(index)

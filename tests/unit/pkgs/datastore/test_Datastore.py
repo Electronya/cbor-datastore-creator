@@ -643,7 +643,7 @@ class TestDatastore(TestCase):
         buttons = self._uut.getButtons()
         self.assertEqual(self._uut._data.buttons, buttons)
 
-    def test_getButtonAtIndexOutOfBound(self) -> None:
+    def test_getButtonAtIndexOutOfRange(self) -> None:
         """
         The getButtonAtIndex must raise an index error if the requested
         index is out of bound.
@@ -689,7 +689,7 @@ class TestDatastore(TestCase):
             self._mockedLogger.error.assert_Called_once_with(errMsg)
         self.assertEqual(errMsg, str(context.exception))
 
-    def test_removeButtonAtIndexRemoveButton(self) -> None:
+    def test_removeButtonAtIndexRemove(self) -> None:
         """
         The removeButtonAtIndex method must remove the button at the
         given index.
@@ -702,7 +702,7 @@ class TestDatastore(TestCase):
         self.assertEqual(length - 1, len(self._uut._data.buttons))
         self.assertFalse(removedButton in self._uut._data.buttons)
 
-    def test_removeButtonButtonNotPresent(self) -> None:
+    def test_removeButtonNotPresent(self) -> None:
         """
         The removeButton method must raise a value error if the given button
         is not present in the datastore.
@@ -713,9 +713,10 @@ class TestDatastore(TestCase):
         errMsg = f"Button {buttonName} not present"
         with self.assertRaises(ValueError) as context:
             self._uut.removeButton(button)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
         self.assertEqual(errMsg, str(context.exception))
 
-    def test_removeButtonRemoveButton(self) -> None:
+    def test_removeButtonRemove(self) -> None:
         """
         The removeButton method must remove the given button.
         """
@@ -734,7 +735,7 @@ class TestDatastore(TestCase):
         arrays = self._uut.getButtonArrays()
         self.assertEqual(self._uut._data.buttonArrays, arrays)
 
-    def test_getButtonArrayAtIndexOutOfBound(self) -> None:
+    def test_getButtonArrayAtIndexOutOfRange(self) -> None:
         """
         The getButtonArrayAtIndex must raise an index error if the requested
         index is out of bound.
@@ -746,7 +747,7 @@ class TestDatastore(TestCase):
             self._mockedLogger.error.assert_Called_once_with(errMsg)
         self.assertEqual(errMsg, str(context.exception))
 
-    def test_getButtonArrayAtIndexReturnButton(self) -> None:
+    def test_getButtonArrayAtIndexReturnArray(self) -> None:
         """
         The getButtonArrayAtIndex must return the button array at the
         given index.
@@ -756,7 +757,7 @@ class TestDatastore(TestCase):
             buttonArray = self._uut.getButtonArrayAtIndex(index)
             self.assertEqual(self._uut._data.buttonArrays[index], buttonArray)
 
-    def test_appendButtonArraySaveNewButton(self) -> None:
+    def test_appendButtonArraySaveNewArray(self) -> None:
         """
         The appendButtonArray method must append the new button array to the
         datastore button array list.
@@ -768,3 +769,28 @@ class TestDatastore(TestCase):
         self.assertEqual(len(self._yml['buttonArrays']) + 1,
                          len(self._uut._data.buttonArrays))
         self.assertEqual(buttonArray, self._uut._data.buttonArrays[-1])
+
+    def test_removeButtonArrayAtIndexOutOfRange(self) -> None:
+        """
+        The removeButtonArrayAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedButtonArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeButtonArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeButtonArrayAtIndexRemove(self) -> None:
+        """
+        The removeButtonArrayAtIndex method must remove the button at the
+        given index.
+        """
+        length = len(self._mockedButtonArrays)
+        index = length - 1
+        removedArray = self._mockedButtonArrays[index]
+        self.assertEqual(length, len(self._uut._data.buttonArrays))
+        self._uut.removeButtonArrayAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.buttonArrays))
+        self.assertFalse(removedArray in self._uut._data.buttonArrays)
