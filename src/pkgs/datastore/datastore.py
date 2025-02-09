@@ -341,3 +341,16 @@ class Datastore:
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         self._data.buttons.pop(index)
+
+    def removeButton(self, button: Button) -> None:
+        """
+        Remove the given button.
+
+        Params
+            button: The button to remove.
+        """
+        try:
+            self._data.buttons.remove(button)
+        except ValueError:
+            errMsg = f"Button {button.getName()} not present"
+            raise ValueError(errMsg)
