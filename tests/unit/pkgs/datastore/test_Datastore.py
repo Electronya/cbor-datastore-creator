@@ -826,3 +826,24 @@ class TestDatastore(TestCase):
         """
         floats = self._uut.getFloats()
         self.assertEqual(self._uut._data.floats, floats)
+
+    def test_getFloatAtIndexOutOfRange(self) -> None:
+        """
+        The getFloatAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedFloats)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getFloatAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getFloatAtIndexReturnArray(self) -> None:
+        """
+        The getFloatAtIndex must return the float at the given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            buttonArray = self._uut.getFloatAtIndex(index)
+            self.assertEqual(self._uut._data.floats[index], buttonArray)

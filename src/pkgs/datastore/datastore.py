@@ -435,3 +435,22 @@ class Datastore:
             The datastore floats.
         """
         return self._data.floats
+
+    def getFloatAtIndex(self, index: int) -> Float:
+        """
+        Get the float at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The float at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.floats):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.floats[index]
