@@ -26,7 +26,7 @@ class DatastoreData:
     workingDir: str = '.'
     buttons: list[Button] = field(default_factory=list)
     buttonArrays: list[ButtonArray] = field(default_factory=list)
-    floatObjs: list[Float] = field(default_factory=list)
+    floats: list[Float] = field(default_factory=list)
     floatArrays: list[FloatArray] = field(default_factory=list)
     multiStates: list[MultiState] = field(default_factory=list)
     signedIntegers: list[SignedInteger] = field(default_factory=list)
@@ -114,7 +114,7 @@ class Datastore:
             max = floatObj[name]['max']
             default = floatObj[name]['default']
             data = FloatData(name, index, size, min, max, default, inNvm)
-            self._data.floatObjs.append(Float(data))
+            self._data.floats.append(Float(data))
 
     def populateFloatArrays(self, floatArrays: list[dict]) -> None:
         """
@@ -426,3 +426,12 @@ class Datastore:
         except ValueError:
             errMsg = f"Button array {buttonArray.getName()} not present"
             raise ValueError(errMsg)
+
+    def getFloats(self) -> list[Float]:
+        """
+        Get the datastore floats.
+
+        Return
+            The datastore floats.
+        """
+        return self._data.floats

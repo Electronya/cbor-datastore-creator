@@ -277,13 +277,13 @@ class TestDatastore(TestCase):
             max = floatObj[name]['max']
             default = floatObj[name]['default']
             calls.append(call(name, index, size, min, max, default, inNvm))
-        self.assertEqual(0, len(self._uut._data.floatObjs))
+        self.assertEqual(0, len(self._uut._data.floats))
         with patch(self._FloatCls) as mockedFloat, \
                 patch(self._FloatDataCls) as mockedFloatData:
             mockedFloatData.return_value = mockedData
             self._uut.populateFloats(self._yml['floats'])
             self.assertEqual(len(self._yml['floats']),
-                             len(self._uut._data.floatObjs))
+                             len(self._uut._data.floats))
             self.assertEqual(len(self._yml['floats']),
                              mockedFloatData.call_count)
             mockedFloatData.assert_has_calls(calls)
@@ -819,3 +819,10 @@ class TestDatastore(TestCase):
         self._uut.removeButtonArray(removedArray)
         self.assertEqual(length - 1, len(self._uut._data.buttonArrays))
         self.assertFalse(removedArray in self._uut._data.buttonArrays)
+
+    def test_getButtonFloatsReturn(self) -> None:
+        """
+        The getButtonFloats method must return the datastore list of floats.
+        """
+        floats = self._uut.getFloats()
+        self.assertEqual(self._uut._data.floats, floats)
