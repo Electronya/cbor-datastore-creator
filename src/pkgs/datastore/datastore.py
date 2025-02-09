@@ -312,7 +312,7 @@ class Datastore:
             The button at the given index.
         """
         if index >= len(self._data.buttons):
-            errMsg = f"No button at index {index}"
+            errMsg = f"Index {index} is out of range"
             self._logger.error(errMsg)
             raise IndexError(errMsg)
         return self._data.buttons[index]
@@ -363,3 +363,22 @@ class Datastore:
             The datastore button arrays
         """
         return self._data.buttonArrays
+
+    def getButtonArrayAtIndex(self, index: int) -> ButtonArray:
+        """
+        Get the button array at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The button array at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.buttonArrays):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.buttonArrays[index]

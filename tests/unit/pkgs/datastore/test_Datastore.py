@@ -649,7 +649,7 @@ class TestDatastore(TestCase):
         index is out of bound.
         """
         index = 4
-        errMsg = f"No button at index {index}"
+        errMsg = f"Index {index} is out of range"
         with self.assertRaises(IndexError) as context:
             self._uut.getButtonAtIndex(index)
             self._mockedLogger.error.assert_Called_once_with(errMsg)
@@ -733,3 +733,25 @@ class TestDatastore(TestCase):
         """
         arrays = self._uut.getButtonArrays()
         self.assertEqual(self._uut._data.buttonArrays, arrays)
+
+    def test_getButtonArrayAtIndexOutOfBound(self) -> None:
+        """
+        The getButtonArrayAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedButtonArrays)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getButtonArrayAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getButtonArrayAtIndexReturnButton(self) -> None:
+        """
+        The getButtonArrayAtIndex must return the button array at the
+        given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            buttonArray = self._uut.getButtonArrayAtIndex(index)
+            self.assertEqual(self._uut._data.buttonArrays[index], buttonArray)
