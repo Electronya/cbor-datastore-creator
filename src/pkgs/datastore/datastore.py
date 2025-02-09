@@ -779,3 +779,72 @@ class Datastore:
             self._logger.error(errMsg)
             raise ValueError(errMsg)
 
+    def getUnsignedIntegers(self) -> list[UnsignedInteger]:
+        """
+        Get the datastore unsigned integer.
+
+        Return
+            The datastore unsigned integer.
+        """
+        return self._data.unsignedIntegers
+
+    def getUnsignedIntegerAtIndex(self, index: int) -> UnsignedInteger:
+        """
+        Get the unsigned integer at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The unsigned integer at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.unsignedIntegers):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.unsignedIntegers[index]
+
+    def appendUnsignedInteger(self, unsignedInteger: UnsignedInteger) -> None:
+        """
+        Append a new unsigned integer to the datastore.
+
+        Param
+            unsignedInteger: The unsigned integer to append.
+        """
+        self._data.unsignedIntegers.append(unsignedInteger)
+
+    def removeUnsignedIntegerAtIndex(self, index: int) -> None:
+        """
+        Remove the unsigned integer at given index.
+
+        Params
+            index: The index of the unsigned integer to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.unsignedIntegers):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.unsignedIntegers.pop(index)
+
+    def removeUnsignedInteger(self, unsignedInteger: UnsignedInteger) -> None:
+        """
+        Remove the given unsigned integer.
+
+        Params
+            unsignedInteger: The unsigned integer to remove.
+
+        Raise
+            A value error if the unsigned integer is not in the datastore.
+        """
+        try:
+            self._data.unsignedIntegers.remove(unsignedInteger)
+        except ValueError:
+            errMsg = f"Unsigned integer {unsignedInteger.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)

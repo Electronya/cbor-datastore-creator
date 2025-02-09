@@ -1031,8 +1031,8 @@ class TestDatastore(TestCase):
         """
         indexes = [0, 1]
         for index in indexes:
-            multiState = self._uut.getMultiStateAtIndex(index)
-            self.assertEqual(self._uut._data.multiStates[index], multiState)
+            signedInteger = self._uut.getMultiStateAtIndex(index)
+            self.assertEqual(self._uut._data.multiStates[index], signedInteger)
 
     def test_appendMultiStateSaveNewMultiState(self) -> None:
         """
@@ -1282,3 +1282,98 @@ class TestDatastore(TestCase):
         self._uut.removeIntArray(removedArray)
         self.assertEqual(length - 1, len(self._uut._data.intArrays))
         self.assertFalse(removedArray in self._uut._data.intArrays)
+
+    def test_getUnsignedIntegersReturn(self) -> None:
+        """
+        The getUnsignedIntegers method must return the datastore list of
+        unsigned integers.
+        """
+        unsignedIntegers = self._uut.getUnsignedIntegers()
+        self.assertEqual(self._uut._data.unsignedIntegers, unsignedIntegers)
+
+    def test_getUnsignedIntegerAtIndexOutOfRange(self) -> None:
+        """
+        The getUnsignedIntegerAtIndex must raise an index error if the
+        requested index is out of bound.
+        """
+        index = len(self._mockedUnsignedIntegers)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getUnsignedIntegerAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getUnsignedIntegerAtIndexReturnArray(self) -> None:
+        """
+        The getUnsignedIntegerAtIndex must return the unsigned integer at the
+        given index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            unsignedInteger = self._uut.getUnsignedIntegerAtIndex(index)
+            self.assertEqual(self._uut._data.unsignedIntegers[index],
+                             unsignedInteger)
+
+    def test_appendUnsignedIntegerSaveNewSignedInteger(self) -> None:
+        """
+        The appendUnsignedInteger method must append the new unsigned integer
+        to the datastore unsigned integer list.
+        """
+        unsignedInteger = Mock()
+        self.assertEqual(len(self._yml['unsignedIntegers']),
+                         len(self._uut._data.unsignedIntegers))
+        self._uut.appendUnsignedInteger(unsignedInteger)
+        self.assertEqual(len(self._yml['unsignedIntegers']) + 1,
+                         len(self._uut._data.unsignedIntegers))
+        self.assertEqual(unsignedInteger, self._uut._data.unsignedIntegers[-1])
+
+    def test_removeUnsignedIntegerAtIndexOutOfRange(self) -> None:
+        """
+        The removeUnsignedIntegerAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedUnsignedIntegers)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeUnsignedIntegerAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeUnsignedIntegerAtIndexRemove(self) -> None:
+        """
+        The removeUnsignedIntegerAtIndex method must remove the unsigned
+        integer at the given index.
+        """
+        length = len(self._mockedUnsignedIntegers)
+        index = length - 1
+        removedUnsignedInteger = self._mockedUnsignedIntegers[index]
+        self.assertEqual(length, len(self._uut._data.unsignedIntegers))
+        self._uut.removeUnsignedIntegerAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.unsignedIntegers))
+        self.assertFalse(removedUnsignedInteger in self._uut._data.unsignedIntegers)    # noqa: E501
+
+    def test_removeUnsignedIntegerNotPresent(self) -> None:
+        """
+        The removeUnsignedInteger method must raise a value error if the given
+        unsigned integer is not present in the datastore.
+        """
+        unsignedIntegerName = 'testUnsignedInteger'
+        unsignedInteger = Mock()
+        unsignedInteger.getName.return_value = unsignedIntegerName
+        errMsg = f"Unsigned integer {unsignedIntegerName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeUnsignedInteger(unsignedInteger)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeUnsignedIntegerRemove(self) -> None:
+        """
+        The removeUnsignedInteger method must remove the given unsigned
+        integer.
+        """
+        length = len(self._mockedUnsignedIntegers)
+        removedMultiState = self._mockedUnsignedIntegers[-1]
+        self.assertEqual(length, len(self._uut._data.unsignedIntegers))
+        self._uut.removeUnsignedInteger(removedMultiState)
+        self.assertEqual(length - 1, len(self._uut._data.unsignedIntegers))
+        self.assertFalse(removedMultiState in self._uut._data.unsignedIntegers)
