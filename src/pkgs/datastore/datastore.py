@@ -568,3 +568,73 @@ class Datastore:
             errMsg = f"Float array {floatArray.getName()} not present"
             self._logger.error(errMsg)
             raise ValueError(errMsg)
+
+    def getMultiStates(self) -> list[MultiState]:
+        """
+        Get the datastore multi-states.
+
+        Return
+            The datastore multi-states.
+        """
+        return self._data.multiStates
+
+    def getMultiStateAtIndex(self, index: int) -> MultiState:
+        """
+        Get the multi-state at the given index.
+
+        Params
+            index: the given index.
+
+        Return
+            The multi-state at the given index.
+
+        Raise
+            An Index error if the given index is out of range.
+        """
+        if index >= len(self._data.multiStates):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        return self._data.multiStates[index]
+
+    def appendMultiState(self, multiState: MultiState) -> None:
+        """
+        Append a new multi-state to the datastore.
+
+        Param
+            multiState: The multi-state to append.
+        """
+        self._data.multiStates.append(multiState)
+
+    def removeMultiStateAtIndex(self, index: int) -> None:
+        """
+        Remove the multi-state at given index.
+
+        Params
+            index: The index of the multi-state to remove.
+
+        Raise
+            An index error if the given index is out of range.
+        """
+        if index >= len(self._data.multiStates):
+            errMsg = f"Index {index} is out of range"
+            self._logger.error(errMsg)
+            raise IndexError(errMsg)
+        self._data.multiStates.pop(index)
+
+    def removeMultiState(self, multiState: MultiState) -> None:
+        """
+        Remove the given multi-state.
+
+        Params
+            multiState: The multi-state to remove.
+
+        Raise
+            A value error if the multi-state is not in the datastore.
+        """
+        try:
+            self._data.multiStates.remove(multiState)
+        except ValueError:
+            errMsg = f"Multi-state {multiState.getName()} not present"
+            self._logger.error(errMsg)
+            raise ValueError(errMsg)

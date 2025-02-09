@@ -845,13 +845,13 @@ class TestDatastore(TestCase):
         """
         indexes = [0, 1]
         for index in indexes:
-            buttonArray = self._uut.getFloatAtIndex(index)
-            self.assertEqual(self._uut._data.floats[index], buttonArray)
+            floatObj = self._uut.getFloatAtIndex(index)
+            self.assertEqual(self._uut._data.floats[index], floatObj)
 
     def test_appendFloatSaveNewFloat(self) -> None:
         """
-        The appendFloat method must append the new button array to the
-        datastore button array list.
+        The appendFloat method must append the new float to the
+        datastore float list.
         """
         floatObj = Mock()
         self.assertEqual(len(self._yml['floats']),
@@ -880,11 +880,11 @@ class TestDatastore(TestCase):
         """
         length = len(self._mockedFloats)
         index = length - 1
-        removedArray = self._mockedFloats[index]
+        removedFloat = self._mockedFloats[index]
         self.assertEqual(length, len(self._uut._data.floats))
         self._uut.removeFloatAtIndex(index)
         self.assertEqual(length - 1, len(self._uut._data.floats))
-        self.assertFalse(removedArray in self._uut._data.floats)
+        self.assertFalse(removedFloat in self._uut._data.floats)
 
     def test_removeFloatNotPresent(self) -> None:
         """
@@ -1003,3 +1003,96 @@ class TestDatastore(TestCase):
         self._uut.removeFloatArray(removedArray)
         self.assertEqual(length - 1, len(self._uut._data.floatArrays))
         self.assertFalse(removedArray in self._uut._data.floatArrays)
+
+    def test_getMultiStateReturn(self) -> None:
+        """
+        The getMultiState method must return the datastore list of
+        multi-states.
+        """
+        multiStates = self._uut.getMultiStates()
+        self.assertEqual(self._uut._data.multiStates, multiStates)
+
+    def test_getMultiStateAtIndexOutOfRange(self) -> None:
+        """
+        The getMultiStateAtIndex must raise an index error if the requested
+        index is out of bound.
+        """
+        index = len(self._mockedMultiStates)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.getMultiStateAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_getMultiStateAtIndexReturnArray(self) -> None:
+        """
+        The getMultiStateAtIndex must return the multi-state at the given
+        index.
+        """
+        indexes = [0, 1]
+        for index in indexes:
+            multiState = self._uut.getFloatAtIndex(index)
+            self.assertEqual(self._uut._data.floats[index], multiState)
+
+    def test_appendMultiStateSaveNewMultiState(self) -> None:
+        """
+        The appendMultiState method must append the new multi-state to the
+        datastore multi-state list.
+        """
+        multiState = Mock()
+        self.assertEqual(len(self._yml['multiStates']),
+                         len(self._uut._data.multiStates))
+        self._uut.appendMultiState(multiState)
+        self.assertEqual(len(self._yml['multiStates']) + 1,
+                         len(self._uut._data.multiStates))
+        self.assertEqual(multiState, self._uut._data.multiStates[-1])
+
+    def test_removeMultiStateAtIndexOutOfRange(self) -> None:
+        """
+        The removeMultiStateAtIndex method must raise an index error if
+        the given index is out of range.
+        """
+        index = len(self._mockedMultiStates)
+        errMsg = f"Index {index} is out of range"
+        with self.assertRaises(IndexError) as context:
+            self._uut.removeMultiStateAtIndex(index)
+            self._mockedLogger.error.assert_Called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeMultiStateAtIndexRemove(self) -> None:
+        """
+        The removeMultiStateAtIndex method must remove the multi-state at the
+        given index.
+        """
+        length = len(self._mockedMultiStates)
+        index = length - 1
+        removedMultiState = self._mockedMultiStates[index]
+        self.assertEqual(length, len(self._uut._data.multiStates))
+        self._uut.removeMultiStateAtIndex(index)
+        self.assertEqual(length - 1, len(self._uut._data.multiStates))
+        self.assertFalse(removedMultiState in self._uut._data.multiStates)
+
+    def test_removeMultiStateNotPresent(self) -> None:
+        """
+        The removeMultiState method must raise a value error if the given
+        multi-state is not present in the datastore.
+        """
+        multiStateName = 'testMultiState'
+        multiState = Mock()
+        multiState.getName.return_value = multiStateName
+        errMsg = f"Multi-state {multiStateName} not present"
+        with self.assertRaises(ValueError) as context:
+            self._uut.removeMultiState(multiState)
+            self._mockedLogger.error.assert_called_once_with(errMsg)
+        self.assertEqual(errMsg, str(context.exception))
+
+    def test_removeMultiStateRemove(self) -> None:
+        """
+        The removeMultiState method must remove the given multi-state.
+        """
+        length = len(self._mockedMultiStates)
+        removedMultiState = self._mockedMultiStates[-1]
+        self.assertEqual(length, len(self._uut._data.multiStates))
+        self._uut.removeMultiState(removedMultiState)
+        self.assertEqual(length - 1, len(self._uut._data.multiStates))
+        self.assertFalse(removedMultiState in self._uut._data.multiStates)
