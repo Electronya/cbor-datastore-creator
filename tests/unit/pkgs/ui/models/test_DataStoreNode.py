@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import Mock
 
 from PySide6.QtCore import Qt
 
@@ -8,7 +8,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.ui.models import DatastoreNode                        # noqa: E402
+from pkgs.ui.models import DatastoreNode, DatastoreNodeType     # noqa: E402
 
 
 class TestDatastoreNode(TestCase):
@@ -23,14 +23,25 @@ class TestDatastoreNode(TestCase):
         for i in range(10):
             self._mockedChildren.append(Mock())
 
+        self._mockedStoreData = Mock()
+        self._uutStore = DatastoreNode(DatastoreNodeType.STORE,
+                                       data=self._mockedStoreData)
+        self._uutStore._children = self._mockedChildren
+
         self._listName = 'list name'
-        self._uutObjList = DatastoreNode(name=self._listName)
+        self._mockedListParent = Mock()
+        self._uutObjList = DatastoreNode(DatastoreNodeType.OBJ_LIST,
+                                         name=self._listName,
+                                         parent=self._mockedListParent)
         self._uutObjList._children = self._mockedChildren
 
-        self._mockedParent = Mock()
-        self._mockedData = Mock()
-        self._uutObj = DatastoreNode(self._mockedData,
-                                     parent=self._mockedParent)
+        self._mockedObjParent = Mock()
+        self._mockedObjData = Mock()
+        self._uutObj = DatastoreNode(DatastoreNodeType.OBJECT,
+                                     self._mockedObjData,
+                                     parent=self._mockedObjParent)
+
+        self._uuts = [self._uutStore, self._uutObjList, self._uutObj]
 
     def test_constructorSaveDataAddToParent(self) -> None:
         """
@@ -38,11 +49,16 @@ class TestDatastoreNode(TestCase):
         to the parent child when one is given.
         """
         testDatasets = [
-            {'data': None, 'parent': None, 'name': None},
-            {'data': Mock(), 'parent': Mock(), 'name': 'test name'}
+            {'type': DatastoreNodeType.STORE,
+             'data': None, 'parent': None, 'name': None},
+            {'type': DatastoreNodeType.OBJ_LIST,
+             'data': None, 'parent': Mock(), 'name': 'test name'},
+            {'type': DatastoreNodeType.OBJECT,
+             'data': Mock(), 'parent': Mock(), 'name': None}
         ]
         for testDataset in testDatasets:
-            uut = DatastoreNode(data=testDataset['data'],
+            uut = DatastoreNode(testDataset['type'],
+                                data=testDataset['data'],
                                 name=testDataset['name'],
                                 parent=testDataset['parent'])
             self.assertEqual(testDataset['data'], uut._data)
@@ -51,80 +67,93 @@ class TestDatastoreNode(TestCase):
             if testDataset['parent'] is not None:
                 testDataset['parent'].addChild.assert_called_once()
 
-    def test_getNameAsListOfObject(self) -> None:
+    def test_getNameReturnName(self) -> None:
         """
-        The getName method must return the node save name when the node
-        is an object list.
+        The getName method must return the saved name when the type is object
+        list or the contained data name otherwise.
         """
-        self.assertEqual(self._listName, self._uutObjList.getName())
-
-    def test_getNameAsObject(self) -> None:
-        """
-        The getName method must return the contained object name as the node
-        name when the node is an object.
-        """
-        name = 'object name'
-        self._mockedData.getName.return_value = name
-        self.assertEqual(name, self._uutObj.getName())
+        for uut in self._uuts:
+            if uut._type != DatastoreNodeType.OBJ_LIST:
+                name = 'object name'
+                uut._data.getName.return_value = name
+                self.assertEqual(name, uut.getName())
+            else:
+                self.assertEqual(uut._name, uut.getName())
 
     def test_getChildCountReturnCount(self) -> None:
         """
         The getChildCount method must return the node child count.
         """
-        self.assertEqual(len(self._mockedChildren),
-                         self._uutObjList.getChildCount())
-        self.assertEqual(0, self._uutObj.getChildCount())
+        for uut in self._uuts:
+            self.assertEqual(len(uut._children), uut.getChildCount())
 
     def test_getChildReturnChildAtRow(self) -> None:
         """
-        The getChild must return the child present at the given row.
+        The getChild must return the child present at the given row if children
+        are present, none otherwise.
         """
         rows = [0, int(len(self._mockedChildren) / 2),
                 len(self._mockedChildren) - 1]
-        for row in rows:
-            self.assertEqual(self._mockedChildren[row],
-                             self._uutObjList.getChild(row))
+        for uut in self._uuts:
+            for row in rows:
+                if uut._type == DatastoreNodeType.OBJECT:
+                    self.assertEqual(None, uut.getChild(row))
+                else:
+                    self.assertEqual(self._mockedChildren[row],
+                                     uut.getChild(row))
 
     def test_addChildAppendChild(self) -> None:
         """
         The addChild method must append the new child in the list.
         """
-        newChild = Mock()
-        expectedChildCount = len(self._mockedChildren) + 1
-        self._uutObjList.addChild(newChild)
-        self.assertEqual(newChild, self._mockedChildren[-1])
-        self.assertEqual(expectedChildCount, len(self._mockedChildren))
+        for uut in self._uuts:
+            newChild = Mock()
+            expectedChildCount = len(uut._children) + 1
+            uut.addChild(newChild)
+            self.assertEqual(newChild, uut._children[-1])
+            self.assertEqual(expectedChildCount, len(uut._children))
 
-    def test_getParentReturnParentOrNone(self) -> None:
+    def test_getParentReturnParent(self) -> None:
         """
         The getParent method must return the node parent if it exist, none
         otherwise.
         """
-        self.assertEqual(None, self._uutObjList.getParent())
-        self.assertEqual(self._mockedParent, self._uutObj.getParent())
+        for uut in self._uuts:
+            self.assertEqual(uut._parent, uut.getParent())
 
-    def test_getRowReturnRowFromParentOrNone(self) -> None:
+    def test_getRowReturnRowFromParent(self) -> None:
         """
         The getRow method must return the row of the node from its parent when
         the node has a parent, none otherwise.
         """
-        self.assertEqual(None, self._uutObjList.getRow())
         row = 12
-        self._mockedParent._children.index.return_value = row
-        self.assertEqual(row, self._uutObj.getRow())
+        for uut in self._uuts:
+            if uut._type == DatastoreNodeType.STORE:
+                self.assertEqual(None, uut.getRow())
+            else:
+                uut._parent._children.index.return_value = row
+                self.assertEqual(row, uut.getRow())
 
-    def test_getDataReturnDataOrNone(self) -> None:
+    def test_getDataReturnData(self) -> None:
         """
         The getData method must return the node data if its present, none
         otherwise.
         """
-        self.assertEqual(None, self._uutObjList.getData())
-        self.assertEqual(self._mockedData, self._uutObj.getData())
+        for uut in self._uuts:
+            if uut._type == DatastoreNodeType.OBJ_LIST:
+                self.assertEqual(None, uut.getData())
+            else:
+                self.assertEqual(uut._data, uut.getData())
 
     def test_getFlagsReturnSelectableOrNoFlag(self) -> None:
         """
-        The getFlags method must return the selectable flag if it has a parent
-        or the none flag otherwise.
+        The getFlags method must return the selectable, editable and enabled
+        flag if it a store or an object node, or the none flag otherwise.
         """
-        self.assertEqual(Qt.ItemFlag.NoItemFlags, self._uutObjList.getFlags())
-        self.assertEqual(Qt.ItemFlag.ItemIsSelectable, self._uutObj.getFlags())
+        for uut in self._uuts:
+            if uut._type == DatastoreNodeType.OBJ_LIST:
+                self.assertEqual(Qt.ItemFlag.NoItemFlags, uut.getFlags())
+            else:
+                flags = Qt.ItemFlag.ItemIsSelectable | \
+                    Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled
+                self.assertEqual(flags, uut.getFlags())

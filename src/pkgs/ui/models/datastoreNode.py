@@ -1,5 +1,6 @@
-from typing import Protocol, runtime_checkable
+from enum import Enum
 from PySide6.QtCore import QModelIndex, Qt
+from typing import Protocol
 
 
 class DatastoreProto(Protocol):
@@ -10,17 +11,28 @@ class DatastoreProto(Protocol):
         pass
 
 
+class DatastoreNodeType(Enum):
+    """
+    The node type enum
+    """
+    STORE = 1
+    OBJ_LIST = 2
+    OBJECT = 3
+
+
 class DatastoreNode(object):
     """
     The datastore tree node class.
 
     Param
+        type: The node type.
         data: The node data.
         name: The node name.
         parent: The node parent.
     """
-    def __init__(self, data: DatastoreProto = None,
+    def __init__(self, type: DatastoreNodeType, data: DatastoreProto = None,
                  name: str = None, parent: QModelIndex = None) -> None:
+        self._type = type
         self._data = data
         self._name: str = name
         self._parent: 'DatastoreNode' = parent
@@ -36,7 +48,7 @@ class DatastoreNode(object):
         Return
             The node name.
         """
-        if self._name is None:
+        if self._type != DatastoreNodeType.OBJ_LIST:
             return self._data.getName()
         return self._name
 
@@ -59,7 +71,8 @@ class DatastoreNode(object):
         Return
             The child.
         """
-        return self._children[row]
+        if self._type != DatastoreNodeType.OBJECT:
+            return self._children[row]
 
     def addChild(self, child: 'DatastoreNode') -> None:
         """
@@ -105,6 +118,7 @@ class DatastoreNode(object):
         Return
             The node Qt flag.
         """
-        if self._parent is None:
+        if self._type == DatastoreNodeType.OBJ_LIST:
             return Qt.ItemFlag.NoItemFlags
-        return Qt.ItemFlag.ItemIsSelectable
+        return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEditable | \
+            Qt.ItemFlag.ItemIsEnabled
