@@ -31,7 +31,7 @@ class SignedInteger:
         """
         Constructor.
 
-        Params:
+        Param
             data: The object data dictionary.
         """
         self._logger = logging.getLogger('app.datastore.int')
@@ -75,7 +75,7 @@ class SignedInteger:
         """
         Check if the size is valid.
 
-        Params
+        Param
             size: the object size.
 
         Return
@@ -89,7 +89,7 @@ class SignedInteger:
         """
         Check if the limits are valid.
 
-        Params
+        Param
             size: the object size.
             min: the object minimum value.
             max: the object maximum value.
@@ -106,7 +106,7 @@ class SignedInteger:
         """
         Check if the default is valid.
 
-        Params:
+        Param
             min: the object minimum value.
             max: the object maximum value.
             default: the object default value.
@@ -131,7 +131,7 @@ class SignedInteger:
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -158,7 +158,7 @@ class SignedInteger:
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -181,7 +181,7 @@ class SignedInteger:
         """
         Set the object size.
 
-        Params
+        Param
             size: The new object size (1, 2, 4 or 8 bytes).
 
         Raise
@@ -213,7 +213,7 @@ class SignedInteger:
         """
         Set the object limits.
 
-        Params
+        Param
             min: the object minimum value.
             max: the object maximum value.
 
@@ -238,7 +238,7 @@ class SignedInteger:
         """
         Set the object default value.
 
-        Params
+        Param
             default: the object default value.
 
         Raise
@@ -263,7 +263,7 @@ class SignedInteger:
         """
         Set the inNvm flag.
 
-        Params
+        Param
             inNvm: the inNvm flag.
         """
         self._data.inNvm = inNvm

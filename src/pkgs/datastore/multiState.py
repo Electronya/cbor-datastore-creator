@@ -26,7 +26,7 @@ class MultiState:
         """
         Constructor.
 
-        Params:
+        Param
             data: The object data.
         """
         self._logger = logging.getLogger('app.datastore.multi-state')
@@ -78,7 +78,7 @@ class MultiState:
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -105,7 +105,7 @@ class MultiState:
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -137,7 +137,7 @@ class MultiState:
         """
         Append a state to the object.
 
-        Params
+        Param
             state: the state to append.
         """
         self._data.states.append(state)
@@ -155,7 +155,7 @@ class MultiState:
         """
         Set the inNvm flag.
 
-        Params
+        Param
             inNvm: the inNvm flag.
         """
         self._data.inNvm = inNvm

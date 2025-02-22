@@ -99,7 +99,7 @@ class UintArray():
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -126,7 +126,7 @@ class UintArray():
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -158,7 +158,7 @@ class UintArray():
         """
         Get the element at specified index.
 
-        Params
+        Param
             index: The element index.
 
         Return
@@ -236,7 +236,7 @@ class UintArray():
         """
         Set the inNvm flag.
 
-        Params
+        Param
             inNvm: the inNvm flag.
         """
         self._data.inNvm = inNvm

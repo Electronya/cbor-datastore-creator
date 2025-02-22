@@ -31,7 +31,7 @@ class UnsignedInteger:
         """
         Constructor.
 
-        Params:
+        Param
             data: The object data dictionary.
         """
         self._logger = logging.getLogger('app.datastore.uint')
@@ -75,7 +75,7 @@ class UnsignedInteger:
         """
         Check if the size is valid.
 
-        Params
+        Param
             size: the object size.
 
         Return
@@ -89,7 +89,7 @@ class UnsignedInteger:
         """
         Check if the limits are valid.
 
-        Params
+        Param
             size: the object size.
             min: the object minimum value.
             max: the object maximum value.
@@ -105,7 +105,7 @@ class UnsignedInteger:
         """
         Check if the default is valid.
 
-        Params:
+        Param
             min: the object minimum value.
             max: the object maximum value.
             default: the object default value.
@@ -130,7 +130,7 @@ class UnsignedInteger:
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -157,7 +157,7 @@ class UnsignedInteger:
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -180,7 +180,7 @@ class UnsignedInteger:
         """
         Set the object size.
 
-        Params
+        Param
             size: The new object size (1, 2, 4 or 8 bytes).
 
         Raise
@@ -212,7 +212,7 @@ class UnsignedInteger:
         """
         Set the object limits.
 
-        Params
+        Param
             min: the object minimum value.
             max: the object maximum value.
 
@@ -237,7 +237,7 @@ class UnsignedInteger:
         """
         Set the object default value.
 
-        Params
+        Param
             default: the object default value.
 
         Raise
@@ -262,7 +262,7 @@ class UnsignedInteger:
         """
         Set the inNvm flag.
 
-        Params
+        Param
             inNvm: the inNvm flag.
         """
         self._data.inNvm = inNvm

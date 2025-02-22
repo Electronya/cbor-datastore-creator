@@ -72,7 +72,7 @@ class ButtonArray():
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -99,7 +99,7 @@ class ButtonArray():
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -131,7 +131,7 @@ class ButtonArray():
         """
         Get the element at specified index.
 
-        Params
+        Param
             index: The element index.
 
         Return

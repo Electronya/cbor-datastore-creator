@@ -71,7 +71,7 @@ def _setInDebugMode(loggerList: str) -> None:
     """
     Set loggers in debug mode.
 
-    Params:
+    Param
         loggerList:     The logger list to put in debug mode.
     """
     if loggerList:
@@ -89,7 +89,7 @@ def _updateSettings(args: argparse.Namespace) -> None:
     """
     Update the logger configuration from the received arguments.
 
-    Params:
+    Param
         args:           The received arguments.
     """
     _setInDebugMode(args.verbose)

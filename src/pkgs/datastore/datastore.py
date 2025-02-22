@@ -330,7 +330,7 @@ class Datastore:
         """
         Remove the button at given index.
 
-        Params
+        Param
             index: The index of the button to remove.
 
         Raise
@@ -346,7 +346,7 @@ class Datastore:
         """
         Remove the given button.
 
-        Params
+        Param
             button: The button to remove.
 
         Raise
@@ -372,7 +372,7 @@ class Datastore:
         """
         Get the button array at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -400,7 +400,7 @@ class Datastore:
         """
         Remove the button array at given index.
 
-        Params
+        Param
             index: The index of the button array to remove.
 
         Raise
@@ -416,7 +416,7 @@ class Datastore:
         """
         Remove the given button array.
 
-        Params
+        Param
             buttonArray: The button array to remove.
 
         Raise
@@ -442,7 +442,7 @@ class Datastore:
         """
         Get the float at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -470,7 +470,7 @@ class Datastore:
         """
         Remove the float at given index.
 
-        Params
+        Param
             index: The index of the float to remove.
 
         Raise
@@ -486,7 +486,7 @@ class Datastore:
         """
         Remove the given float.
 
-        Params
+        Param
             floatObj: The float to remove.
 
         Raise
@@ -512,7 +512,7 @@ class Datastore:
         """
         Get the float array at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -540,7 +540,7 @@ class Datastore:
         """
         Remove the float array at given index.
 
-        Params
+        Param
             index: The index of the float array to remove.
 
         Raise
@@ -556,7 +556,7 @@ class Datastore:
         """
         Remove the given float array.
 
-        Params
+        Param
             floatArray: The float array to remove.
 
         Raise
@@ -582,7 +582,7 @@ class Datastore:
         """
         Get the multi-state at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -610,7 +610,7 @@ class Datastore:
         """
         Remove the multi-state at given index.
 
-        Params
+        Param
             index: The index of the multi-state to remove.
 
         Raise
@@ -626,7 +626,7 @@ class Datastore:
         """
         Remove the given multi-state.
 
-        Params
+        Param
             multiState: The multi-state to remove.
 
         Raise
@@ -652,7 +652,7 @@ class Datastore:
         """
         Get the signed integer at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -680,7 +680,7 @@ class Datastore:
         """
         Remove the signed integer at given index.
 
-        Params
+        Param
             index: The index of the signed integer to remove.
 
         Raise
@@ -696,7 +696,7 @@ class Datastore:
         """
         Remove the given signed integer.
 
-        Params
+        Param
             signedInteger: The signed integer to remove.
 
         Raise
@@ -722,7 +722,7 @@ class Datastore:
         """
         Get the integer array at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -750,7 +750,7 @@ class Datastore:
         """
         Remove the signed integer array at given index.
 
-        Params
+        Param
             index: The index of the signed integer array to remove.
 
         Raise
@@ -766,7 +766,7 @@ class Datastore:
         """
         Remove the given signed integer array.
 
-        Params
+        Param
             intArray: The signed integer array to remove.
 
         Raise
@@ -792,7 +792,7 @@ class Datastore:
         """
         Get the unsigned integer at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -820,7 +820,7 @@ class Datastore:
         """
         Remove the unsigned integer at given index.
 
-        Params
+        Param
             index: The index of the unsigned integer to remove.
 
         Raise
@@ -836,7 +836,7 @@ class Datastore:
         """
         Remove the given unsigned integer.
 
-        Params
+        Param
             unsignedInteger: The unsigned integer to remove.
 
         Raise
@@ -863,7 +863,7 @@ class Datastore:
         """
         Get the integer array at the given index.
 
-        Params
+        Param
             index: the given index.
 
         Return
@@ -891,7 +891,7 @@ class Datastore:
         """
         Remove the unsigned integer array at given index.
 
-        Params
+        Param
             index: The index of the unsigned integer array to remove.
 
         Raise
@@ -907,7 +907,7 @@ class Datastore:
         """
         Remove the given unsigned integer array.
 
-        Params
+        Param
             intArray: The unsigned integer array to remove.
 
         Raise

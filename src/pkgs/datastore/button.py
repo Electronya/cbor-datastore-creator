@@ -29,7 +29,7 @@ class Button:
         """
         Constructor.
 
-        Params:
+        Param
             data: The object data.
         """
         self._logger = logging.getLogger('app.datastore.button')
@@ -68,7 +68,7 @@ class Button:
         """
         Check if the time (long press and inactive times) is valid.
 
-        Params
+        Param
             time: the time to validate.
 
         Return
@@ -91,7 +91,7 @@ class Button:
         """
         Set the object name.
 
-        Params
+        Param
             name: the object name.
         """
         self._data.name = name
@@ -118,7 +118,7 @@ class Button:
         """
         Set the object index.
 
-        Params
+        Param
             index: The new object index.
 
         Raise
@@ -141,7 +141,7 @@ class Button:
         """
         Set the object long press time.
 
-        Params
+        Param
             time: The new object long press time (in ms).
 
         Raise
@@ -155,7 +155,7 @@ class Button:
         """
         Set the object inactive time.
 
-        Params
+        Param
             time: The new object inactive time (in ms).
 
         Raise
