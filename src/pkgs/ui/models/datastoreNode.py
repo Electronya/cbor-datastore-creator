@@ -31,7 +31,7 @@ class DatastoreNode(object):
         parent: The node parent.
     """
     def __init__(self, type: DatastoreNodeType, data: DatastoreProto = None,
-                 name: str = None, parent: QModelIndex = None) -> None:
+                 name: str = None, parent: 'DatastoreNode' = None) -> None:
         self._type = type
         self._data = data
         self._name: str = name
@@ -118,7 +118,7 @@ class DatastoreNode(object):
         Return
             The node Qt flag.
         """
-        if self._type == DatastoreNodeType.OBJ_LIST:
-            return Qt.ItemFlag.NoItemFlags
-        return Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEditable | \
-            Qt.ItemFlag.ItemIsEnabled
+        flags = Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled
+        if self._type != DatastoreNodeType.OBJ_LIST:
+            flags |= Qt.ItemFlag.ItemIsEditable
+        return flags

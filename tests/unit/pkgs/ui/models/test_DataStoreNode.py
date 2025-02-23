@@ -148,11 +148,14 @@ class TestDatastoreNode(TestCase):
     def test_getFlagsReturnSelectableOrNoFlag(self) -> None:
         """
         The getFlags method must return the selectable, editable and enabled
-        flag if it a store or an object node, or the none flag otherwise.
+        flag if it a store or an object node, or the selectable and enabled
+        flag otherwise.
         """
         for uut in self._uuts:
             if uut._type == DatastoreNodeType.OBJ_LIST:
-                self.assertEqual(Qt.ItemFlag.NoItemFlags, uut.getFlags())
+                flags = Qt.ItemFlag.ItemIsSelectable | \
+                    Qt.ItemFlag.ItemIsEnabled
+                self.assertEqual(flags, uut.getFlags())
             else:
                 flags = Qt.ItemFlag.ItemIsSelectable | \
                     Qt.ItemFlag.ItemIsEditable | Qt.ItemFlag.ItemIsEnabled
