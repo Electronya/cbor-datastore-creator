@@ -8,7 +8,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
     The datastore model class.
     """
     def __init__(self, root: DatastoreNode, parent: qtc.QObject = None):
-        qtc.QAbstractItemModel.__init__(parent)
+        super(DatastoreModel, self).__init__(parent)
         self._root = root
 
     def rowCount(self, index: qtc.QModelIndex) -> int:
@@ -103,7 +103,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
         return self.createIndex(parent.getRow(), 0, parent)
 
     def index(self, row: int, column: int,
-              parent: qtc.QModelIndex) -> qtc.QModelIndex:
+              index: qtc.QModelIndex) -> qtc.QModelIndex:
         """
         Get the node index at the given row and column.
 
@@ -115,11 +115,11 @@ class DatastoreModel(qtc.QAbstractItemModel):
         Return
             The node index.
         """
-        parentNode = self._root
-        if parent.isValid():
-            parentNode = parent.internalPointer()
+        node = self._root
+        if index.isValid():
+            node = index.internalPointer()
 
-        child = parentNode.getChild(row)
+        child = node.getChild(row)
 
         if child is None:
             return qtc.QModelIndex()

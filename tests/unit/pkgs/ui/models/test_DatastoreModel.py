@@ -197,27 +197,27 @@ class TestDatastoreModel(TestCase):
         valid and return either the child index at the given row and column
         when found or an invalid index if no child was found.
         """
-        parent = Mock()
-        parentNode = Mock()
+        nodeIdx = Mock()
+        node = Mock()
         childIndex = Mock()
         children = [Mock(), None]
         row = 2
         column = 10
         for child in children:
-            parent.isValid.return_value = True
-            parent.internalPointer.return_value = parentNode
-            parentNode.getChild.return_value = child
+            nodeIdx.isValid.return_value = True
+            nodeIdx.internalPointer.return_value = node
+            node.getChild.return_value = child
             with patch(self._QModelIndexCls) as mockedIndexCls, \
                     patch.object(DatastoreModel, 'createIndex') \
                     as mockedCreateIdx:
                 mockedIndexCls.return_value = childIndex
                 mockedCreateIdx.return_value = childIndex
-                parentNode.getChild.return_value = child
-                result = self._uut.index(row, column, parent)
+                node.getChild.return_value = child
+                result = self._uut.index(row, column, nodeIdx)
                 if child is None:
                     mockedIndexCls.assert_called_once_with()
                 else:
                     mockedCreateIdx.assert_called_once_with(row, column, child)
-                parent.internalPointer.assert_called_once_with()
+                nodeIdx.internalPointer.assert_called_once_with()
                 self.assertEqual(childIndex, result)
-            parent.reset_mock()
+            nodeIdx.reset_mock()
