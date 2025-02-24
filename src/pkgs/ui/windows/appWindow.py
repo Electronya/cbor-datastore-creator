@@ -19,13 +19,13 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         self._logger = logging.getLogger('app.windows.main')
         self._logger.info('loading UI...')
         self.setupUi(self)
-        self._initUI()
+        self._initUi()
 
-    def _initUI(self) -> None:
+    def _initUi(self) -> None:
         """
         Initialize the UI models.
         """
-        pass
+        self.actionNew.triggered.connect(self._createNewStore)
 
     @qtc.Slot(qtw.QMessageBox.Icon, Exception)
     def _createErrorMsgBox(self, lvl: qtw.QMessageBox.Icon,

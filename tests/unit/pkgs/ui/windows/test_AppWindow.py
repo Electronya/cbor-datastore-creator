@@ -55,17 +55,15 @@ class TestAppWindow(TestCase):
             testAppWindow = AppWindow()
             mockedSetupUi.assert_called_once_with(testAppWindow)
 
-    def test_constructorInitUI(self) -> None:
+    def test_constructorInitUi(self) -> None:
         """
         The constructor must initialize the UI submodules.
         """
-        with patch(self.QMainWindow), \
-                patch(self.QMainWindow), patch.object(AppWindow, 'setupUi'), \
-                patch.object(AppWindow, '_initUI') as mockedInitUI:
+        with patch(self._QMainWindow), \
+                patch(self._QMainWindow), patch.object(AppWindow, 'setupUi'), \
+                patch.object(AppWindow, '_initUi') as mockedInitUi:
             AppWindow()
-            mockedInitUI.assert_called_once()
-
-    def test_createErrorMsgBoxNewMsgBox(self):
+            mockedInitUi.assert_called_once()
         """
         The _createErrorMsgBox method must create the new message box.
         """
