@@ -109,6 +109,7 @@ class DatastoreNode(object):
         """
         if index >= 0 and index <= len(self._children):
             self._children.insert(index, child)
+            child._parent = self
             return True
         return False
 

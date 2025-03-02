@@ -145,6 +145,7 @@ class TestDatastoreNode(TestCase):
         child = Mock()
         for uut in self._uuts:
             self.assertTrue(uut.addChildAt(index, child))
+            self.assertEqual(uut, child._parent)
             self.assertEqual(child, uut._children[index])
 
     def test_getParentReturnParent(self) -> None:
