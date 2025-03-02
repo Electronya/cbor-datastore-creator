@@ -96,6 +96,22 @@ class DatastoreNode(object):
         """
         self._children.append(child)
 
+    def addChildAt(self, index: int, child: 'DatastoreNode') -> bool:
+        """
+        Add a child at the given index.
+
+        Param
+            index: The new child index.
+            child: The new child.
+
+        Return
+            True if the operation succeeded, false otherwise.
+        """
+        if index >= 0 and index <= len(self._children):
+            self._children.insert(index, child)
+            return True
+        return False
+
     def getParent(self) -> 'DatastoreNode':
         """
         Get the node parent.

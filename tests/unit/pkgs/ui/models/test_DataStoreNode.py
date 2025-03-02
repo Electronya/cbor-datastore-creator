@@ -127,6 +127,26 @@ class TestDatastoreNode(TestCase):
             self.assertEqual(newChild, uut._children[-1])
             self.assertEqual(expectedChildCount, len(uut._children))
 
+    def test_addChildAtIndexOutOfRange(self) -> None:
+        """
+        The addChildAt must return false when the given index is out of range.
+        """
+        child = Mock()
+        for uut in self._uuts:
+            indexes = [-1, len(uut._children) + 1]
+            for index in indexes:
+                self.assertFalse(uut.addChildAt(index, child))
+
+    def test_addChildAtInsertNewChild(self) -> None:
+        """
+        The addChildAt must return true and insert the .
+        """
+        index = 0
+        child = Mock()
+        for uut in self._uuts:
+            self.assertTrue(uut.addChildAt(index, child))
+            self.assertEqual(child, uut._children[index])
+
     def test_getParentReturnParent(self) -> None:
         """
         The getParent method must return the node parent if it exist, none
