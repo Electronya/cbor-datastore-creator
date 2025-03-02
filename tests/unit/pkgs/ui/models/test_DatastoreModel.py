@@ -114,23 +114,26 @@ class TestDatastoreModel(TestCase):
 
     def test_setDataInvalidNode(self) -> None:
         """
-        The setData method must do nothing if the node is invalid.
+        The setData method must return false and do nothing if the node is
+        invalid.
         """
         name = 'new name'
         nodeIdx = Mock()
         nodeIdx.isValid.return_value = False
-        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.EditRole)
+        self.assertFalse(self._uut.setData(nodeIdx, name,
+                                           Qt.ItemDataRole.EditRole))
         nodeIdx.internalPointer.assert_not_called()
 
     def test_setDataNotEditRole(self) -> None:
         """
-        The setData method must do nothing if the node is valid and the role
-        is not the edit one.
+        The setData method must return false do nothing if the node is valid
+        and the role is not the edit one.
         """
         name = 'new name'
         nodeIdx = Mock()
         nodeIdx.isValid.return_value = True
-        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.DisplayRole)
+        self.assertFalse(self._uut.setData(nodeIdx, name,
+                                           Qt.ItemDataRole.DisplayRole))
         nodeIdx.internalPointer.assert_not_called()
 
     def test_setDataUpdateNodeName(self) -> None:
@@ -143,7 +146,8 @@ class TestDatastoreModel(TestCase):
         nodeIdx = Mock()
         nodeIdx.isValid.return_value = True
         nodeIdx.internalPointer.return_value = node
-        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.EditRole)
+        self.assertTrue(self._uut.setData(nodeIdx, name,
+                                          Qt.ItemDataRole.EditRole))
         nodeIdx.internalPointer.assert_called_once_with()
         node.setName.assert_called_once_with(name)
 

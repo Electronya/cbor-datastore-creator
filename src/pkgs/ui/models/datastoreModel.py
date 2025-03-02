@@ -56,7 +56,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
                 role == qtc.Qt.ItemDataRole.EditRole:
             return node.getName()
 
-    def setData(self, index: qtc.QModelIndex, data: str, role: int) -> None:
+    def setData(self, index: qtc.QModelIndex, data: str, role: int) -> bool:
         """
         Set the display data of the noe at the given index.
 
@@ -64,10 +64,15 @@ class DatastoreModel(qtc.QAbstractItemModel):
             index: The index of the node.
             data: The display data.
             role: The role used to call this method.
+
+        Return
+            True if the operation succeeded, false otherwise.
         """
         if index.isValid() and role == qtc.Qt.ItemDataRole.EditRole:
             node = index.internalPointer()
             node.setName(data)
+            return True
+        return False
 
     def headerData(self, section: int, orientation: qtc.Qt.Orientation,
                    role: int) -> str:
