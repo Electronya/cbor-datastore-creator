@@ -112,6 +112,41 @@ class TestDatastoreModel(TestCase):
                 self._mockedRoot.getName.asset_called_once_with()
             self.assertEqual(name, result)
 
+    def test_setDataInvalidNode(self) -> None:
+        """
+        The setData method must do nothing if the node is invalid.
+        """
+        name = 'new name'
+        nodeIdx = Mock()
+        nodeIdx.isValid.return_value = False
+        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.EditRole)
+        nodeIdx.internalPointer.assert_not_called()
+
+    def test_setDataNotEditRole(self) -> None:
+        """
+        The setData method must do nothing if the node is valid and the role
+        is not the edit one.
+        """
+        name = 'new name'
+        nodeIdx = Mock()
+        nodeIdx.isValid.return_value = True
+        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.DisplayRole)
+        nodeIdx.internalPointer.assert_not_called()
+
+    def test_setDataUpdateNodeName(self) -> None:
+        """
+        The setData method must update the node name if the node is valid and
+        the role is the edit one.
+        """
+        name = 'new name'
+        node = Mock()
+        nodeIdx = Mock()
+        nodeIdx.isValid.return_value = True
+        nodeIdx.internalPointer.return_value = node
+        self._uut.setData(nodeIdx, name, Qt.ItemDataRole.EditRole)
+        nodeIdx.internalPointer.assert_called_once_with()
+        node.setName.assert_called_once_with(name)
+
     def test_flagsReturnNodeFlags(self) -> None:
         """
         The flags method must return the given node flags if the index is
