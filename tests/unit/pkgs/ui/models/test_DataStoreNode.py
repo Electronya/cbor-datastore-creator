@@ -80,6 +80,20 @@ class TestDatastoreNode(TestCase):
             else:
                 self.assertEqual(uut._name, uut.getName())
 
+    def test_setNameSaveNewName(self) -> None:
+        """
+        The setName method must save the new name in the node internal data
+        when the node is of store or object type. If the node is of object list
+        type, nothing is done.
+        """
+        name = 'new name'
+        for uut in self._uuts:
+            uut.setName(name)
+            if uut._type == DatastoreNodeType.OBJ_LIST:
+                self.assertEqual(self._listName, uut._name)
+            else:
+                uut._data.setName.assert_called_once_with(name)
+
     def test_getChildCountReturnCount(self) -> None:
         """
         The getChildCount method must return the node child count.

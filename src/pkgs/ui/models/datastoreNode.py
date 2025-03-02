@@ -1,5 +1,5 @@
 from enum import Enum
-from PySide6.QtCore import QModelIndex, Qt
+from PySide6.QtCore import Qt
 from typing import Protocol
 
 
@@ -8,6 +8,9 @@ class DatastoreProto(Protocol):
     The datastore object protocol.
     """
     def getName(self) -> str:
+        pass
+
+    def setName(self, name: str) -> None:
         pass
 
 
@@ -51,6 +54,16 @@ class DatastoreNode(object):
         if self._type != DatastoreNodeType.OBJ_LIST:
             return self._data.getName()
         return self._name
+
+    def setName(self, name: str) -> None:
+        """
+        Set the node name.
+
+        Param
+            name: the node name.
+        """
+        if self._type != DatastoreNodeType.OBJ_LIST:
+            self._data.setName(name)
 
     def getChildCount(self) -> int:
         """
