@@ -148,6 +148,34 @@ class TestDatastoreNode(TestCase):
             self.assertEqual(uut, child._parent)
             self.assertEqual(child, uut._children[index])
 
+    def test_removeChildAtIndexOutOfRange(self) -> None:
+        """
+        The removeChildAt must return false when the given index is out of
+        range.
+        """
+        for uut in self._uuts:
+            indexes = [-1, len(uut._children) + 1]
+            for index in indexes:
+                self.assertFalse(uut.removeChildAt(index))
+
+    def test_removeChildAtNoChildren(self) -> None:
+        """
+        The removeChildAt must return false when the node has no children.
+        """
+        self.assertFalse(self._uutObj.removeChildAt(0))
+
+    def test_removeChildAtRemoveChild(self) -> None:
+        """
+        The removeChildAt must return false when the given index is out of
+        range.
+        """
+        index = 0
+        for uut in self._uuts:
+            if len(uut._children) > 0:
+                newLength = len(uut._children) - 1
+                self.assertTrue(uut.removeChildAt(index))
+                self.assertEqual(newLength, len(uut._children))
+
     def test_getParentReturnParent(self) -> None:
         """
         The getParent method must return the node parent if it exist, none

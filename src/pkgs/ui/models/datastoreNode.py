@@ -113,6 +113,21 @@ class DatastoreNode(object):
             return True
         return False
 
+    def removeChildAt(self, index: int) -> bool:
+        """
+        Remove the child at the given index.
+
+        Param
+            index: The index of the child to removed.
+
+        Return
+            True if the operation succeeds, false otherwise.
+        """
+        if index >= 0 and index < len(self._children):
+            self._children.pop(index)
+            return True
+        return False
+
     def getParent(self) -> 'DatastoreNode':
         """
         Get the node parent.
