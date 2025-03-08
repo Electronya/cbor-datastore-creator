@@ -31,6 +31,8 @@ class TestDatastoreModel(TestCase):
             'FloatArrayData'
         self._FloatArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
             'FloatArrayNode'
+        self._IntDataCls = 'pkgs.ui.models.datastoreModel.IntData'
+        self._IntNodeCls = 'pkgs.ui.models.datastoreModel.IntNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -190,6 +192,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertFloatArrayNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendIntNode(self) -> None:
+        """
+        The _appendIntNode method must create a new int node and append
+        it the given int list.
+        """
+        name = 'NEW_INT'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._IntDataCls) as mockedData, \
+                patch(self._IntNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendIntNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertIntNode(self) -> None:
+        """
+        The _insertIntNode method must create a new int node and
+        append it the given int list.
+        """
+        row = 3
+        name = 'NEW_INT'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._IntDataCls) as mockedData, \
+                patch(self._IntNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertIntNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
