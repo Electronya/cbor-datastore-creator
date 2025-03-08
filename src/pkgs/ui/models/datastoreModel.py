@@ -142,3 +142,20 @@ class DatastoreModel(qtc.QAbstractItemModel):
         if child is None:
             return qtc.QModelIndex()
         return self.createIndex(row, column, child)
+
+    def insertRow(self, row: int, index: qtc.QModelIndex) -> bool:
+        """
+        Insert a row.
+
+        Param
+            row: The new row position.
+            index: The node index to which add the row.
+
+        Return
+            True if the operation succeeds, false otherwise.
+        """
+        node = self._root
+        if index.isValid():
+            node = index.internalPointer()
+        self.beginInsertRows(index, row, row + 1)
+        self.endInsertRows()
