@@ -6,55 +6,55 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.ui.models import IntArrayData, IntArrayElement, \
-    IntArrayNode, IntData, IntNode, NodeType                    # noqa: E402
+from pkgs.ui.models import UintArrayData, UintArrayElement, \
+    UintArrayNode, UintData, UintNode, NodeType                 # noqa: E402
 
 
-class TestIntNode(TestCase):
+class TestUintNode(TestCase):
     """
-    IntNode class test cases.
+    UintNode class test cases.
     """
     def setUp(self) -> None:
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.intNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.uintNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
-        The constructor must call the base class constructor save the int
+        The constructor must call the base class constructor save the uint
         object data.
         """
         name = 'test node'
         data = Mock()
         parent = Mock()
         with patch(f"{self._BaseNodeCls}.__init__") as mockedBaseNode:
-            uut = IntNode(name, data, parent)
-            mockedBaseNode.assert_called_once_with(name, NodeType.INT,
+            uut = UintNode(name, data, parent)
+            mockedBaseNode.assert_called_once_with(name, NodeType.UINT,
                                                    parent=parent)
             self.assertEqual(data, uut._data)
 
 
-class TestIntArrayNode(TestCase):
+class TestUintArrayNode(TestCase):
     """
-    IntArrayNode class test cases.
+    UintArrayNode class test cases.
     """
     def setUp(self) -> None:
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.intNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
-        The constructor must call the base class constructor save the int array
-        object data.
+        The constructor must call the base class constructor save the uint
+        array object data.
         """
         name = 'test node'
         data = Mock()
         parent = Mock()
         with patch(f"{self._BaseNodeCls}.__init__") as mockedBaseNode:
-            uut = IntArrayNode(name, data, parent)
-            mockedBaseNode.assert_called_once_with(name, NodeType.INT_ARRAY,
+            uut = UintArrayNode(name, data, parent)
+            mockedBaseNode.assert_called_once_with(name, NodeType.UINT_ARRAY,
                                                    parent=parent)
             self.assertEqual(data, uut._data)

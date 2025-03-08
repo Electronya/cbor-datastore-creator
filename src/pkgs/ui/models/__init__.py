@@ -9,3 +9,5 @@ from .intNode import IntArrayData, IntArrayElement, IntArrayNode, \
     IntData, IntNode                                            # noqa: F401
 from .multiStateNode import MultiStateData, MultiStateNode      # noqa: F401
 from .objectListNode import ObjectListNode                      # noqa: F401
+from .uintNode import UintArrayData, UintArrayElement, UintArrayNode, \
+    UintData, UintNode                                          # noqa: F401
