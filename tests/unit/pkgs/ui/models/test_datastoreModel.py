@@ -31,6 +31,10 @@ class TestDatastoreModel(TestCase):
             'FloatArrayData'
         self._FloatArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
             'FloatArrayNode'
+        self._IntArrayDataCls = 'pkgs.ui.models.datastoreModel.' \
+            'IntArrayData'
+        self._IntArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
+            'IntArrayNode'
         self._IntDataCls = 'pkgs.ui.models.datastoreModel.IntData'
         self._IntNodeCls = 'pkgs.ui.models.datastoreModel.IntNode'
         self._mockedRoot = Mock()
@@ -229,6 +233,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertIntNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendIntArrayNode(self) -> None:
+        """
+        The _appendIntArrayNode method must create a new int array node and
+        append it the given int array list.
+        """
+        name = 'NEW_INT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._IntArrayDataCls) as mockedData, \
+                patch(self._IntArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendIntArrayNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertIntArrayNode(self) -> None:
+        """
+        The _insertIntArrayNode method must create a new int array node and
+        append it the given int array list.
+        """
+        row = 3
+        name = 'NEW_INT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._IntArrayDataCls) as mockedData, \
+                patch(self._IntArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertIntArrayNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
