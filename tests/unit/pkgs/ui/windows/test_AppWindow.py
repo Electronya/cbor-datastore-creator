@@ -1,3 +1,5 @@
+from datetime import datetime
+from freezegun import freeze_time
 from unittest import TestCase
 from unittest.mock import call, Mock, patch
 
@@ -9,7 +11,6 @@ import sys
 sys.path.append(os.path.abspath('./src'))
 
 from pkgs.ui.windows import AppWindow                       # noqa: E402
-# from pkgs.ui.models import DatastoreNodeType                # noqa: E402
 
 
 class TestAppWindow(TestCase):
@@ -20,11 +21,9 @@ class TestAppWindow(TestCase):
         self._QMainWindow = 'pkgs.ui.windows.appWindow.qtw.QMainWindow.' \
             '__init__'
         self._QMsgBoxCls = 'pkgs.ui.windows.appWindow.qtw.QMessageBox'
-        self._QDateCls = 'pkgs.ui.windows.appWindow.qtc.QDate'
         self._DatastoreNodeCls = 'pkgs.ui.windows.appWindow.DatastoreNode'
+        self._ObjectListNodeCls = 'pkgs.ui.windows.appWindow.ObjectListNode'
         self._DatastoreModelCls = 'pkgs.ui.windows.appWindow.DatastoreModel'
-        self._DatastoreCls = 'pkgs.ui.windows.appWindow.Datastore'
-        self._DatastoreDataCls = 'pkgs.ui.windows.appWindow.DatastoreData'
         self._loggingMod = 'pkgs.ui.windows.appWindow.logging'
         self._mockedLogger = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
@@ -32,6 +31,7 @@ class TestAppWindow(TestCase):
                 patch.object(AppWindow, '_initUi'):
             mockedLoggingMod.getLogger.return_value = self._mockedLogger
             self._uut = AppWindow()
+            self._uut._root = Mock()
         self._setUpMockedWidgets()
         self._mockedLogger.reset_mock()
 
@@ -66,7 +66,7 @@ class TestAppWindow(TestCase):
 
     def test_constructorInitUi(self) -> None:
         """
-        The constructor must initialize the UI submodules.
+        The constructor must initialize the UI.
         """
         with patch(self._QMainWindow), \
                 patch(self._QMainWindow), patch.object(AppWindow, 'setupUi'), \
@@ -79,60 +79,34 @@ class TestAppWindow(TestCase):
         The _initUi method must connect all the window events to there
         corresponding slots.
         """
-        self._uut._initUi()
-        self._uut.actionNew.triggered.connect \
-            .assert_called_once_with(self._uut._createNewStore)
+        root = Mock()
+        with patch(self._ObjectListNodeCls) as mockedObjectListNode:
+            mockedObjectListNode.return_value = root
+            self._uut._initUi()
+            self.assertEqual(root, self._uut._storeRoot)
+            self._uut.actionNew.triggered.connect \
+                .assert_called_once_with(self._uut._createNewStore)
 
+    @freeze_time('Jan 14th, 2025')
     def test_createNewStoreCreateNewStore(self) -> None:
         """
         The _createNewStore method must create a new empty datastore and create
         the tree view model based on it.
         """
-        # date = '2025-02-24'
-        # datastoreData = Mock()
-        # datastore = Mock()
-        # rootNode = Mock()
-        # datastoreNode = Mock()
-        # model = Mock()
-        # nodes = [rootNode, datastoreNode, None, None, None,
-        #          None, None, None, None, None, None]
-        # nodeNames = ['', None, 'Buttons', 'Button Arrays', 'Floats',
-        #              'Float Arrays', 'Multi-States', 'Signed Integers',
-        #              'Signed Integer Arrays', 'Unsigned Integers',
-        #              'Unsigned Integer Arrays']
-        # expectedCalls = []
-        # for idx, node in enumerate(nodes):
-        #     if idx == 0:
-        #         expectedCalls.append(call(DatastoreNodeType.OBJ_LIST,
-        #                                   name=nodeNames[idx]))
-        #     elif nodeNames[idx] is None:
-        #         expectedCalls.append(call(DatastoreNodeType.STORE,
-        #                                   data=datastore, parent=rootNode))
-        #     else:
-        #         expectedCalls.append(call(DatastoreNodeType.OBJ_LIST,
-        #                                   name=nodeNames[idx],
-        #                                   parent=datastoreNode))
-        # with patch(self._QDateCls) as mockedDate, \
-        #         patch(self._DatastoreDataCls) as mockedDatastoreData, \
-        #         patch(self._DatastoreCls) as mockedDatastore, \
-        #         patch(self._DatastoreNodeCls) as mockedDatastoreNode, \
-        #         patch(self._DatastoreModelCls) as mockedDatastoreModel:
-        #     mockedDate.currentDate().toString.return_value = date
-        #     mockedDatastoreData.return_value = datastoreData
-        #     mockedDatastore.return_value = datastore
-        #     mockedDatastoreNode.side_effect = nodes
-        #     mockedDatastoreModel.return_value = model
-        #     self._uut._createNewStore()
-        #     self._mockedLogger.info \
-        #         .assert_called_once_with('creating new datastore')
-        #     mockedDate.currentDate() \
-        #         .toString.assert_called_once_with('yyyy-mm-dd')
-        #     mockedDatastoreData.assert_called_once_with('datastore', date)
-        #     mockedDatastore.assert_called_once_with(datastoreData)
-        #     mockedDatastoreNode.assert_has_calls(expectedCalls)
-        #     mockedDatastoreModel.assert_called_once_with(rootNode)
-        #     self._uut.tvObjectList.setModel.assert_called_once_with(model)
-        #     self._uut.tvObjectList.expandAll.assert_called_once_with()
+        datastoreNode = Mock()
+        model = Mock()
+        with patch(self._DatastoreNodeCls) as mockedDatastoreNode, \
+                patch(self._DatastoreModelCls) as mockedDatastoreModel:
+            mockedDatastoreNode.createNewStore.return_value = datastoreNode
+            mockedDatastoreModel.return_value = model
+            self._uut._createNewStore()
+            self._mockedLogger.info \
+                .assert_called_once_with('creating new datastore')
+            mockedDatastoreNode.createNewStore \
+                .assert_called_once_with(self._uut._storeRoot)
+            mockedDatastoreModel.assert_called_once_with(self._uut._storeRoot)
+            self._uut.tvObjectList.setModel.assert_called_once_with(model)
+            self._uut.tvObjectList.expandAll.assert_called_once_with()
 
     def test_createErrorMsgBoxNewMsgBox(self) -> None:
         """

@@ -91,6 +91,6 @@ class DatastoreNode(BaseNode):
         metadata = DatastoreMetadata(datetime.now())
         store = DatastoreNode('datastore', root, metadata)
         for type in NodeType:
-            if type != NodeType.STORE or type != NodeType.OBJ_LIST:
-                store.addChild(ObjectListNode(type.name, store))
+            if type != NodeType.STORE and type != NodeType.OBJ_LIST:
+                ObjectListNode(type.name, store)
         return store

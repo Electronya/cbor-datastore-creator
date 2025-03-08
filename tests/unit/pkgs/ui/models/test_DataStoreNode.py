@@ -113,7 +113,7 @@ class TestDatastoreNode(TestCase):
         objectLists = []
         calls = []
         for type in NodeType:
-            if type != NodeType.STORE or type != NodeType.OBJ_LIST:
+            if type != NodeType.STORE and type != NodeType.OBJ_LIST:
                 objectLists.append(Mock())
                 calls.append(call(type.name, newStore))
         with patch(self._MetadataCls) as mockedStoreMetadata, \
