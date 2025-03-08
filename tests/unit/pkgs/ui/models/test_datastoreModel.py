@@ -260,3 +260,9 @@ class TestDatastoreModel(TestCase):
                 nodeIdx.internalPointer.assert_called_once_with()
                 self.assertEqual(childIndex, result)
             nodeIdx.reset_mock()
+
+    def test_insertRowAddRootSuccess(self) -> None:
+        """
+        The insertRow method must add the new child to the root node when the
+        given index is invalid and return true when the operation succeeds.
+        """

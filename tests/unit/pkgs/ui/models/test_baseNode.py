@@ -11,9 +11,9 @@ sys.path.append(os.path.abspath('./src'))
 from pkgs.ui.models import BaseNode, NodeType                   # noqa: E402
 
 
-class TestDatastoreNode(TestCase):
+class TestBaseNode(TestCase):
     """
-    DatastoreNode test cases.
+    BaseNode test cases.
     """
     def setUp(self) -> None:
         """
