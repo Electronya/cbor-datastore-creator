@@ -7,9 +7,9 @@ class IntData:
     """
     The int node data.
     """
-    min: int
-    max: int
-    default: int
+    min: int = 0
+    max: int = 0
+    default: int = 0
 
 
 class IntNode(BaseNode):
@@ -27,9 +27,9 @@ class IntArrayElement:
     The int array element.
     """
     name: str
-    min: int
-    max: int
-    default: int
+    min: int = 0
+    max: int = 0
+    default: int = 0
 
 
 @dataclass
