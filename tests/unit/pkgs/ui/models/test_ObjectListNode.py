@@ -19,7 +19,7 @@ class TestObjectList(TestCase):
         """
         self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
 
-    def test_constructorBaseClassInitAddToParent(self) -> None:
+    def test_constructorBaseClassInit(self) -> None:
         """
         The constructor must call the base class constructor.
         """
