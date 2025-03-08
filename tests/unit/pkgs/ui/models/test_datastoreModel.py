@@ -21,6 +21,10 @@ class TestDatastoreModel(TestCase):
         self._QModelIndexCls = 'pkgs.ui.models.datastoreModel.qtc.QModelIndex'
         self._ButtonDataCls = 'pkgs.ui.models.datastoreModel.ButtonData'
         self._ButtonNodeCls = 'pkgs.ui.models.datastoreModel.ButtonNode'
+        self._ButtonArrayDataCls = 'pkgs.ui.models.datastoreModel.' \
+            'ButtonArrayData'
+        self._ButtonArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
+            'ButtonArrayNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -53,6 +57,27 @@ class TestDatastoreModel(TestCase):
             mockedButtonData.assert_called_once_with()
             mockedButtonNode.assert_called_once_with(name, buttonData)
             buttonList.addChild.assert_called_once_with(buttonNode)
+
+    def test_insertButtonNode(self) -> None:
+        """
+        The _insertButtonNode method must create a new button array node and
+        append it the given button array list.
+        """
+        row = 3
+        name = 'NEW_BUTTON_ARRAY'
+        buttonArrayData = Mock()
+        buttonArrayNode = Mock()
+        buttonArrayList = Mock()
+        with patch(self._ButtonArrayDataCls) as mockedButtonArrayData, \
+                patch(self._ButtonArrayNodeCls) as mockedButtonArrayNode:
+            mockedButtonArrayData.return_value = buttonArrayData
+            mockedButtonArrayNode.return_value = buttonArrayNode
+            self._uut._insertButtonNode(buttonArrayList, row)
+            mockedButtonArrayData.assert_called_once_with()
+            mockedButtonArrayNode.assert_called_once_with(name,
+                                                          buttonArrayData)
+            buttonArrayList.addChildAt.assert_called_once_with(row,
+                                                               buttonArrayNode)
 
     def test_rowCountReturnRowCount(self) -> None:
         """

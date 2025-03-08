@@ -27,6 +27,17 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = ButtonNode('NEW_BUTTON', ButtonData())
         buttonList.addChild(node)
 
+    def _insertButtonNode(self, buttonArrayList: BaseNode, row: int) -> None:
+        """
+        Insert a button node.
+
+        Param
+            buttonArrayList: The button array list.
+            row: The insertion row.
+        """
+        node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
+        buttonArrayList.addChildAt(row, node)
+
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """
         Get the row count.
