@@ -27,6 +27,10 @@ class TestDatastoreModel(TestCase):
             'ButtonArrayNode'
         self._FloatDataCls = 'pkgs.ui.models.datastoreModel.FloatData'
         self._FloatNodeCls = 'pkgs.ui.models.datastoreModel.FloatNode'
+        self._FloatArrayDataCls = 'pkgs.ui.models.datastoreModel.' \
+            'FloatArrayData'
+        self._FloatArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
+            'FloatArrayNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -149,6 +153,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertFloatNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendFloatArrayNode(self) -> None:
+        """
+        The _appendFloatArrayNode method must create a new float array node and
+        append it the given float array list.
+        """
+        name = 'NEW_FLOAT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._FloatArrayDataCls) as mockedData, \
+                patch(self._FloatArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendFloatArrayNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertFloatArrayNode(self) -> None:
+        """
+        The _insertFloatArrayNode method must create a new float array node and
+        append it the given float array list.
+        """
+        row = 3
+        name = 'NEW_FLOAT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._FloatArrayDataCls) as mockedData, \
+                patch(self._FloatArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertFloatArrayNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)

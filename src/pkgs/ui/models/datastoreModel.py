@@ -80,6 +80,27 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = FloatNode('NEW_FLOAT', FloatData())
         list.addChildAt(row, node)
 
+    def _appendFloatArrayNode(self, list: BaseNode) -> None:
+        """
+        Append a float array node.
+
+        Param
+            list: The float array list node.
+        """
+        node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
+        list.addChild(node)
+
+    def _insertFloatArrayNode(self, list: BaseNode, row: int) -> None:
+        """
+        Insert a float array node.
+
+        Param
+            list: The float array list node.
+            row: The insertion row.
+        """
+        node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
+        list.addChildAt(row, node)
+
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """
         Get the row count.
