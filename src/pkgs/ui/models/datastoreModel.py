@@ -17,26 +17,47 @@ class DatastoreModel(qtc.QAbstractItemModel):
         super(DatastoreModel, self).__init__(parent)
         self._root = root
 
-    def _appendButtonNode(self, buttonList: BaseNode) -> None:
+    def _appendButtonNode(self, list: BaseNode) -> None:
         """
         Append a button node.
 
         Param
-            buttonList: The button list node.
+            list: The button list node.
         """
         node = ButtonNode('NEW_BUTTON', ButtonData())
-        buttonList.addChild(node)
+        list.addChild(node)
 
-    def _insertButtonNode(self, buttonArrayList: BaseNode, row: int) -> None:
+    def _insertButtonNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a button node.
 
         Param
-            buttonArrayList: The button array list.
+            list: The button list.
+            row: The insertion row.
+        """
+        node = ButtonNode('NEW_BUTTON', ButtonData())
+        list.addChildAt(row, node)
+
+    def _appendButtonArrayNode(self, list: BaseNode) -> None:
+        """
+        Append a button array node.
+
+        Param
+            list: The button array list node.
+        """
+        node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
+        list.addChild(node)
+
+    def _insertButtonArrayNode(self, list: BaseNode, row: int) -> None:
+        """
+        Insert a button array node.
+
+        Param
+            list: The button array list node.
             row: The insertion row.
         """
         node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
-        buttonArrayList.addChildAt(row, node)
+        list.addChildAt(row, node)
 
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """

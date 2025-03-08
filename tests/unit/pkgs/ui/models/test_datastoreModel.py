@@ -46,38 +46,73 @@ class TestDatastoreModel(TestCase):
         it the given button list.
         """
         name = 'NEW_BUTTON'
-        buttonData = Mock()
-        buttonNode = Mock()
-        buttonList = Mock()
-        with patch(self._ButtonDataCls) as mockedButtonData, \
-                patch(self._ButtonNodeCls) as mockedButtonNode:
-            mockedButtonData.return_value = buttonData
-            mockedButtonNode.return_value = buttonNode
-            self._uut._appendButtonNode(buttonList)
-            mockedButtonData.assert_called_once_with()
-            mockedButtonNode.assert_called_once_with(name, buttonData)
-            buttonList.addChild.assert_called_once_with(buttonNode)
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._ButtonDataCls) as mockedData, \
+                patch(self._ButtonNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendButtonNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
 
     def test_insertButtonNode(self) -> None:
         """
-        The _insertButtonNode method must create a new button array node and
-        append it the given button array list.
+        The _insertButtonNode method must create a new button node and
+        append it the given button list.
+        """
+        row = 3
+        name = 'NEW_BUTTON'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._ButtonDataCls) as mockedData, \
+                patch(self._ButtonNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertButtonNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendButtonArrayNode(self) -> None:
+        """
+        The _appendButtonArrayNode method must create a new button array node
+        and append it the given button array list.
+        """
+        name = 'NEW_BUTTON_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._ButtonArrayDataCls) as mockedData, \
+                patch(self._ButtonArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendButtonArrayNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertButtonArrayNode(self) -> None:
+        """
+        The _insertButtonArrayNode method must create a new button array node
+        and append it the given button array list.
         """
         row = 3
         name = 'NEW_BUTTON_ARRAY'
-        buttonArrayData = Mock()
-        buttonArrayNode = Mock()
-        buttonArrayList = Mock()
-        with patch(self._ButtonArrayDataCls) as mockedButtonArrayData, \
-                patch(self._ButtonArrayNodeCls) as mockedButtonArrayNode:
-            mockedButtonArrayData.return_value = buttonArrayData
-            mockedButtonArrayNode.return_value = buttonArrayNode
-            self._uut._insertButtonNode(buttonArrayList, row)
-            mockedButtonArrayData.assert_called_once_with()
-            mockedButtonArrayNode.assert_called_once_with(name,
-                                                          buttonArrayData)
-            buttonArrayList.addChildAt.assert_called_once_with(row,
-                                                               buttonArrayNode)
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._ButtonArrayDataCls) as mockedData, \
+                patch(self._ButtonArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertButtonArrayNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
 
     def test_rowCountReturnRowCount(self) -> None:
         """
