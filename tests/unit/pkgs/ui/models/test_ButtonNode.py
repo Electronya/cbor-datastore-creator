@@ -18,7 +18,7 @@ class TestButtonNode(TestCase):
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.buttonNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """

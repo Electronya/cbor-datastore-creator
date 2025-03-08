@@ -17,7 +17,7 @@ class TestObjectList(TestCase):
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.objectListNode.BaseNode'
 
     def test_constructorBaseClassInit(self) -> None:
         """
