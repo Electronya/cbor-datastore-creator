@@ -7,9 +7,9 @@ class FloatData:
     """
     The float node data.
     """
-    min: float
-    max: float
-    default: float
+    min: float = 0.0
+    max: float = 0.0
+    default: float = 0.0
 
 
 class FloatNode(BaseNode):
@@ -27,9 +27,9 @@ class FloatArrayElement:
     The float array element.
     """
     name: str
-    min: float
-    max: float
-    default: float
+    min: float = 0.0
+    max: float = 0.0
+    default: float = 0.0
 
 
 @dataclass
