@@ -23,7 +23,7 @@ class TestButtonNode(TestCase):
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
         The constructor must call the base class constructor save the button
-        object data.
+        array object data.
         """
         name = 'test node'
         data = Mock()
@@ -43,7 +43,7 @@ class TestButtonArrayNode(TestCase):
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.buttonNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """

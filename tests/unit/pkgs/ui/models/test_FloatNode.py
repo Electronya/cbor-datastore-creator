@@ -7,7 +7,7 @@ import sys
 sys.path.append(os.path.abspath('./src'))
 
 from pkgs.ui.models import FloatArrayData, FloatArrayElement, \
-    FloatArrayNode, FloatData, FloatNode, NodeType     # noqa: E402
+    FloatArrayNode, FloatData, FloatNode, NodeType              # noqa: E402
 
 
 class TestFloatNode(TestCase):
@@ -18,7 +18,7 @@ class TestFloatNode(TestCase):
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.intNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
@@ -43,12 +43,12 @@ class TestFloatArrayNode(TestCase):
         """
         Test cases setup.
         """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._BaseNodeCls = 'pkgs.ui.models.intNode.BaseNode'
 
     def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
-        The constructor must call the base class constructor save the button
-        object data.
+        The constructor must call the base class constructor save the float
+        array object data.
         """
         name = 'test node'
         data = Mock()
