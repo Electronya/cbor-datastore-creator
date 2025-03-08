@@ -43,6 +43,10 @@ class TestDatastoreModel(TestCase):
             'MultiStateNode'
         self._UintDataCls = 'pkgs.ui.models.datastoreModel.UintData'
         self._UintNodeCls = 'pkgs.ui.models.datastoreModel.UintNode'
+        self._UintArrayDataCls = 'pkgs.ui.models.datastoreModel.' \
+            'UintArrayData'
+        self._UintArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
+            'UintArrayNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -350,6 +354,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertUintNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendUintArrayNode(self) -> None:
+        """
+        The _appendUintArrayNode method must create a new uint array node and
+        append it the given uint array list.
+        """
+        name = 'NEW_UINT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._UintArrayDataCls) as mockedData, \
+                patch(self._UintArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendUintArrayNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertUintArrayNode(self) -> None:
+        """
+        The _insertUintArrayNode method must create a new uint array node and
+        append it the given uint array list.
+        """
+        row = 3
+        name = 'NEW_UINT_ARRAY'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._UintArrayDataCls) as mockedData, \
+                patch(self._UintArrayNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertUintArrayNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)

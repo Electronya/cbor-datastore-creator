@@ -185,6 +185,27 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = UintNode('NEW_UINT', UintData())
         list.addChildAt(row, node)
 
+    def _appendUintArrayNode(self, list: BaseNode) -> None:
+        """
+        Append a uint array node.
+
+        Param
+            list: The uint array list node.
+        """
+        node = UintArrayNode('NEW_UINT_ARRAY', UintArrayData())
+        list.addChild(node)
+
+    def _insertUintArrayNode(self, list: BaseNode, row: int) -> None:
+        """
+        Insert a uint array node.
+
+        Param
+            list: The uint array list node.
+            row: The insertion row.
+        """
+        node = UintArrayNode('NEW_UINT_ARRAY', UintArrayData())
+        list.addChildAt(row, node)
+
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """
         Get the row count.
