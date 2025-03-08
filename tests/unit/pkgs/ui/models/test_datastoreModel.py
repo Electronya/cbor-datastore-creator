@@ -41,6 +41,8 @@ class TestDatastoreModel(TestCase):
             'MultiStateData'
         self._MultiStateNodeCls = 'pkgs.ui.models.datastoreModel.' \
             'MultiStateNode'
+        self._UintDataCls = 'pkgs.ui.models.datastoreModel.UintData'
+        self._UintNodeCls = 'pkgs.ui.models.datastoreModel.UintNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -311,6 +313,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertMultiStateNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendUintNode(self) -> None:
+        """
+        The _appendUintNode method must create a new uint node and append
+        it the given uint list.
+        """
+        name = 'NEW_UINT'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._UintDataCls) as mockedData, \
+                patch(self._UintNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendUintNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertUintNode(self) -> None:
+        """
+        The _insertUintNode method must create a new uint node and
+        append it the given uint list.
+        """
+        row = 3
+        name = 'NEW_UINT'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._UintDataCls) as mockedData, \
+                patch(self._UintNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertUintNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)

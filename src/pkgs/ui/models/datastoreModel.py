@@ -164,6 +164,27 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = MultiStateNode('NEW_MULTI_STATE', MultiStateData())
         list.addChildAt(row, node)
 
+    def _appendUintNode(self, list: BaseNode) -> None:
+        """
+        Append a uint node.
+
+        Param
+            list: The uint list node.
+        """
+        node = UintNode('NEW_UINT', UintData())
+        list.addChild(node)
+
+    def _insertUintNode(self, list: BaseNode, row: int) -> None:
+        """
+        Insert a uint node.
+
+        Param
+            list: The uint list node.
+            row: The insertion row.
+        """
+        node = UintNode('NEW_UINT', UintData())
+        list.addChildAt(row, node)
+
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """
         Get the row count.
