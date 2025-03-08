@@ -1,15 +1,31 @@
 from PySide6 import QtCore as qtc
 
-from .datastoreNode import DatastoreNode
+from .baseNode import BaseNode, NodeType
+from .buttonNode import ButtonArrayData, ButtonArrayNode, \
+    ButtonData, ButtonNode
+from .floatNode import FloatArrayData, FloatArrayNode, FloatData, FloatNode
+from .intNode import IntArrayData, IntArrayNode, IntData, IntNode
+from .multiStateNode import MultiStateData, MultiStateNode
+from .uintNode import UintArrayData, UintArrayNode, UintData, UintNode
 
 
 class DatastoreModel(qtc.QAbstractItemModel):
     """
     The datastore model class.
     """
-    def __init__(self, root: DatastoreNode, parent: qtc.QObject = None):
+    def __init__(self, root: BaseNode, parent: qtc.QObject = None):
         super(DatastoreModel, self).__init__(parent)
         self._root = root
+
+    def _appendButtonNode(self, buttonList: BaseNode) -> None:
+        """
+        Append a button node.
+
+        Param
+            buttonList: The button list node.
+        """
+        node = ButtonNode('NEW_BUTTON', ButtonData())
+        buttonList.addChild(node)
 
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """
@@ -143,19 +159,19 @@ class DatastoreModel(qtc.QAbstractItemModel):
             return qtc.QModelIndex()
         return self.createIndex(row, column, child)
 
-    def insertRow(self, row: int, index: qtc.QModelIndex) -> bool:
+    def insertRow(self, row: int, parent: qtc.QModelIndex) -> bool:
         """
         Insert a row.
 
         Param
             row: The new row position.
-            index: The node index to which add the row.
+            parent: The parent node to which add a row.
 
         Return
             True if the operation succeeds, false otherwise.
         """
         node = self._root
-        if index.isValid():
-            node = index.internalPointer()
-        self.beginInsertRows(index, row, row + 1)
+        if parent.isValid():
+            node = parent.internalPointer()
+        self.beginInsertRows(parent, row, row + 1)
         self.endInsertRows()

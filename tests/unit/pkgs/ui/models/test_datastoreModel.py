@@ -19,6 +19,8 @@ class TestDatastoreModel(TestCase):
         self._QAbstractItemModelCls = 'pkgs.ui.models.datastoreModel.qtc.' \
             'QAbstractItemModel'
         self._QModelIndexCls = 'pkgs.ui.models.datastoreModel.qtc.QModelIndex'
+        self._ButtonDataCls = 'pkgs.ui.models.datastoreModel.ButtonData'
+        self._ButtonNodeCls = 'pkgs.ui.models.datastoreModel.ButtonNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -33,6 +35,24 @@ class TestDatastoreModel(TestCase):
             uut = DatastoreModel(self._mockedRoot, parent=parent)
             mockedBaseCls.assert_called_once_with(parent)
         self.assertEqual(self._mockedRoot, uut._root)
+
+    def test_appendButtonNode(self) -> None:
+        """
+        The _appendButtonNode method must create a new button node and append
+        it the given button list.
+        """
+        name = 'NEW_BUTTON'
+        buttonData = Mock()
+        buttonNode = Mock()
+        buttonList = Mock()
+        with patch(self._ButtonDataCls) as mockedButtonData, \
+                patch(self._ButtonNodeCls) as mockedButtonNode:
+            mockedButtonData.return_value = buttonData
+            mockedButtonNode.return_value = buttonNode
+            self._uut._appendButtonNode(buttonList)
+            mockedButtonData.assert_called_once_with()
+            mockedButtonNode.assert_called_once_with(name, buttonData)
+            buttonList.addChild.assert_called_once_with(buttonNode)
 
     def test_rowCountReturnRowCount(self) -> None:
         """
