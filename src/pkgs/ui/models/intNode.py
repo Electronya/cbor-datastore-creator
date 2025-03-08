@@ -16,7 +16,7 @@ class IntNode(BaseNode):
     """
     The int node class.
     """
-    def __init__(self, name: str, data: IntData, parent: BaseNode):
+    def __init__(self, name: str, data: IntData, parent: BaseNode = None):
         super().__init__(name, NodeType.INT, parent=parent)
         self._data = data
 
@@ -45,6 +45,6 @@ class IntArrayNode(BaseNode):
     """
     The int array node class.
     """
-    def __init__(self, name: str, data: IntArrayData, parent: BaseNode):
+    def __init__(self, name: str, data: IntArrayData, parent: BaseNode = None):
         super().__init__(name, NodeType.INT_ARRAY, parent=parent)
         self._data = data

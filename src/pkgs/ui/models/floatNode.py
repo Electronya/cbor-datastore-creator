@@ -16,7 +16,7 @@ class FloatNode(BaseNode):
     """
     The float node class.
     """
-    def __init__(self, name: str, data: FloatData, parent: BaseNode):
+    def __init__(self, name: str, data: FloatData, parent: BaseNode = None):
         super().__init__(name, NodeType.FLOAT, parent=parent)
         self._data = data
 
@@ -45,6 +45,7 @@ class FloatArrayNode(BaseNode):
     """
     The float array node class.
     """
-    def __init__(self, name: str, data: FloatArrayData, parent: BaseNode):
+    def __init__(self, name: str, data: FloatArrayData,
+                 parent: BaseNode = None):
         super().__init__(name, NodeType.FLOAT_ARRAY, parent=parent)
         self._data = data

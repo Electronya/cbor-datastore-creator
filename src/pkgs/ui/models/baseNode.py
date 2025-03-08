@@ -84,6 +84,7 @@ class BaseNode(object):
             child: The child to add.
         """
         self._children.append(child)
+        child._parent = self
 
     def addChildAt(self, row: int, child: 'BaseNode') -> bool:
         """
@@ -98,6 +99,7 @@ class BaseNode(object):
         """
         if row >= 0 and row < len(self._children):
             self._children.insert(row, child)
+            child._parent = self
             return True
         return False
 

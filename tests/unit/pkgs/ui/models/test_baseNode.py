@@ -84,6 +84,7 @@ class TestBaseNode(TestCase):
         self._uut.addChild(newChild)
         self.assertEqual(newChildCount, len(self._uut._children))
         self.assertEqual(newChild, self._uut._children[-1])
+        self.assertEqual(self._uut, newChild._parent)
 
     def test_addChildAtRowOutOfRange(self) -> None:
         """
@@ -107,6 +108,7 @@ class TestBaseNode(TestCase):
         self.assertTrue(self._uut.addChildAt(row, child))
         self.assertEqual(newLength, len(self._uut._children))
         self.assertEqual(child, self._uut._children[row])
+        self.assertEqual(self._uut, child._parent)
 
     def test_removeChildAtRowOutOfRange(self) -> None:
         """

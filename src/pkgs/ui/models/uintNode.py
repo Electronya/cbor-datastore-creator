@@ -16,7 +16,7 @@ class UintNode(BaseNode):
     """
     The uint node class.
     """
-    def __init__(self, name: str, data: UintData, parent: BaseNode):
+    def __init__(self, name: str, data: UintData, parent: BaseNode = None):
         super().__init__(name, NodeType.UINT, parent=parent)
         self._data = data
 
@@ -45,6 +45,7 @@ class UintArrayNode(BaseNode):
     """
     The uint array node class.
     """
-    def __init__(self, name: str, data: UintArrayData, parent: BaseNode):
+    def __init__(self, name: str, data: UintArrayData,
+                 parent: BaseNode = None):
         super().__init__(name, NodeType.UINT_ARRAY, parent=parent)
         self._data = data

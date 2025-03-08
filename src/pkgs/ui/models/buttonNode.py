@@ -15,7 +15,7 @@ class ButtonNode(BaseNode):
     """
     The button node class.
     """
-    def __init__(self, name: str, data: ButtonData, parent: BaseNode):
+    def __init__(self, name: str, data: ButtonData, parent: BaseNode = None):
         super().__init__(name, NodeType.BUTTON, parent=parent)
         self._data = data
 
@@ -42,6 +42,7 @@ class ButtonArrayNode(BaseNode):
     """
     The button array node class.
     """
-    def __init__(self, name: str, data: ButtonArrayData, parent: BaseNode):
+    def __init__(self, name: str, data: ButtonArrayData,
+                 parent: BaseNode = None):
         super().__init__(name, NodeType.BUTTON_ARRAY, parent=parent)
         self._data = data

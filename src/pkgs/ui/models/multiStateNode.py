@@ -16,6 +16,7 @@ class MultiStateNode(BaseNode):
     """
     The multi-state node class.
     """
-    def __init__(self, name: str, data: MultiStateData, parent: BaseNode):
+    def __init__(self, name: str, data: MultiStateData,
+                 parent: BaseNode = None):
         super().__init__(name, NodeType.MULTI_STATE, parent=parent)
         self._data = data
