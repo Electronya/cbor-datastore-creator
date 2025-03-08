@@ -31,12 +31,16 @@ class TestDatastoreModel(TestCase):
             'FloatArrayData'
         self._FloatArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
             'FloatArrayNode'
+        self._IntDataCls = 'pkgs.ui.models.datastoreModel.IntData'
+        self._IntNodeCls = 'pkgs.ui.models.datastoreModel.IntNode'
         self._IntArrayDataCls = 'pkgs.ui.models.datastoreModel.' \
             'IntArrayData'
         self._IntArrayNodeCls = 'pkgs.ui.models.datastoreModel.' \
             'IntArrayNode'
-        self._IntDataCls = 'pkgs.ui.models.datastoreModel.IntData'
-        self._IntNodeCls = 'pkgs.ui.models.datastoreModel.IntNode'
+        self._MultiStateDataCls = 'pkgs.ui.models.datastoreModel.' \
+            'MultiStateData'
+        self._MultiStateNodeCls = 'pkgs.ui.models.datastoreModel.' \
+            'MultiStateNode'
         self._mockedRoot = Mock()
         with patch(f"{self._QAbstractItemModelCls}.__init__"):
             self._uut = DatastoreModel(self._mockedRoot)
@@ -270,6 +274,43 @@ class TestDatastoreModel(TestCase):
             mockedData.return_value = data
             mockedNode.return_value = node
             self._uut._insertIntArrayNode(list, row)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChildAt.assert_called_once_with(row, node)
+
+    def test_appendMultiStateNode(self) -> None:
+        """
+        The _appendMultiStateNode method must create a new multi-state node and
+        append it the given multi-state list.
+        """
+        name = 'NEW_MULTI_STATE'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._MultiStateDataCls) as mockedData, \
+                patch(self._MultiStateNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._appendMultiStateNode(list)
+            mockedData.assert_called_once_with()
+            mockedNode.assert_called_once_with(name, data)
+            list.addChild.assert_called_once_with(node)
+
+    def test_insertMultiStateNode(self) -> None:
+        """
+        The _insertMultiStateNode method must create a new multi-state node and
+        append it the given multi-state list.
+        """
+        row = 3
+        name = 'NEW_MULTI_STATE'
+        data = Mock()
+        node = Mock()
+        list = Mock()
+        with patch(self._MultiStateDataCls) as mockedData, \
+                patch(self._MultiStateNodeCls) as mockedNode:
+            mockedData.return_value = data
+            mockedNode.return_value = node
+            self._uut._insertMultiStateNode(list, row)
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
