@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 from datetime import datetime
 from .baseNode import BaseNode, NodeType
+from .objectListNode import ObjectListNode
 
 
 @dataclass
@@ -18,8 +19,9 @@ class DatastoreNode(BaseNode):
         name: The node name.
         metadata: The datastore metadata.
     """
-    def __init__(self, name: str, metadata: DatastoreMetadata) -> None:
-        super().__init__(name, NodeType.STORE)
+    def __init__(self, name: str, parent: BaseNode,
+                 metadata: DatastoreMetadata) -> None:
+        super().__init__(name, NodeType.STORE, parent=parent)
         self._metadata = metadata
 
     def getLastModifiedAt(self) -> str:
@@ -76,11 +78,19 @@ class DatastoreNode(BaseNode):
         self.setLastModifiedAt(datetime.now())
 
     @classmethod
-    def createNew(cls) -> 'DatastoreNode':
+    def createNewStore(cls, root: BaseNode) -> 'DatastoreNode':
         """
         Create a new datastore structure.
+
+        Param
+            root: The datastore tree root node.
 
         Return
             The new datastore structure.
         """
-        pass
+        metadata = DatastoreMetadata(datetime.now())
+        store = DatastoreNode('datastore', root, metadata)
+        for type in NodeType:
+            if type != NodeType.STORE or type != NodeType.OBJ_LIST:
+                store.addChild(ObjectListNode(type.name, store))
+        return store

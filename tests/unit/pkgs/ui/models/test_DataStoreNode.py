@@ -1,7 +1,7 @@
 from datetime import datetime
 from freezegun import freeze_time
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import call, Mock, patch
 
 import os
 import sys
@@ -21,22 +21,28 @@ class TestDatastoreNode(TestCase):
         """
         self._datetimeCls = 'pkgs.ui.models.datastoreNode.datetime'
         self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
+        self._DatastoreNodeCls = 'pkgs.ui.models.datastoreNode.DatastoreNode'
+        self._MetadataCls = 'pkgs.ui.models.datastoreNode.DatastoreMetadata'
+        self._ObjectListNodeCls = 'pkgs.ui.models.datastoreNode.ObjectListNode'
         self._lastModifiedTimestamp = datetime.now()
         self._workingDir = '/path/to/store'
+        self._root = Mock()
         metadata = DatastoreMetadata(self._lastModifiedTimestamp,
                                      workingDir=self._workingDir)
-        self._uut = DatastoreNode('store', metadata)
+        self._uut = DatastoreNode('store', self._root, metadata)
 
-    def test_constructorSaveDataAddToParent(self) -> None:
+    def test_constructorBaseClassInitAndSaveData(self) -> None:
         """
         The constructor must call the base class constructor with the right
         parameters and save the metadata.
         """
+        root = Mock()
         name = 'test store'
         metadata = DatastoreMetadata(datetime.now(), '/path/to/store')
         with patch(f"{self._BaseNodeCls}.__init__") as mockedBaseNode:
-            uut = DatastoreNode(name, metadata)
-            mockedBaseNode.assert_called_once_with(name, NodeType.STORE)
+            uut = DatastoreNode(name, root, metadata)
+            mockedBaseNode.assert_called_once_with(name, NodeType.STORE,
+                                                   parent=root)
             self.assertEqual(metadata, uut._metadata)
 
     def test_getLastModifiedAtReturnFormatted(self) -> None:
@@ -94,3 +100,29 @@ class TestDatastoreNode(TestCase):
             self._uut.setWorkingDir(workingDir)
             self.assertEqual(workingDir, self._uut._metadata.workingDir)
             mockedLastModifiedAt.assert_called_once_with(datetime(2025, 1, 14))
+
+    @freeze_time('Jan 14th, 2025')
+    def test_createNewStoreCreateStructure(self) -> None:
+        """
+        The createNewStore method must create all the empty object list nodes
+        and return the datastore node.
+        """
+        root = Mock()
+        storeMetadata = Mock()
+        newStore = Mock()
+        objectLists = []
+        calls = []
+        for type in NodeType:
+            if type != NodeType.STORE or type != NodeType.OBJ_LIST:
+                objectLists.append(Mock())
+                calls.append(call(type.name, newStore))
+        with patch(self._MetadataCls) as mockedStoreMetadata, \
+                patch(self._DatastoreNodeCls) as mockedStoreNode, \
+                patch(self._ObjectListNodeCls) as mockedObjListNode:
+            mockedStoreMetadata.return_value = storeMetadata
+            mockedStoreNode.return_value = newStore
+            self.assertEqual(newStore, DatastoreNode.createNewStore(root))
+            mockedStoreMetadata.assert_called_once_with(datetime(2025, 1, 14))
+            mockedStoreNode.assert_called_once_with('datastore', root,
+                                                    storeMetadata)
+            mockedObjListNode.assert_has_calls(calls)
