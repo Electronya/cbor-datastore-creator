@@ -1,169 +1,86 @@
-from enum import Enum
-from PySide6.QtCore import Qt
-from typing import Protocol
+from dataclasses import dataclass
+from datetime import datetime
+from .baseNode import BaseNode, NodeType
 
 
-class DatastoreProto(Protocol):
-    """
-    The datastore object protocol.
-    """
-    def getName(self) -> str:
-        pass
-
-    def setName(self, name: str) -> None:
-        pass
+@dataclass
+class DatastoreMetadata:
+    lastModifiedAt: datetime
+    hasUnsavedChanges: bool = False
+    workingDir: str = '.'
 
 
-class DatastoreNodeType(Enum):
-    """
-    The node type enum
-    """
-    STORE = 1
-    OBJ_LIST = 2
-    OBJECT = 3
-
-
-class DatastoreNode(object):
+class DatastoreNode(BaseNode):
     """
     The datastore tree node class.
 
     Param
-        type: The node type.
-        data: The node data.
         name: The node name.
-        parent: The node parent.
+        metadata: The datastore metadata.
     """
-    def __init__(self, type: DatastoreNodeType, data: DatastoreProto = None,
-                 name: str = None, parent: 'DatastoreNode' = None) -> None:
-        self._type = type
-        self._data = data
-        self._name: str = name
-        self._parent: 'DatastoreNode' = parent
-        self._children: list['DatastoreNode'] = []
+    def __init__(self, name: str, metadata: DatastoreMetadata) -> None:
+        super().__init__(name, NodeType.STORE)
+        self._metadata = metadata
 
-        if parent is not None:
-            self._parent.addChild(self)
-
-    def getName(self) -> str:
+    def getLastModifiedAt(self) -> str:
         """
-        Get the node name.
+        Get the store last modified timestamp.
 
         Return
-            The node name.
+            The formatted last modified timestamp.
         """
-        if self._type != DatastoreNodeType.OBJ_LIST:
-            return self._data.getName()
-        return self._name
+        return self._metadata.lastModifiedAt.strftime('%d/%m/%Y %H:%M:%S')
 
-    def setName(self, name: str) -> None:
+    def setLastModifiedAt(self, lastModifiedAt: datetime) -> None:
         """
-        Set the node name.
+        Set the last modified timestamp.
 
         Param
-            name: the node name.
+            lastModifiedAt: The last modified timestamp.
         """
-        if self._type != DatastoreNodeType.OBJ_LIST:
-            self._data.setName(name)
+        self._metadata.lastModifiedAt = lastModifiedAt
+        self._metadata.hasUnsavedChanges = True
 
-    def getChildCount(self) -> int:
+    def hasUnsavedChanges(self) -> bool:
         """
-        Get the node child count.
+        Check if the store has unsaved changes.
 
         Return
-            The node child count.
+            True if the store has unsaved changes, false otherwise.
         """
-        return len(self._children)
+        return self._metadata.hasUnsavedChanges
 
-    def getChild(self, row: int) -> 'DatastoreNode':
+    def clearUnsavedChangesFlag(self) -> None:
         """
-        Get the child at the given row.
+        Clear the unsaved changes flag.
+        """
+        self._metadata.hasUnsavedChanges = False
+
+    def getWorkingDir(self) -> str:
+        """
+        Get the store working directory.
+
+        Return
+            The store working directory.
+        """
+        return self._metadata.workingDir
+
+    def setWorkingDir(self, workingDir: str) -> None:
+        """
+        Set the store working directory.
 
         Param
-            row: The row of the child.
+            workingDir: The working directory.
+        """
+        self._metadata.workingDir = workingDir
+        self.setLastModifiedAt(datetime.now())
+
+    @classmethod
+    def createNew(cls) -> 'DatastoreNode':
+        """
+        Create a new datastore structure.
 
         Return
-            The child.
+            The new datastore structure.
         """
-        if self._type != DatastoreNodeType.OBJECT:
-            return self._children[row]
-
-    def addChild(self, child: 'DatastoreNode') -> None:
-        """
-        Add a child to the node.
-
-        Param
-            child: The child to add.
-        """
-        self._children.append(child)
-
-    def addChildAt(self, index: int, child: 'DatastoreNode') -> bool:
-        """
-        Add a child at the given index.
-
-        Param
-            index: The new child index.
-            child: The new child.
-
-        Return
-            True if the operation succeeded, false otherwise.
-        """
-        if index >= 0 and index <= len(self._children):
-            self._children.insert(index, child)
-            child._parent = self
-            return True
-        return False
-
-    def removeChildAt(self, index: int) -> bool:
-        """
-        Remove the child at the given index.
-
-        Param
-            index: The index of the child to removed.
-
-        Return
-            True if the operation succeeds, false otherwise.
-        """
-        if index >= 0 and index < len(self._children):
-            self._children.pop(index)
-            return True
-        return False
-
-    def getParent(self) -> 'DatastoreNode':
-        """
-        Get the node parent.
-
-        Return
-            The node parent.
-        """
-        return self._parent
-
-    def getRow(self) -> int:
-        """
-        Get the node row.
-
-        Return
-            The node row.
-        """
-        if self._parent is not None:
-            return self._parent._children.index(self)
-
-    def getData(self) -> DatastoreProto:
-        """
-        Get the node data.
-
-        Return
-            The node data.
-        """
-        return self._data
-
-    def getFlags(self) -> int:
-        """
-        Get the node Qt flags.
-
-        Return
-            The node Qt flag.
-        """
-        flags = Qt.ItemFlag.ItemIsSelectable | Qt.ItemFlag.ItemIsEnabled
-        if self._type != DatastoreNodeType.OBJ_LIST:
-            flags |= Qt.ItemFlag.ItemIsEditable
-        return flags
+        pass
