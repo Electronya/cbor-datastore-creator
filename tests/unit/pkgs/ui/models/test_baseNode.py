@@ -58,6 +58,12 @@ class TestBaseNode(TestCase):
         self._uut.setName(name)
         self.assertEqual(name, self._uut._name)
 
+    def test_getTypeReturnNodeType(self) -> None:
+        """
+        The getType method must return the node type.
+        """
+        self.assertEqual(self._testType, self._uut.getType())
+
     def test_getChildCountReturnCount(self) -> None:
         """
         The getChildCount must return the node child count.

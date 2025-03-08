@@ -53,6 +53,15 @@ class BaseNode(object):
         """
         self._name = name
 
+    def getType(self) -> NodeType:
+        """
+        Get the node type.
+
+        Return
+            The node type.
+        """
+        return self._type
+
     def getChildCount(self) -> int:
         """
         Get the node child count.

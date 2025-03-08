@@ -338,19 +338,64 @@ class DatastoreModel(qtc.QAbstractItemModel):
             return qtc.QModelIndex()
         return self.createIndex(row, column, child)
 
-    def insertRow(self, row: int, parent: qtc.QModelIndex) -> bool:
+    def insertRow(self, row: int, index: qtc.QModelIndex) -> bool:
         """
         Insert a row.
 
         Param
             row: The new row position.
-            parent: The parent node to which add a row.
+            index: The index of the selected node.
 
         Return
             True if the operation succeeds, false otherwise.
         """
-        node = self._root
-        if parent.isValid():
-            node = parent.internalPointer()
-        self.beginInsertRows(parent, row, row + 1)
+        if not index.isValid():
+            return False
+        node = index.internalPointer()
+        result = True
+        self.beginInsertRows(index, row, row + 1)
+        match node.getType():
+            case NodeType.OBJ_LIST:
+                match node.getName():
+                    case NodeType.BUTTON.name:
+                        self._appendButtonNode(node)
+                    case NodeType.BUTTON_ARRAY.name:
+                        self._appendButtonArrayNode(node)
+                    case NodeType.FLOAT.name:
+                        self._appendFloatNode(node)
+                    case NodeType.FLOAT_ARRAY.name:
+                        self._appendFloatArrayNode(node)
+                    case NodeType.INT.name:
+                        self._appendIntNode(node)
+                    case NodeType.INT_ARRAY.name:
+                        self._appendIntArrayNode(node)
+                    case NodeType.MULTI_STATE.name:
+                        self._appendMultiStateNode(node)
+                    case NodeType.UINT.name:
+                        self._appendUintNode(node)
+                    case NodeType.UINT_ARRAY.name:
+                        self._appendUintArrayNode(node)
+                    case _:
+                        result = False
+            case NodeType.BUTTON:
+                self._insertButtonNode(node.getParent(), node.getRow())
+            case NodeType.BUTTON_ARRAY:
+                self._insertButtonArrayNode(node.getParent(), node.getRow())
+            case NodeType.FLOAT:
+                self._insertFloatNode(node.getParent(), node.getRow())
+            case NodeType.FLOAT_ARRAY:
+                self._insertFloatArrayNode(node.getParent(), node.getRow())
+            case NodeType.INT:
+                self._insertIntNode(node.getParent(), node.getRow())
+            case NodeType.INT_ARRAY:
+                self._insertIntArrayNode(node.getParent(), node.getRow())
+            case NodeType.MULTI_STATE:
+                self._insertMultiStateNode(node.getParent(), node.getRow())
+            case NodeType.UINT:
+                self._insertUintNode(node.getParent(), node.getRow())
+            case NodeType.UINT_ARRAY:
+                self._insertUintArrayNode(node.getParent(), node.getRow())
+            case _:
+                result = False
         self.endInsertRows()
+        return result
