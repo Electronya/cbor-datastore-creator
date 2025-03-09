@@ -62,24 +62,6 @@ class TestDatastoreModel(TestCase):
             mockedBaseCls.assert_called_once_with(parent)
         self.assertEqual(self._mockedRoot, uut._root)
 
-    def test_appendButtonNode(self) -> None:
-        """
-        The _appendButtonNode method must create a new button node and append
-        it the given button list.
-        """
-        name = 'NEW_BUTTON'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._ButtonDataCls) as mockedData, \
-                patch(self._ButtonNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendButtonNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
-
     def test_insertButtonNode(self) -> None:
         """
         The _insertButtonNode method must create a new button node and
@@ -98,24 +80,6 @@ class TestDatastoreModel(TestCase):
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
-
-    def test_appendButtonArrayNode(self) -> None:
-        """
-        The _appendButtonArrayNode method must create a new button array node
-        and append it the given button array list.
-        """
-        name = 'NEW_BUTTON_ARRAY'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._ButtonArrayDataCls) as mockedData, \
-                patch(self._ButtonArrayNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendButtonArrayNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
 
     def test_insertButtonArrayNode(self) -> None:
         """
@@ -136,24 +100,6 @@ class TestDatastoreModel(TestCase):
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
 
-    def test_appendFloatNode(self) -> None:
-        """
-        The _appendFloatNode method must create a new float node and append
-        it the given float list.
-        """
-        name = 'NEW_FLOAT'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._FloatDataCls) as mockedData, \
-                patch(self._FloatNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendFloatNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
-
     def test_insertFloatNode(self) -> None:
         """
         The _insertFloatNode method must create a new float node and
@@ -172,24 +118,6 @@ class TestDatastoreModel(TestCase):
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
-
-    def test_appendFloatArrayNode(self) -> None:
-        """
-        The _appendFloatArrayNode method must create a new float array node and
-        append it the given float array list.
-        """
-        name = 'NEW_FLOAT_ARRAY'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._FloatArrayDataCls) as mockedData, \
-                patch(self._FloatArrayNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendFloatArrayNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
 
     def test_insertFloatArrayNode(self) -> None:
         """
@@ -210,24 +138,6 @@ class TestDatastoreModel(TestCase):
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
 
-    def test_appendIntNode(self) -> None:
-        """
-        The _appendIntNode method must create a new int node and append
-        it the given int list.
-        """
-        name = 'NEW_INT'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._IntDataCls) as mockedData, \
-                patch(self._IntNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendIntNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
-
     def test_insertIntNode(self) -> None:
         """
         The _insertIntNode method must create a new int node and
@@ -246,24 +156,6 @@ class TestDatastoreModel(TestCase):
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
-
-    def test_appendIntArrayNode(self) -> None:
-        """
-        The _appendIntArrayNode method must create a new int array node and
-        append it the given int array list.
-        """
-        name = 'NEW_INT_ARRAY'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._IntArrayDataCls) as mockedData, \
-                patch(self._IntArrayNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendIntArrayNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
 
     def test_insertIntArrayNode(self) -> None:
         """
@@ -284,24 +176,6 @@ class TestDatastoreModel(TestCase):
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
 
-    def test_appendMultiStateNode(self) -> None:
-        """
-        The _appendMultiStateNode method must create a new multi-state node and
-        append it the given multi-state list.
-        """
-        name = 'NEW_MULTI_STATE'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._MultiStateDataCls) as mockedData, \
-                patch(self._MultiStateNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendMultiStateNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
-
     def test_insertMultiStateNode(self) -> None:
         """
         The _insertMultiStateNode method must create a new multi-state node and
@@ -321,24 +195,6 @@ class TestDatastoreModel(TestCase):
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
 
-    def test_appendUintNode(self) -> None:
-        """
-        The _appendUintNode method must create a new uint node and append
-        it the given uint list.
-        """
-        name = 'NEW_UINT'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._UintDataCls) as mockedData, \
-                patch(self._UintNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendUintNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
-
     def test_insertUintNode(self) -> None:
         """
         The _insertUintNode method must create a new uint node and
@@ -357,24 +213,6 @@ class TestDatastoreModel(TestCase):
             mockedData.assert_called_once_with()
             mockedNode.assert_called_once_with(name, data)
             list.addChildAt.assert_called_once_with(row, node)
-
-    def test_appendUintArrayNode(self) -> None:
-        """
-        The _appendUintArrayNode method must create a new uint array node and
-        append it the given uint array list.
-        """
-        name = 'NEW_UINT_ARRAY'
-        data = Mock()
-        node = Mock()
-        list = Mock()
-        with patch(self._UintArrayDataCls) as mockedData, \
-                patch(self._UintArrayNodeCls) as mockedNode:
-            mockedData.return_value = data
-            mockedNode.return_value = node
-            self._uut._appendUintArrayNode(list)
-            mockedData.assert_called_once_with()
-            mockedNode.assert_called_once_with(name, data)
-            list.addChild.assert_called_once_with(node)
 
     def test_insertUintArrayNode(self) -> None:
         """
@@ -632,451 +470,259 @@ class TestDatastoreModel(TestCase):
         parentIndex.isValid.return_value = False
         self.assertFalse(self._uut.insertRow(row, parentIndex))
 
-    def test_insertRowInvalidObjectListName(self) -> None:
+    def test_insertRowInvalidParentName(self) -> None:
         """
-        The insertRow method must return false if the parent node is of type
-        object list and its name is not valid.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = 'invalid name'
-            self.assertFalse(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowInvalidNodetype(self) -> None:
-        """
-        The insertRow method must return false if the parent node type is
-        invalid.
+        The insertRow method must return false if the parent node has an
+        invalid name.
         """
         row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
+        parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = 'invalid type'
-            self.assertFalse(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendButtonNode(self) -> None:
-        """
-        The insertRow method must append a new button node when the parent node
-        is of object list type and its name is BUTTON, and return true when the
-        operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendButtonNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.BUTTON.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendButtonArrayNode(self) -> None:
-        """
-        The insertRow method must append a new button array node when the
-        parent node is of object list type and its name is BUTTON_ARRAY, and
-        return true when the operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendButtonArrayNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.BUTTON_ARRAY.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendFloatNode(self) -> None:
-        """
-        The insertRow method must append a new float node when the parent node
-        is of object list type and its name is FLOAT, and return true when the
-        operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendFloatNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.FLOAT.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendFloatArrayNode(self) -> None:
-        """
-        The insertRow method must append a new float array node when the
-        parent node is of object list type and its name is FLOAT_ARRAY, and
-        return true when the operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendFloatArrayNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.FLOAT_ARRAY.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendIntNode(self) -> None:
-        """
-        The insertRow method must append a new int node when the parent node
-        is of object list type and its name is INT, and return true when the
-        operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendIntNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.INT.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendIntArrayNode(self) -> None:
-        """
-        The insertRow method must append a new int array node when the
-        parent node is of object list type and its name is INT_ARRAY, and
-        return true when the operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendIntArrayNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.INT_ARRAY.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendMultiStateNode(self) -> None:
-        """
-        The insertRow method must append a new multi-state node when the parent
-        node is of object list type and its name is MULTI_STATE, and return
-        true when the operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendMultiStateNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.MULTI_STATE.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendUinNode(self) -> None:
-        """
-        The insertRow method must append a new uint node when the parent node
-        is of object list type and its name is UINT, and return true when the
-        operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendUintNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.UINT.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
-            mockedEnd.assert_called_once_with()
-
-    def test_insertRowAppendUintArrayNode(self) -> None:
-        """
-        The insertRow method must append a new uint array node when the
-        parent node is of object list type and its name is UINT_ARRAY, and
-        return true when the operation succeeds.
-        """
-        row = 3
-        parentIndex = Mock()
-        parentNode = Mock()
-        with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
-                patch.object(DatastoreModel, '_appendUintArrayNode') \
-                as mockedAppend, \
-                patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            parentIndex.isValid.return_value = True
-            parentIndex.internalPointer.return_value = parentNode
-            parentNode.getType.return_value = NodeType.OBJ_LIST
-            parentNode.getName.return_value = NodeType.UINT_ARRAY.name
-            self.assertTrue(self._uut.insertRow(row, parentIndex))
-            mockedBegin.assert_called_once_with(parentIndex, row, row + 1)
-            mockedAppend.assert_called_once_with(parentNode)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = 'invalid name'
+            self.assertFalse(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertButtonNode(self) -> None:
         """
         The insertRow method must insert a new button node at the given row
-        when the parent node is of button type, and return true when the
+        when the parent node name is BUTTON, and return true when the
         operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertButtonNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.BUTTON
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.BUTTON.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertButtonArrayNode(self) -> None:
         """
         The insertRow method must insert a new button array node at the given
-        row when the parent node is of button array type, and return true when
+        row when the parent node name is BUTTON_ARRAY, and return true when
         the operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertButtonArrayNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.BUTTON_ARRAY
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.BUTTON_ARRAY.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertFloatNode(self) -> None:
         """
         The insertRow method must insert a new float node at the given row
-        when the parent node is of float type, and return true when the
+        when the parent node name is FLOAT, and return true when the
         operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertFloatNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.FLOAT
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.FLOAT.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertFloatArrayNode(self) -> None:
         """
         The insertRow method must insert a new float array node at the given
-        row when the parent node is of float array type, and return true when
+        row when the parent node name is FLOAT_ARRAY, and return true when
         the operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertFloatArrayNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.FLOAT_ARRAY
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.FLOAT_ARRAY.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertIntNode(self) -> None:
         """
         The insertRow method must insert a new int node at the given row
-        when the parent node is of int type, and return true when the
+        when the parent node name is INT, and return true when the
         operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertIntNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.INT
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.INT.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertIntArrayNode(self) -> None:
         """
         The insertRow method must insert a new int array node at the given
-        row when the parent node is of int array type, and return true when
+        row when the parent node name is INT_ARRAY, and return true when
         the operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertIntArrayNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.INT_ARRAY
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.INT_ARRAY.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertMultiStateNode(self) -> None:
         """
         The insertRow method must insert a new multi-state node at the given
-        row when the parent node is of multi-state type, and return true when
+        row when the parent node name is MULTI_STATE, and return true when
         the operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertMultiStateNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.MULTI_STATE
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.MULTI_STATE.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertUintNode(self) -> None:
         """
         The insertRow method must insert a new uint node at the given row
-        when the parent node is of uint type, and return true when the
+        when the parent node name is UINT, and return true when the
         operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertUintNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.UINT
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.UINT.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
 
     def test_insertRowInsertUintArrayNode(self) -> None:
         """
         The insertRow method must insert a new uint array node at the given
-        row when the parent node is of uint array type, and return true when
+        row when the parent node name is UINT_ARRAY, and return true when
         the operation succeeds.
         """
         row = 3
-        index = Mock()
-        node = Mock()
         parent = Mock()
+        node = Mock()
         with patch.object(DatastoreModel, 'beginInsertRows') as mockedBegin, \
                 patch.object(DatastoreModel, '_insertUintArrayNode') \
                 as mockedInsert, \
                 patch.object(DatastoreModel, 'endInsertRows') as mockedEnd:
-            index.isValid.return_value = True
-            index.internalPointer.return_value = node
-            node.getType.return_value = NodeType.UINT_ARRAY
-            node.getParent.return_value = parent
-            node.getRow.return_value = row
-            self.assertTrue(self._uut.insertRow(row, index))
-            mockedBegin.assert_called_once_with(index, row, row + 1)
-            mockedInsert.assert_called_once_with(parent, row)
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = NodeType.UINT_ARRAY.name
+            self.assertTrue(self._uut.insertRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedInsert.assert_called_once_with(node, row)
             mockedEnd.assert_called_once_with()
+
+    def test_removeRowInvalidParent(self) -> None:
+        """
+        The removeRow method must return false when the parent index is
+        invalid.
+        """
+        row = 3
+        parent = Mock()
+        parent.isValid.return_value = False
+        self.assertFalse(self._uut.removeRow(row, parent))
+
+    def test_removeRowInvalidParentName(self) -> None:
+        """
+        The removeRow method must return false if the parent node has an
+        invalid name.
+        """
+        row = 3
+        parent = Mock()
+        node = Mock()
+        with patch.object(DatastoreModel, 'beginRemoveRows') as mockedBegin, \
+                patch.object(DatastoreModel, 'endRemoveRows') as mockedEnd:
+            parent.isValid.return_value = True
+            parent.internalPointer.return_value = node
+            node.getName.return_value = 'invalid name'
+            self.assertFalse(self._uut.removeRow(row, parent))
+            mockedBegin.assert_called_once_with(parent, row, row + 1)
+            mockedEnd.assert_called_once_with()
+
+    def test_removeRowRemoveNode(self) -> None:
+        """
+        The removeRow method must remove the node at the given row
+        when the parent node name is valid, and return true when the
+        operation succeeds.
+        """
+        row = 3
+        parent = Mock()
+        node = Mock()
+        for type in NodeType:
+            if type != NodeType.STORE and type != NodeType.OBJ_LIST:
+                with patch.object(DatastoreModel, 'beginRemoveRows') \
+                        as mockedBegin, \
+                        patch.object(DatastoreModel, 'endRemoveRows') \
+                        as mockedEnd:
+                    parent.isValid.return_value = True
+                    parent.internalPointer.return_value = node
+                    node.getName.return_value = type.name
+                    self.assertTrue(self._uut.removeRow(row, parent))
+                    mockedBegin.assert_called_once_with(parent, row, row + 1)
+                    node.removeChildAt.assert_called_once_with(row)
+                    mockedEnd.assert_called_once_with()
+                node.removeChildAt.reset_mock()

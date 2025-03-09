@@ -17,16 +17,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         super(DatastoreModel, self).__init__(parent)
         self._root = root
 
-    def _appendButtonNode(self, list: BaseNode) -> None:
-        """
-        Append a button node.
-
-        Param
-            list: The button list node.
-        """
-        node = ButtonNode('NEW_BUTTON', ButtonData())
-        list.addChild(node)
-
     def _insertButtonNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a button node.
@@ -37,16 +27,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         """
         node = ButtonNode('NEW_BUTTON', ButtonData())
         list.addChildAt(row, node)
-
-    def _appendButtonArrayNode(self, list: BaseNode) -> None:
-        """
-        Append a button array node.
-
-        Param
-            list: The button array list node.
-        """
-        node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
-        list.addChild(node)
 
     def _insertButtonArrayNode(self, list: BaseNode, row: int) -> None:
         """
@@ -59,16 +39,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
         list.addChildAt(row, node)
 
-    def _appendFloatNode(self, list: BaseNode) -> None:
-        """
-        Append a float node.
-
-        Param
-            list: The float list node.
-        """
-        node = FloatNode('NEW_FLOAT', FloatData())
-        list.addChild(node)
-
     def _insertFloatNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a float node.
@@ -79,16 +49,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         """
         node = FloatNode('NEW_FLOAT', FloatData())
         list.addChildAt(row, node)
-
-    def _appendFloatArrayNode(self, list: BaseNode) -> None:
-        """
-        Append a float array node.
-
-        Param
-            list: The float array list node.
-        """
-        node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
-        list.addChild(node)
 
     def _insertFloatArrayNode(self, list: BaseNode, row: int) -> None:
         """
@@ -101,16 +61,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
         list.addChildAt(row, node)
 
-    def _appendIntNode(self, list: BaseNode) -> None:
-        """
-        Append a int node.
-
-        Param
-            list: The int list node.
-        """
-        node = IntNode('NEW_INT', IntData())
-        list.addChild(node)
-
     def _insertIntNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a int node.
@@ -121,16 +71,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         """
         node = IntNode('NEW_INT', IntData())
         list.addChildAt(row, node)
-
-    def _appendIntArrayNode(self, list: BaseNode) -> None:
-        """
-        Append a int array node.
-
-        Param
-            list: The int array list node.
-        """
-        node = IntArrayNode('NEW_INT_ARRAY', IntArrayData())
-        list.addChild(node)
 
     def _insertIntArrayNode(self, list: BaseNode, row: int) -> None:
         """
@@ -143,16 +83,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = IntArrayNode('NEW_INT_ARRAY', IntArrayData())
         list.addChildAt(row, node)
 
-    def _appendMultiStateNode(self, list: BaseNode) -> None:
-        """
-        Append a multi-state node.
-
-        Param
-            list: The multi-state list node.
-        """
-        node = MultiStateNode('NEW_MULTI_STATE', MultiStateData())
-        list.addChild(node)
-
     def _insertMultiStateNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a multi-state node.
@@ -164,16 +94,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = MultiStateNode('NEW_MULTI_STATE', MultiStateData())
         list.addChildAt(row, node)
 
-    def _appendUintNode(self, list: BaseNode) -> None:
-        """
-        Append a uint node.
-
-        Param
-            list: The uint list node.
-        """
-        node = UintNode('NEW_UINT', UintData())
-        list.addChild(node)
-
     def _insertUintNode(self, list: BaseNode, row: int) -> None:
         """
         Insert a uint node.
@@ -184,16 +104,6 @@ class DatastoreModel(qtc.QAbstractItemModel):
         """
         node = UintNode('NEW_UINT', UintData())
         list.addChildAt(row, node)
-
-    def _appendUintArrayNode(self, list: BaseNode) -> None:
-        """
-        Append a uint array node.
-
-        Param
-            list: The uint array list node.
-        """
-        node = UintArrayNode('NEW_UINT_ARRAY', UintArrayData())
-        list.addChild(node)
 
     def _insertUintArrayNode(self, list: BaseNode, row: int) -> None:
         """
@@ -338,64 +248,70 @@ class DatastoreModel(qtc.QAbstractItemModel):
             return qtc.QModelIndex()
         return self.createIndex(row, column, child)
 
-    def insertRow(self, row: int, index: qtc.QModelIndex) -> bool:
+    def insertRow(self, row: int, parent: qtc.QModelIndex) -> bool:
         """
         Insert a row.
 
         Param
             row: The new row position.
-            index: The index of the selected node.
+            parent: The index of the node in which to insert a row.
 
         Return
             True if the operation succeeds, false otherwise.
         """
-        if not index.isValid():
+        if not parent.isValid():
             return False
-        node = index.internalPointer()
+        node = parent.internalPointer()
         result = True
-        self.beginInsertRows(index, row, row + 1)
-        match node.getType():
-            case NodeType.OBJ_LIST:
-                match node.getName():
-                    case NodeType.BUTTON.name:
-                        self._appendButtonNode(node)
-                    case NodeType.BUTTON_ARRAY.name:
-                        self._appendButtonArrayNode(node)
-                    case NodeType.FLOAT.name:
-                        self._appendFloatNode(node)
-                    case NodeType.FLOAT_ARRAY.name:
-                        self._appendFloatArrayNode(node)
-                    case NodeType.INT.name:
-                        self._appendIntNode(node)
-                    case NodeType.INT_ARRAY.name:
-                        self._appendIntArrayNode(node)
-                    case NodeType.MULTI_STATE.name:
-                        self._appendMultiStateNode(node)
-                    case NodeType.UINT.name:
-                        self._appendUintNode(node)
-                    case NodeType.UINT_ARRAY.name:
-                        self._appendUintArrayNode(node)
-                    case _:
-                        result = False
-            case NodeType.BUTTON:
-                self._insertButtonNode(node.getParent(), node.getRow())
-            case NodeType.BUTTON_ARRAY:
-                self._insertButtonArrayNode(node.getParent(), node.getRow())
-            case NodeType.FLOAT:
-                self._insertFloatNode(node.getParent(), node.getRow())
-            case NodeType.FLOAT_ARRAY:
-                self._insertFloatArrayNode(node.getParent(), node.getRow())
-            case NodeType.INT:
-                self._insertIntNode(node.getParent(), node.getRow())
-            case NodeType.INT_ARRAY:
-                self._insertIntArrayNode(node.getParent(), node.getRow())
-            case NodeType.MULTI_STATE:
-                self._insertMultiStateNode(node.getParent(), node.getRow())
-            case NodeType.UINT:
-                self._insertUintNode(node.getParent(), node.getRow())
-            case NodeType.UINT_ARRAY:
-                self._insertUintArrayNode(node.getParent(), node.getRow())
+        self.beginInsertRows(parent, row, row + 1)
+        match node.getName():
+            case NodeType.BUTTON.name:
+                self._insertButtonNode(node, row)
+            case NodeType.BUTTON_ARRAY.name:
+                self._insertButtonArrayNode(node, row)
+            case NodeType.FLOAT.name:
+                self._insertFloatNode(node, row)
+            case NodeType.FLOAT_ARRAY.name:
+                self._insertFloatArrayNode(node, row)
+            case NodeType.INT.name:
+                self._insertIntNode(node, row)
+            case NodeType.INT_ARRAY.name:
+                self._insertIntArrayNode(node, row)
+            case NodeType.MULTI_STATE.name:
+                self._insertMultiStateNode(node, row)
+            case NodeType.UINT.name:
+                self._insertUintNode(node, row)
+            case NodeType.UINT_ARRAY.name:
+                self._insertUintArrayNode(node, row)
             case _:
                 result = False
         self.endInsertRows()
+        return result
+
+    def removeRow(self, row: int, parent: qtc.QModelIndex) -> bool:
+        """
+        Remove a row.
+
+        Param
+            row: The row to remove.
+            parent: The index of the node in which to remove the row.
+
+        Return
+            True if successful, false otherwise.
+        """
+        if not parent.isValid():
+            return False
+        node = parent.internalPointer()
+        result = True
+        self.beginRemoveRows(parent, row, row + 1)
+        match node.getName():
+            case NodeType.BUTTON.name | NodeType.BUTTON_ARRAY.name | \
+                    NodeType.FLOAT.name | NodeType.FLOAT_ARRAY.name | \
+                    NodeType.INT.name | NodeType.INT_ARRAY.name | \
+                    NodeType.MULTI_STATE.name | NodeType.UINT.name | \
+                    NodeType.UINT_ARRAY.name:
+                node.removeChildAt(row)
+            case _:
+                result = False
+        self.endRemoveRows()
         return result
