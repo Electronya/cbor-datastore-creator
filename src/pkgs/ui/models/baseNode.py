@@ -1,4 +1,5 @@
 from enum import Enum
+from logging import getLogger
 from PySide6.QtCore import Qt
 
 
@@ -28,6 +29,7 @@ class BaseNode(object):
         """
         Base datastore tree node.
         """
+        self._logger = getLogger(f"app.datastoreModel.{type.name}.{name}")
         self._name = name
         self._type = type
         self._parent = parent
@@ -106,7 +108,8 @@ class BaseNode(object):
         Return
             True if successful, false otherwise.
         """
-        if row >= 0 and row < len(self._children):
+        if row >= 0 and row <= len(self._children):
+            self._logger.info(f"adding child at {row}")
             self._children.insert(row, child)
             child._parent = self
             return True

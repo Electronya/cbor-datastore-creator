@@ -11,6 +11,7 @@ import sys
 sys.path.append(os.path.abspath('./src'))
 
 from pkgs.ui.windows import AppWindow                       # noqa: E402
+from pkgs.ui.models import NodeType                         # noqa: E402
 
 
 class TestAppWindow(TestCase):
@@ -31,7 +32,6 @@ class TestAppWindow(TestCase):
                 patch.object(AppWindow, '_initUi'):
             mockedLoggingMod.getLogger.return_value = self._mockedLogger
             self._uut = AppWindow()
-            self._uut._root = Mock()
         self._setUpMockedWidgets()
         self._mockedLogger.reset_mock()
 
@@ -39,7 +39,9 @@ class TestAppWindow(TestCase):
         """
         Setup the mocked widgets.
         """
+        self._uut._storeRoot = Mock()
         self._uut.actionNew = Mock()
+        self._uut.pbAddObject = Mock()
         self._uut.tvObjectList = Mock()
 
     def test_constructorGetLogger(self) -> None:
@@ -86,6 +88,8 @@ class TestAppWindow(TestCase):
             self.assertEqual(root, self._uut._storeRoot)
             self._uut.actionNew.triggered.connect \
                 .assert_called_once_with(self._uut._createNewStore)
+            self._uut.pbAddObject.clicked.connect \
+                .assert_called_once_with(self._uut._createNewObject)
 
     @freeze_time('Jan 14th, 2025')
     def test_createNewStoreCreateNewStore(self) -> None:
@@ -107,6 +111,51 @@ class TestAppWindow(TestCase):
             mockedDatastoreModel.assert_called_once_with(self._uut._storeRoot)
             self._uut.tvObjectList.setModel.assert_called_once_with(model)
             self._uut.tvObjectList.expandAll.assert_called_once_with()
+
+    def test_createNewObjectNewObjectInList(self) -> None:
+        """
+        The _createNewObject method must get the selected node of the store,
+        gets its type and insert a new object at the end of the list if the
+        selected node is an object list.
+        """
+        row = 3
+        model = Mock()
+        selected = Mock()
+        node = Mock()
+        self._uut.tvObjectList.model.return_value = model
+        self._uut.tvObjectList.currentIndex.return_value = selected
+        selected.internalPointer.return_value = node
+        node.getType.return_value = NodeType.OBJ_LIST
+        node.getChildCount.return_value = row
+        self._uut._createNewObject()
+        model.insertRow.assert_called_once_with(row, selected)
+
+    def test_createNewObjectNewObjectAfterSelected(self) -> None:
+        """
+        The _createNewObject method must get the selected node of the store,
+        gets its type and insert a new object after it if the selected node is
+        an object.
+        """
+        types = [NodeType.BUTTON, NodeType.BUTTON_ARRAY, NodeType.FLOAT,
+                 NodeType.FLOAT_ARRAY, NodeType.INT, NodeType.INT_ARRAY,
+                 NodeType.MULTI_STATE, NodeType.UINT, NodeType.UINT_ARRAY]
+        row = 3
+        model = Mock()
+        selected = Mock()
+        node = Mock()
+        parent = Mock()
+        for type in types:
+            self._uut.tvObjectList.model.return_value = model
+            self._uut.tvObjectList.currentIndex.return_value = selected
+            selected.internalPointer.return_value = node
+            node.getType.return_value = type
+            selected.row.return_value = row
+            model.parent.return_value = parent
+            self._uut._createNewObject()
+            model.parent.assert_called_once_with(selected)
+            model.insertRow.assert_called_once_with(row + 1, parent)
+            model.parent.reset_mock()
+            model.insertRow.reset_mock()
 
     def test_createErrorMsgBoxNewMsgBox(self) -> None:
         """

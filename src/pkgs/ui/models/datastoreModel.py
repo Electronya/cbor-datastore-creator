@@ -1,3 +1,4 @@
+from logging import getLogger
 from PySide6 import QtCore as qtc
 
 from .baseNode import BaseNode, NodeType
@@ -15,6 +16,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
     """
     def __init__(self, root: BaseNode, parent: qtc.QObject = None):
         super(DatastoreModel, self).__init__(parent)
+        self._logger = getLogger('app.datastoreModel')
         self._root = root
 
     def _insertButtonNode(self, list: BaseNode, row: int) -> None:
@@ -25,6 +27,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
             list: The button list.
             row: The insertion row.
         """
+        self._logger.info(f"inserting a new button at index {row}")
         node = ButtonNode('NEW_BUTTON', ButtonData())
         list.addChildAt(row, node)
 
@@ -264,6 +267,7 @@ class DatastoreModel(qtc.QAbstractItemModel):
         node = parent.internalPointer()
         result = True
         self.beginInsertRows(parent, row, row + 1)
+        self._logger.debug(f"new object type: {node.getName()}")
         match node.getName():
             case NodeType.BUTTON.name:
                 self._insertButtonNode(node, row)

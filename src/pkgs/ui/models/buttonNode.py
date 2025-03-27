@@ -7,8 +7,8 @@ class ButtonData:
     """
     The button node data.
     """
-    longPressTime: 3000
-    inactiveTime: 6000
+    longPressTime: int = 3000
+    inactiveTime: int = 6000
 
 
 class ButtonNode(BaseNode):

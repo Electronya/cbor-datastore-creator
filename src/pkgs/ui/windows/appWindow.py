@@ -5,7 +5,7 @@ import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
 
 from .appWindow_ui import Ui_appWindow
-from ..models import DatastoreModel, DatastoreNode, ObjectListNode
+from ..models import DatastoreModel, DatastoreNode, NodeType, ObjectListNode
 
 
 class AppWindow(qtw.QMainWindow, Ui_appWindow):
@@ -25,10 +25,11 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
 
     def _initUi(self) -> None:
         """
-        Initialize the UI models.
+        Initialize the UI models and events.
         """
         self._storeRoot = ObjectListNode('', None)
         self.actionNew.triggered.connect(self._createNewStore)
+        self.pbAddObject.clicked.connect(self._createNewObject)
 
     @qtc.Slot()
     def _createNewStore(self) -> None:
@@ -40,6 +41,24 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         model = DatastoreModel(self._storeRoot)
         self.tvObjectList.setModel(model)
         self.tvObjectList.expandAll()
+
+    @qtc.Slot()
+    def _createNewObject(self) -> None:
+        """
+        Create a new object in the datastore.
+        """
+        model = self.tvObjectList.model()
+        selected = self.tvObjectList.currentIndex()
+        selectedNode = selected.internalPointer()
+        selectedType = selectedNode.getType()
+        if selectedType == NodeType.OBJ_LIST:
+            self._logger.info(f"creating a new {selectedType.name}")
+            model.insertRow(selectedNode.getChildCount(), selected)
+        elif selectedType != NodeType.STORE:
+            parent = model.parent(selected)
+            parentType = parent.internalPointer().getType()
+            self._logger.info(f"creating a new {parentType.name}")
+            model.insertRow(selected.row() + 1, parent)
 
     @qtc.Slot(qtw.QMessageBox.Icon, Exception)
     def _createErrorMsgBox(self, lvl: qtw.QMessageBox.Icon,

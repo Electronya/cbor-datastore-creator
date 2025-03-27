@@ -97,7 +97,7 @@ class TestBaseNode(TestCase):
         The addChildAt must return false if the row is not valid.
         """
         length = len(self._uut._children)
-        rows = [-1, length]
+        rows = [-1, length + 1]
         child = Mock()
         for row in rows:
             self.assertFalse(self._uut.addChildAt(row, child))
