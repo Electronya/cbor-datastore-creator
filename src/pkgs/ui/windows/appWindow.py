@@ -41,7 +41,27 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         DatastoreNode.createNewStore(self._storeRoot)
         model = DatastoreModel(self._storeRoot)
         self.tvObjectList.setModel(model)
+        self.tvObjectList.selectionModel().selectionChanged \
+            .connect(self._newStoreSelection)
         self.tvObjectList.expandAll()
+
+    @qtc.Slot()
+    def _newStoreSelection(self) -> None:
+        """
+        Update the create and delete button enable state when the store
+        selection change.
+        """
+        addIsEnabled = False
+        deleteIsEnabled = False
+        selected = self.tvObjectList.currentIndex()
+        type = selected.internalPointer().getType()
+        if type == NodeType.OBJ_LIST:
+            addIsEnabled = True
+        if type != NodeType.STORE and type != NodeType.OBJ_LIST:
+            addIsEnabled = True
+            deleteIsEnabled = True
+        self.pbAddObject.setEnabled(addIsEnabled)
+        self.pbDeleteObject.setEnabled(deleteIsEnabled)
 
     @qtc.Slot()
     def _createNewObject(self) -> None:

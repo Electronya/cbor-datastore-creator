@@ -113,7 +113,53 @@ class TestAppWindow(TestCase):
                 .assert_called_once_with(self._uut._storeRoot)
             mockedDatastoreModel.assert_called_once_with(self._uut._storeRoot)
             self._uut.tvObjectList.setModel.assert_called_once_with(model)
+            self._uut.tvObjectList.selectionModel().selectionChanged.connect \
+                .assert_called_once_with(self._uut._newStoreSelection)
             self._uut.tvObjectList.expandAll.assert_called_once_with()
+
+    def test_newStoreSelectionStoreSelected(self) -> None:
+        """
+        The _newStoreSelection must disable the add new object and the delete
+        object buttons when the selected node is the store.
+        """
+        selected = Mock()
+        type = NodeType.STORE
+        self._uut.tvObjectList.currentIndex.return_value = selected
+        selected.internalPointer().getType.return_value = type
+        self._uut._newStoreSelection()
+        self._uut.pbAddObject.setEnabled.assert_called_once_with(False)
+        self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
+
+    def test_newStoreSelectionListSelected(self) -> None:
+        """
+        The _newStoreSelection must enable the add new object and disable the
+        delete object buttons when the selected node is an object list.
+        """
+        selected = Mock()
+        type = NodeType.OBJ_LIST
+        self._uut.tvObjectList.currentIndex.return_value = selected
+        selected.internalPointer().getType.return_value = type
+        self._uut._newStoreSelection()
+        self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
+        self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
+
+    def test_newStoreSelectionObjectSelected(self) -> None:
+        """
+        The _newStoreSelection must enable the add new object and the
+        delete object buttons when the selected node is an object.
+        """
+        selected = Mock()
+        types = [NodeType.BUTTON, NodeType.BUTTON_ARRAY, NodeType.FLOAT,
+                 NodeType.FLOAT_ARRAY, NodeType.INT, NodeType.INT_ARRAY,
+                 NodeType.MULTI_STATE, NodeType.UINT, NodeType.UINT_ARRAY]
+        for type in types:
+            self._uut.tvObjectList.currentIndex.return_value = selected
+            selected.internalPointer().getType.return_value = type
+            self._uut._newStoreSelection()
+            self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
+            self._uut.pbDeleteObject.setEnabled.assert_called_once_with(True)
+            self._uut.pbAddObject.setEnabled.reset_mock()
+            self._uut.pbDeleteObject.setEnabled.reset_mock()
 
     def test_createNewObjectNewObjectInList(self) -> None:
         """

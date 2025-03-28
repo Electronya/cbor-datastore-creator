@@ -74,38 +74,32 @@ class Ui_appWindow(object):
         self.objectListGroupBox.setAlignment(Qt.AlignmentFlag.AlignCenter)
         self.gridLayout_2 = QGridLayout(self.objectListGroupBox)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
-        self.pbAddObject = QPushButton(self.objectListGroupBox)
-        self.pbAddObject.setObjectName(u"pbAddObject")
-        icon5 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ContactNew))
-        self.pbAddObject.setIcon(icon5)
-        self.pbAddObject.setIconSize(QSize(24, 24))
-
-        self.gridLayout_2.addWidget(self.pbAddObject, 1, 0, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout_2.addItem(self.horizontalSpacer, 1, 3, 1, 1)
-
         self.pbDeleteObject = QPushButton(self.objectListGroupBox)
         self.pbDeleteObject.setObjectName(u"pbDeleteObject")
-        icon6 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.EditDelete))
-        self.pbDeleteObject.setIcon(icon6)
+        self.pbDeleteObject.setEnabled(False)
+        icon5 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.EditDelete))
+        self.pbDeleteObject.setIcon(icon5)
         self.pbDeleteObject.setIconSize(QSize(24, 24))
 
         self.gridLayout_2.addWidget(self.pbDeleteObject, 1, 1, 1, 1)
 
-        self.pbReorderObject = QPushButton(self.objectListGroupBox)
-        self.pbReorderObject.setObjectName(u"pbReorderObject")
-        icon7 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ViewRefresh))
-        self.pbReorderObject.setIcon(icon7)
-        self.pbReorderObject.setIconSize(QSize(24, 24))
-
-        self.gridLayout_2.addWidget(self.pbReorderObject, 1, 2, 1, 1)
-
         self.tvObjectList = QTreeView(self.objectListGroupBox)
         self.tvObjectList.setObjectName(u"tvObjectList")
 
-        self.gridLayout_2.addWidget(self.tvObjectList, 0, 0, 1, 4)
+        self.gridLayout_2.addWidget(self.tvObjectList, 0, 0, 1, 3)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout_2.addItem(self.horizontalSpacer, 1, 2, 1, 1)
+
+        self.pbAddObject = QPushButton(self.objectListGroupBox)
+        self.pbAddObject.setObjectName(u"pbAddObject")
+        self.pbAddObject.setEnabled(False)
+        icon6 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ContactNew))
+        self.pbAddObject.setIcon(icon6)
+        self.pbAddObject.setIconSize(QSize(24, 24))
+
+        self.gridLayout_2.addWidget(self.pbAddObject, 1, 0, 1, 1)
 
 
         self.gridLayout.addWidget(self.objectListGroupBox, 0, 0, 1, 1)
@@ -172,17 +166,13 @@ class Ui_appWindow(object):
         self.actionGenerate_Binary.setText(QCoreApplication.translate("appWindow", u"Generate Binary", None))
         self.objectListGroupBox.setTitle(QCoreApplication.translate("appWindow", u"Datastore's Objects", None))
 #if QT_CONFIG(tooltip)
-        self.pbAddObject.setToolTip(QCoreApplication.translate("appWindow", u"Add object", None))
-#endif // QT_CONFIG(tooltip)
-        self.pbAddObject.setText("")
-#if QT_CONFIG(tooltip)
         self.pbDeleteObject.setToolTip(QCoreApplication.translate("appWindow", u"Remove object", None))
 #endif // QT_CONFIG(tooltip)
         self.pbDeleteObject.setText("")
 #if QT_CONFIG(tooltip)
-        self.pbReorderObject.setToolTip(QCoreApplication.translate("appWindow", u"Reset indexes", None))
+        self.pbAddObject.setToolTip(QCoreApplication.translate("appWindow", u"Add object", None))
 #endif // QT_CONFIG(tooltip)
-        self.pbReorderObject.setText("")
+        self.pbAddObject.setText("")
         self.groupBox_2.setTitle(QCoreApplication.translate("appWindow", u"Object Editor", None))
         self.menuFile.setTitle(QCoreApplication.translate("appWindow", u"File", None))
         self.menuDatastore_Tool.setTitle(QCoreApplication.translate("appWindow", u"Datastore Tool", None))
