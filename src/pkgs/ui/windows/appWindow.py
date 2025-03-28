@@ -30,6 +30,7 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         self._storeRoot = ObjectListNode('', None)
         self.actionNew.triggered.connect(self._createNewStore)
         self.pbAddObject.clicked.connect(self._createNewObject)
+        self.pbDeleteObject.clicked.connect(self._deleteObject)
 
     @qtc.Slot()
     def _createNewStore(self) -> None:
@@ -59,6 +60,21 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
             parentType = parent.internalPointer().getType()
             self._logger.info(f"creating a new {parentType.name}")
             model.insertRow(selected.row() + 1, parent)
+
+    @qtc.Slot()
+    def _deleteObject(self) -> None:
+        """
+        Delete the selected object.
+        """
+        model = self.tvObjectList.model()
+        selected = self.tvObjectList.currentIndex()
+        selectedNode = selected.internalPointer()
+        selectedType = selectedNode.getType()
+        if selectedType != NodeType.STORE and \
+                selectedType != NodeType.OBJ_LIST:
+            parent = model.parent(selected)
+            self._logger.info(f"deleting {selectedNode.getName()} object")
+            model.removeRow(selected.row(), parent)
 
     @qtc.Slot(qtw.QMessageBox.Icon, Exception)
     def _createErrorMsgBox(self, lvl: qtw.QMessageBox.Icon,

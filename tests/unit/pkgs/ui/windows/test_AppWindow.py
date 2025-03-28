@@ -43,6 +43,7 @@ class TestAppWindow(TestCase):
         self._uut.actionNew = Mock()
         self._uut.pbAddObject = Mock()
         self._uut.tvObjectList = Mock()
+        self._uut.pbDeleteObject = Mock()
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -90,6 +91,8 @@ class TestAppWindow(TestCase):
                 .assert_called_once_with(self._uut._createNewStore)
             self._uut.pbAddObject.clicked.connect \
                 .assert_called_once_with(self._uut._createNewObject)
+            self._uut.pbDeleteObject.clicked.connect \
+                .assert_called_once_with(self._uut._deleteObject)
 
     @freeze_time('Jan 14th, 2025')
     def test_createNewStoreCreateNewStore(self) -> None:
@@ -156,6 +159,32 @@ class TestAppWindow(TestCase):
             model.insertRow.assert_called_once_with(row + 1, parent)
             model.parent.reset_mock()
             model.insertRow.reset_mock()
+
+    def test_deleteObjectDeleteSelected(self) -> None:
+        """
+        The _deleteObject method must get the selected node get its parent and
+        row, and delete the selected node when it's an object.
+        """
+        types = [NodeType.BUTTON, NodeType.BUTTON_ARRAY, NodeType.FLOAT,
+                 NodeType.FLOAT_ARRAY, NodeType.INT, NodeType.INT_ARRAY,
+                 NodeType.MULTI_STATE, NodeType.UINT, NodeType.UINT_ARRAY]
+        row = 3
+        model = Mock()
+        selected = Mock()
+        node = Mock()
+        parent = Mock()
+        for type in types:
+            self._uut.tvObjectList.model.return_value = model
+            self._uut.tvObjectList.currentIndex.return_value = selected
+            selected.internalPointer.return_value = node
+            node.getType.return_value = type
+            selected.row.return_value = row
+            model.parent.return_value = parent
+            self._uut._deleteObject()
+            model.parent.assert_called_once_with(selected)
+            model.removeRow.assert_called_once_with(row, parent)
+            model.parent.reset_mock()
+            model.removeRow.reset_mock()
 
     def test_createErrorMsgBoxNewMsgBox(self) -> None:
         """
