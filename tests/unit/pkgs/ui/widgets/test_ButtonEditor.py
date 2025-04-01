@@ -53,6 +53,7 @@ class TestButtonEditor(TestCase):
                 patch.object(ButtonEditor, '_initUi'):
             uut = ButtonEditor(button)
             mockedSetupUi.assert_called_once_with(uut)
+            self.assertEqual(button, uut._button)
 
     def test_constructorInitUi(self) -> None:
         """
