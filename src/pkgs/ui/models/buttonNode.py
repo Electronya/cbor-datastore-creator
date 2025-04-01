@@ -19,6 +19,42 @@ class ButtonNode(BaseNode):
         super().__init__(name, NodeType.BUTTON, parent=parent)
         self._data = data
 
+    def getLongPressTime(self) -> int:
+        """
+        Get the button long press time.
+
+        Return
+            The button long press time.
+        """
+        return self._data.longPressTime
+
+    def setLongPressTime(self, time: int) -> None:
+        """
+        Set the button long press time.
+
+        Param
+            time: The button long press time.
+        """
+        self._data.longPressTime = time
+
+    def getInactiveTime(self) -> int:
+        """
+        Get the button inactive time.
+
+        Return
+            The button inactive time.
+        """
+        return self._data.inactiveTime
+
+    def setInactiveTime(self, time: int) -> None:
+        """
+        Set the button inactive time.
+
+        Param
+            time: The button inactive time.
+        """
+        self._data.inactiveTime = time
+
 
 @dataclass
 class ButtonArrayElement:
