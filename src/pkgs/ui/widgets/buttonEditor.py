@@ -27,4 +27,30 @@ class ButtonEditor(qtw.QWidget, Ui_ButtonEditor):
         Initialize the UI.
         """
         self.spLongPressTime.setValue(self._button.getLongPressTime())
+        self.spLongPressTime.valueChanged.connect(self._saveLongPressTime)
         self.spInactiveTime.setValue(self._button.getInactiveTime())
+        self.spInactiveTime.valueChanged.connect(self._saveInactiveTime)
+
+    @qtc.Slot()
+    def _saveLongPressTime(self, longPressTime: int) -> None:
+        """
+        Save the long press time.
+
+        Param
+            longPressTime: The long press time to save.
+        """
+        self._logger.info(f"{self._button.getName()} save new long press time "
+                          f"{longPressTime}")
+        self._button.setLongPressTime(longPressTime)
+
+    @qtc.Slot()
+    def _saveInactiveTime(self, inactiveTime: int) -> None:
+        """
+        Save the inactive time.
+
+        Param
+            inactiveTime: The inactive time to save.
+        """
+        self._logger.info(f"{self._button.getName()} save new inactive time "
+                          f"{inactiveTime}")
+        self._button.setInactiveTime(inactiveTime)
