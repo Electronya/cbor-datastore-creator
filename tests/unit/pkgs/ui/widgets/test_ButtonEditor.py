@@ -27,7 +27,7 @@ class TestButtonEditor(TestCase):
                 patch(self._QWidget), patch.object(ButtonEditor, 'setupUi'), \
                 patch.object(ButtonEditor, '_initUi'):
             mockedLoggingMod.getLogger.return_value = self._logger
-            self._uut = ButtonEditor(self._button, Mock())
+            self._uut = ButtonEditor(self._button)
             self._uut.spLongPressTime = Mock()
             self._uut.spInactiveTime = Mock()
 
@@ -36,11 +36,10 @@ class TestButtonEditor(TestCase):
         The constructor must get the button editor widget logger.
         """
         button = Mock()
-        parent = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
                 patch(self._QWidget), patch.object(ButtonEditor, 'setupUi'), \
                 patch.object(ButtonEditor, '_initUi'):
-            ButtonEditor(button, parent)
+            ButtonEditor(button)
             mockedLoggingMod.getLogger \
                 .assert_called_once_with('app.windows.main.buttonEditor')
 
@@ -49,11 +48,10 @@ class TestButtonEditor(TestCase):
         The constructor must setup the UI.
         """
         button = Mock()
-        parent = Mock()
         with patch(self._loggingMod), patch(self._QWidget), \
                 patch.object(ButtonEditor, 'setupUi') as mockedSetupUi, \
                 patch.object(ButtonEditor, '_initUi'):
-            uut = ButtonEditor(button, parent)
+            uut = ButtonEditor(button)
             mockedSetupUi.assert_called_once_with(uut)
 
     def test_constructorInitUi(self) -> None:
@@ -61,11 +59,10 @@ class TestButtonEditor(TestCase):
         The constructor must initialize the UI.
         """
         button = Mock()
-        parent = Mock()
         with patch(self._loggingMod), patch(self._QWidget), \
                 patch.object(ButtonEditor, 'setupUi'), \
                 patch.object(ButtonEditor, '_initUi') as mockedInitUi:
-            ButtonEditor(button, parent)
+            ButtonEditor(button)
             mockedInitUi.assert_called_once_with()
 
     def test_initUiInitInput(self) -> None:
@@ -80,4 +77,24 @@ class TestButtonEditor(TestCase):
         self._uut._initUi()
         self._uut.spLongPressTime.setValue \
             .assert_called_once_with(longPressTime)
+        self._uut.spLongPressTime.valueChanged \
+            .connect.assert_called_once_with(self._uut._saveLongPressTime)
         self._uut.spInactiveTime.setValue.assert_called_once_with(inactiveTime)
+        self._uut.spInactiveTime.valueChanged \
+            .connect.assert_called_once_with(self._uut._saveInactiveTime)
+
+    def test_saveLongPressTimeSaveNewTime(self) -> None:
+        """
+        The _saveLongPressTime method must save the new long press time.
+        """
+        longPressTime = 6000
+        self._uut._saveLongPressTime(longPressTime)
+        self._button.setLongPressTime.assert_called_once_with(longPressTime)
+
+    def test_saveInactiveTimeSaveNewTime(self) -> None:
+        """
+        The _saveInactiveTime method must save the new inactive time.
+        """
+        inactiveTime = 8000
+        self._uut._saveInactiveTime(inactiveTime)
+        self._button.setInactiveTime.assert_called_once_with(inactiveTime)
