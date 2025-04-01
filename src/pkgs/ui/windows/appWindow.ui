@@ -97,7 +97,7 @@
      </widget>
     </item>
     <item row="0" column="1">
-     <widget class="QGroupBox" name="groupBox_2">
+     <widget class="QGroupBox" name="gbEditor">
       <property name="font">
        <font>
         <family>Bitstream Charter</family>
@@ -110,6 +110,7 @@
       <property name="alignment">
        <set>Qt::AlignmentFlag::AlignCenter</set>
       </property>
+      <layout class="QVBoxLayout" name="vlEditor"/>
      </widget>
     </item>
    </layout>

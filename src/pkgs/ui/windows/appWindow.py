@@ -5,7 +5,9 @@ import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
 
 from .appWindow_ui import Ui_appWindow
-from ..models import DatastoreModel, DatastoreNode, NodeType, ObjectListNode
+from ..models import BaseNode, DatastoreModel, DatastoreNode, NodeType, \
+    ObjectListNode
+from ..widgets import ButtonEditor
 
 
 class AppWindow(qtw.QMainWindow, Ui_appWindow):
@@ -19,7 +21,9 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         super(AppWindow, self).__init__()
         self._logger = logging.getLogger('app.windows.main')
         self._logger.info('loading UI...')
-        self._storeRoot = None
+        self._storeRoot: ObjectListNode = None
+        self._objectEditor: qtw.QWidget = None
+        self._arrayEditor: qtw.QWidget = None
         self.setupUi(self)
         self._initUi()
 
@@ -31,6 +35,33 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         self.actionNew.triggered.connect(self._createNewStore)
         self.pbAddObject.clicked.connect(self._createNewObject)
         self.pbDeleteObject.clicked.connect(self._deleteObject)
+
+    def _displayEditor(self, selected: BaseNode) -> None:
+        """
+        Display the appropriate object editor based on selection.
+        """
+        match selected.getType():
+            case NodeType.BUTTON:
+                self._objectEditor = ButtonEditor(selected)
+                self.vlEditor.insertWidget(0, self._objectEditor)
+            case _:
+                raise ValueError(f"{selected.getType().name} is an "
+                                 f"unsupported object type")
+
+    def _hideEditor(self) -> None:
+        """
+        Hide the current displayed editor.
+        """
+        if self._objectEditor is not None:
+            self.vlEditor.removeWidget(self._objectEditor)
+            self._objectEditor.setParent(None)
+            self._objectEditor.deleteLater()
+            self._objectEditor = None
+        if self._arrayEditor is not None:
+            self.vlEditor.removeWidget(self._arrayEditor)
+            self._arrayEditor.setParent(None)
+            self._arrayEditor.deleteLater()
+            self._arrayEditor = None
 
     @qtc.Slot()
     def _createNewStore(self) -> None:
@@ -53,13 +84,15 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         """
         addIsEnabled = False
         deleteIsEnabled = False
-        selected = self.tvObjectList.currentIndex()
-        type = selected.internalPointer().getType()
+        selected = self.tvObjectList.currentIndex().internalPointer()
+        type = selected.getType()
+        self._hideEditor()
         if type == NodeType.OBJ_LIST:
             addIsEnabled = True
         if type != NodeType.STORE and type != NodeType.OBJ_LIST:
             addIsEnabled = True
             deleteIsEnabled = True
+            self._displayEditor(selected)
         self.pbAddObject.setEnabled(addIsEnabled)
         self.pbDeleteObject.setEnabled(deleteIsEnabled)
 

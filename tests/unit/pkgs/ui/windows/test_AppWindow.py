@@ -1,4 +1,3 @@
-from datetime import datetime
 from freezegun import freeze_time
 from unittest import TestCase
 from unittest.mock import call, Mock, patch
@@ -25,6 +24,7 @@ class TestAppWindow(TestCase):
         self._DatastoreNodeCls = 'pkgs.ui.windows.appWindow.DatastoreNode'
         self._ObjectListNodeCls = 'pkgs.ui.windows.appWindow.ObjectListNode'
         self._DatastoreModelCls = 'pkgs.ui.windows.appWindow.DatastoreModel'
+        self._ButtonEditorCls = 'pkgs.ui.windows.appWindow.ButtonEditor'
         self._loggingMod = 'pkgs.ui.windows.appWindow.logging'
         self._mockedLogger = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
@@ -44,6 +44,7 @@ class TestAppWindow(TestCase):
         self._uut.pbAddObject = Mock()
         self._uut.tvObjectList = Mock()
         self._uut.pbDeleteObject = Mock()
+        self._uut.vlEditor = Mock()
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -61,7 +62,6 @@ class TestAppWindow(TestCase):
         The constructor must setup the UI.
         """
         with patch(self._QMainWindow), \
-                patch(self._QMainWindow), \
                 patch.object(AppWindow, 'setupUi') as mockedSetupUi, \
                 patch.object(AppWindow, '_initUi'):
             testAppWindow = AppWindow()
@@ -77,10 +77,10 @@ class TestAppWindow(TestCase):
             AppWindow()
             mockedInitUi.assert_called_once()
 
-    def test_initUiConnectEventsAndSlots(self) -> None:
+    def test_initUiConnectEventsAndSlotsCreateEditors(self) -> None:
         """
         The _initUi method must connect all the window events to there
-        corresponding slots.
+        corresponding slots, and create and hide editors.
         """
         root = Mock()
         with patch(self._ObjectListNodeCls) as mockedObjectListNode:
@@ -93,6 +93,54 @@ class TestAppWindow(TestCase):
                 .assert_called_once_with(self._uut._createNewObject)
             self._uut.pbDeleteObject.clicked.connect \
                 .assert_called_once_with(self._uut._deleteObject)
+
+    def test_displayEditorButton(self) -> None:
+        """
+        The _displayEditor method must create the button editor when the
+        selected node is a button object.
+        """
+        selected = Mock()
+        type = NodeType.BUTTON
+        objectEditor = Mock()
+        with patch(self._ButtonEditorCls) as mockedEditorCls:
+            selected.getType.return_value = type
+            mockedEditorCls.return_value = objectEditor
+            self._uut._displayEditor(selected)
+            mockedEditorCls.assert_called_once_with(selected)
+            self._uut.vlEditor.insertWidget \
+                .assert_called_once_with(0, objectEditor)
+            self.assertEqual(objectEditor, self._uut._objectEditor)
+
+    def test_hideEditorRemoveEditor(self) -> None:
+        """
+        The _hideEditor method must remove the object editor and the array
+        editor when they are present.
+        """
+        editors = [{'object': None, 'array': None},
+                   {'object': Mock(), 'array': None},
+                   {'object': None, 'array': Mock()},
+                   {'object': Mock(), 'array': Mock()}]
+        calls = []
+        for editor in editors:
+            self._uut._objectEditor = editor['object']
+            self._uut._arrayEditor = editor['array']
+            self._uut._hideEditor()
+            if editor['object'] is not None:
+                calls.append(call(editor['object']))
+                editor['object'].setParent.assert_called_once_with(None)
+                editor['object'].deleteLater.assert_called_once_with()
+                editor['object'].setParent.reset_mock()
+                editor['object'].deleteLater.reset_mock()
+            if editor['array'] is not None:
+                calls.append(call(editor['array']))
+                editor['array'].setParent.assert_called_once_with(None)
+                editor['array'].deleteLater.assert_called_once_with()
+                editor['array'].setParent.reset_mock()
+                editor['array'].deleteLater.reset_mock()
+            if editor['object'] is not None or editor['array'] is not None:
+                self._uut.vlEditor.removeWidget.assert_has_calls(calls)
+                self._uut.vlEditor.removeWidget.reset_mock()
+                calls = []
 
     @freeze_time('Jan 14th, 2025')
     def test_createNewStoreCreateNewStore(self) -> None:
@@ -124,11 +172,17 @@ class TestAppWindow(TestCase):
         """
         selected = Mock()
         type = NodeType.STORE
-        self._uut.tvObjectList.currentIndex.return_value = selected
-        selected.internalPointer().getType.return_value = type
-        self._uut._newStoreSelection()
-        self._uut.pbAddObject.setEnabled.assert_called_once_with(False)
-        self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
+        with patch.object(AppWindow, '_hideEditor') as mockedHideEditor, \
+                patch.object(AppWindow, '_displayEditor') \
+                as mockedDisplayEditor:
+            self._uut.tvObjectList.currentIndex().internalPointer \
+                .return_value = selected
+            selected.getType.return_value = type
+            self._uut._newStoreSelection()
+            mockedHideEditor.assert_called_once_with()
+            mockedDisplayEditor.assert_not_called()
+            self._uut.pbAddObject.setEnabled.assert_called_once_with(False)
+            self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
 
     def test_newStoreSelectionListSelected(self) -> None:
         """
@@ -137,11 +191,17 @@ class TestAppWindow(TestCase):
         """
         selected = Mock()
         type = NodeType.OBJ_LIST
-        self._uut.tvObjectList.currentIndex.return_value = selected
-        selected.internalPointer().getType.return_value = type
-        self._uut._newStoreSelection()
-        self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
-        self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
+        with patch.object(AppWindow, '_hideEditor') as mockedHideEditor, \
+                patch.object(AppWindow, '_displayEditor') \
+                as mockedDisplayEditor:
+            self._uut.tvObjectList.currentIndex().internalPointer \
+                .return_value = selected
+            selected.getType.return_value = type
+            self._uut._newStoreSelection()
+            mockedHideEditor.assert_called_once_with()
+            mockedDisplayEditor.assert_not_called()
+            self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
+            self._uut.pbDeleteObject.setEnabled.assert_called_once_with(False)
 
     def test_newStoreSelectionObjectSelected(self) -> None:
         """
@@ -153,13 +213,22 @@ class TestAppWindow(TestCase):
                  NodeType.FLOAT_ARRAY, NodeType.INT, NodeType.INT_ARRAY,
                  NodeType.MULTI_STATE, NodeType.UINT, NodeType.UINT_ARRAY]
         for type in types:
-            self._uut.tvObjectList.currentIndex.return_value = selected
-            selected.internalPointer().getType.return_value = type
-            self._uut._newStoreSelection()
-            self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
-            self._uut.pbDeleteObject.setEnabled.assert_called_once_with(True)
-            self._uut.pbAddObject.setEnabled.reset_mock()
-            self._uut.pbDeleteObject.setEnabled.reset_mock()
+            self._uut.tvObjectList.currentIndex().internalPointer \
+                .return_value = selected
+            selected.getType.return_value = type
+            with patch.object(AppWindow, '_hideEditor') as mockedHideEditor, \
+                    patch.object(AppWindow, '_displayEditor') \
+                    as mockedDisplayEditor:
+                self._uut._newStoreSelection()
+                mockedHideEditor.assert_called_once_with()
+                mockedDisplayEditor.assert_called_once_with(selected)
+                self._uut.pbAddObject.setEnabled.assert_called_once_with(True)
+                self._uut.pbDeleteObject.setEnabled \
+                    .assert_called_once_with(True)
+                mockedHideEditor.reset_mock()
+                mockedDisplayEditor.reset_mock()
+                self._uut.pbAddObject.setEnabled.reset_mock()
+                self._uut.pbDeleteObject.setEnabled.reset_mock()
 
     def test_createNewObjectNewObjectInList(self) -> None:
         """

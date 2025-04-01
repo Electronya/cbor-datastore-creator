@@ -19,7 +19,7 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QGridLayout, QGroupBox, QHeaderView,
     QMainWindow, QMenu, QMenuBar, QPushButton,
     QSizePolicy, QSpacerItem, QStatusBar, QToolBar,
-    QTreeView, QWidget)
+    QTreeView, QVBoxLayout, QWidget)
 from ..assets import resources_rc
 
 class Ui_appWindow(object):
@@ -104,15 +104,17 @@ class Ui_appWindow(object):
 
         self.gridLayout.addWidget(self.objectListGroupBox, 0, 0, 1, 1)
 
-        self.groupBox_2 = QGroupBox(self.centralwidget)
-        self.groupBox_2.setObjectName(u"groupBox_2")
+        self.gbEditor = QGroupBox(self.centralwidget)
+        self.gbEditor.setObjectName(u"gbEditor")
         font1 = QFont()
         font1.setFamilies([u"Bitstream Charter"])
         font1.setPointSize(12)
-        self.groupBox_2.setFont(font1)
-        self.groupBox_2.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.gbEditor.setFont(font1)
+        self.gbEditor.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        self.vlEditor = QVBoxLayout(self.gbEditor)
+        self.vlEditor.setObjectName(u"vlEditor")
 
-        self.gridLayout.addWidget(self.groupBox_2, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.gbEditor, 0, 1, 1, 1)
 
         self.gridLayout.setColumnStretch(0, 100)
         self.gridLayout.setColumnStretch(1, 100)
@@ -173,7 +175,7 @@ class Ui_appWindow(object):
         self.pbAddObject.setToolTip(QCoreApplication.translate("appWindow", u"Add object", None))
 #endif // QT_CONFIG(tooltip)
         self.pbAddObject.setText("")
-        self.groupBox_2.setTitle(QCoreApplication.translate("appWindow", u"Object Editor", None))
+        self.gbEditor.setTitle(QCoreApplication.translate("appWindow", u"Object Editor", None))
         self.menuFile.setTitle(QCoreApplication.translate("appWindow", u"File", None))
         self.menuDatastore_Tool.setTitle(QCoreApplication.translate("appWindow", u"Datastore Tool", None))
         self.toolBar.setWindowTitle(QCoreApplication.translate("appWindow", u"toolBar", None))
