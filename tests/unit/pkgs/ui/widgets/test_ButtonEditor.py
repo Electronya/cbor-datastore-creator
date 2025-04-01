@@ -28,8 +28,8 @@ class TestButtonEditor(TestCase):
                 patch.object(ButtonEditor, '_initUi'):
             mockedLoggingMod.getLogger.return_value = self._logger
             self._uut = ButtonEditor(self._button)
-            self._uut.spLongPressTime = Mock()
-            self._uut.spInactiveTime = Mock()
+            self._uut.sbLongPressTime = Mock()
+            self._uut.sbInactiveTime = Mock()
 
     def test_constructorGetLogger(self) -> None:
         """
@@ -75,12 +75,12 @@ class TestButtonEditor(TestCase):
         self._button.getLongPressTime.return_value = longPressTime
         self._button.getInactiveTime.return_value = inactiveTime
         self._uut._initUi()
-        self._uut.spLongPressTime.setValue \
+        self._uut.sbLongPressTime.setValue \
             .assert_called_once_with(longPressTime)
-        self._uut.spLongPressTime.valueChanged \
+        self._uut.sbLongPressTime.valueChanged \
             .connect.assert_called_once_with(self._uut._saveLongPressTime)
-        self._uut.spInactiveTime.setValue.assert_called_once_with(inactiveTime)
-        self._uut.spInactiveTime.valueChanged \
+        self._uut.sbInactiveTime.setValue.assert_called_once_with(inactiveTime)
+        self._uut.sbInactiveTime.valueChanged \
             .connect.assert_called_once_with(self._uut._saveInactiveTime)
 
     def test_saveLongPressTimeSaveNewTime(self) -> None:
