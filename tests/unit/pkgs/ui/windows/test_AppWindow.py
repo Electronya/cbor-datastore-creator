@@ -26,6 +26,7 @@ class TestAppWindow(TestCase):
         self._DatastoreModelCls = 'pkgs.ui.windows.appWindow.DatastoreModel'
         self._ButtonEditorCls = 'pkgs.ui.windows.appWindow.ButtonEditor'
         self._FloatEditorCls = 'pkgs.ui.windows.appWindow.FloatEditor'
+        self._IntEditorCls = 'pkgs.ui.windows.appWindow.IntEditor'
         self._loggingMod = 'pkgs.ui.windows.appWindow.logging'
         self._mockedLogger = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
@@ -121,6 +122,23 @@ class TestAppWindow(TestCase):
         type = NodeType.FLOAT
         objectEditor = Mock()
         with patch(self._FloatEditorCls) as mockedEditorCls:
+            selected.getType.return_value = type
+            mockedEditorCls.return_value = objectEditor
+            self._uut._displayEditor(selected)
+            mockedEditorCls.assert_called_once_with(selected)
+            self._uut.vlEditor.insertWidget \
+                .assert_called_once_with(0, objectEditor)
+            self.assertEqual(objectEditor, self._uut._objectEditor)
+
+    def test_displayEditorInt(self) -> None:
+        """
+        The _displayEditor method must create the int editor when the
+        selected node is a int object.
+        """
+        selected = Mock()
+        type = NodeType.INT
+        objectEditor = Mock()
+        with patch(self._IntEditorCls) as mockedEditorCls:
             selected.getType.return_value = type
             mockedEditorCls.return_value = objectEditor
             self._uut._displayEditor(selected)

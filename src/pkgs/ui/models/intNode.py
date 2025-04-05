@@ -20,6 +20,60 @@ class IntNode(BaseNode):
         super().__init__(name, NodeType.INT, parent=parent)
         self._data = data
 
+    def getMinimum(self) -> int:
+        """
+        Get the minimum value.
+
+        Return
+            The minimum value of the int.
+        """
+        return self._data.min
+
+    def setMinimum(self, min: int) -> None:
+        """
+        Set the minimum value.
+
+        Param
+            min: The minimum value of the int.
+        """
+        self._data.min = min
+
+    def getMaximum(self) -> int:
+        """
+        Get the maximum value.
+
+        Return
+            The maximum value of the int.
+        """
+        return self._data.max
+
+    def setMaximum(self, max: int) -> None:
+        """
+        Set the maximum value.
+
+        Param
+            min: The maximum value of the int.
+        """
+        self._data.max = max
+
+    def getDefault(self) -> int:
+        """
+        Get the default value.
+
+        Return
+            The default value of the int.
+        """
+        return self._data.default
+
+    def setDefault(self, default: int) -> None:
+        """
+        Set the default value.
+
+        Param
+            min: The default value of the int.
+        """
+        self._data.default = default
+
 
 @dataclass
 class IntArrayElement:
