@@ -7,8 +7,8 @@ class IntData:
     """
     The int node data.
     """
-    min: int = 0
-    max: int = 0
+    min: int = -1000000
+    max: int = 1000000
     default: int = 0
 
 

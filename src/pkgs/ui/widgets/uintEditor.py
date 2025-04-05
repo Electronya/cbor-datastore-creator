@@ -4,21 +4,21 @@ import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
 
 from .intEditor_ui import Ui_IntEditor
-from ..models import IntNode
+from ..models import UintNode
 
 
-class IntEditor(qtw.QWidget, Ui_IntEditor):
+class UintEditor(qtw.QWidget, Ui_IntEditor):
     """
     The button editor widget.
     """
-    def __init__(self, intObj: IntNode, parent: qtw.QWidget = None) -> None:
+    def __init__(self, uint: UintNode, parent: qtw.QWidget = None) -> None:
         """
         Constructor.
         """
-        super(IntEditor, self).__init__(parent)
-        self._logger = logging.getLogger('app.windows.main.intEditor')
+        super(UintEditor, self).__init__(parent)
+        self._logger = logging.getLogger('app.windows.main.uintEditor')
         self._logger.info('creating int editor widget')
-        self._int = intObj
+        self._uint = uint
         self.setupUi(self)
         self._initUi()
 
@@ -26,15 +26,15 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         """
         Initialize the UI connecting signals and slots.
         """
-        min = self._int.getMinimum()
-        max = self._int.getMaximum()
-        default = self._int.getDefault()
+        min = self._uint.getMinimum()
+        max = self._uint.getMaximum()
+        default = self._uint.getDefault()
         self.sbDefaultValue.setMinimum(min)
         self.sbDefaultValue.setMaximum(max)
         self.sbDefaultValue.setValue(default)
         self.sbDefaultValue.setKeyboardTracking(False)
         self.sbDefaultValue.valueChanged.connect(self._saveDefaultValue)
-        self.sbMinValue.setMinimum(-(2 ** 31) + 1)
+        self.sbMinValue.setMinimum(0)
         self.sbMinValue.setMaximum(max - 1.0)
         self.sbMinValue.setValue(min)
         self.sbMinValue.setKeyboardTracking(False)
@@ -53,7 +53,7 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             default: The new default value.
         """
-        self._int.setDefault(default)
+        self._uint.setDefault(default)
 
     @qtc.Slot()
     def _saveMinValue(self, min: int) -> None:
@@ -63,7 +63,7 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             min: The new minimum value.
         """
-        self._int.setMinimum(min)
+        self._uint.setMinimum(min)
         self.sbDefaultValue.setMinimum(min)
         self.sbMaxValue.setMinimum(min + 1)
 
@@ -75,6 +75,6 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             max: The new maximum value.
         """
-        self._int.setMaximum(max)
+        self._uint.setMaximum(max)
         self.sbDefaultValue.setMaximum(max)
         self.sbMinValue.setMaximum(max - 1)

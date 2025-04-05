@@ -6,26 +6,26 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.ui.widgets import IntEditor                         # noqa: E402
+from pkgs.ui.widgets import UintEditor                         # noqa: E402
 
 
-class TestIntEditor(TestCase):
+class TestUintEditor(TestCase):
     """
-    IntEditor widget test cases.
+    UintEditor widget test cases.
     """
     def setUp(self) -> None:
         """
         Test cases setup.
         """
-        self._QWidget = 'pkgs.ui.widgets.intEditor.qtw.QWidget.__init__'
-        self._loggingMod = 'pkgs.ui.widgets.intEditor.logging'
+        self._QWidget = 'pkgs.ui.widgets.uintEditor.qtw.QWidget.__init__'
+        self._loggingMod = 'pkgs.ui.widgets.uintEditor.logging'
         self._logger = Mock()
-        self._int = Mock()
+        self._uint = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
-                patch(self._QWidget), patch.object(IntEditor, 'setupUi'), \
-                patch.object(IntEditor, '_initUi'):
+                patch(self._QWidget), patch.object(UintEditor, 'setupUi'), \
+                patch.object(UintEditor, '_initUi'):
             mockedLoggingMod.getLogger.return_value = self._logger
-            self._uut = IntEditor(self._int)
+            self._uut = UintEditor(self._uint)
             self._uut.sbDefaultValue = Mock()
             self._uut.sbMinValue = Mock()
             self._uut.sbMaxValue = Mock()
@@ -34,37 +34,37 @@ class TestIntEditor(TestCase):
         """
         The constructor must get the button editor widget logger.
         """
-        intObj = Mock()
+        uint = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
-                patch(self._QWidget), patch.object(IntEditor, 'setupUi'), \
-                patch.object(IntEditor, '_initUi'):
-            IntEditor(intObj)
+                patch(self._QWidget), patch.object(UintEditor, 'setupUi'), \
+                patch.object(UintEditor, '_initUi'):
+            UintEditor(uint)
             mockedLoggingMod.getLogger \
-                .assert_called_once_with('app.windows.main.intEditor')
+                .assert_called_once_with('app.windows.main.uintEditor')
 
     def test_constructorSetupUi(self) -> None:
         """
         The constructor must setup the UI.
         """
-        intObj = Mock()
+        uint = Mock()
         with patch(self._loggingMod), patch(self._QWidget), \
-                patch.object(IntEditor, 'setupUi') as mockedSetupUi, \
-                patch.object(IntEditor, '_initUi'):
-            uut = IntEditor(intObj)
+                patch.object(UintEditor, 'setupUi') as mockedSetupUi, \
+                patch.object(UintEditor, '_initUi'):
+            uut = UintEditor(uint)
             mockedSetupUi.assert_called_once_with(uut)
-            self.assertEqual(intObj, uut._int)
+            self.assertEqual(uint, uut._uint)
 
     def test_initUiInitInput(self) -> None:
         """
-        The _initUi method must initialize the input value from the int
+        The _initUi method must initialize the input value from the uint
         data.
         """
-        minValue = -1
+        minValue = 0
         maxValue = 10
         defaultValue = 1
-        self._int.getMinimum.return_value = minValue
-        self._int.getMaximum.return_value = maxValue
-        self._int.getDefault.return_value = defaultValue
+        self._uint.getMinimum.return_value = minValue
+        self._uint.getMaximum.return_value = maxValue
+        self._uint.getDefault.return_value = defaultValue
         self._uut._initUi()
         self._uut.sbDefaultValue.setMinimum.assert_called_once_with(minValue)
         self._uut.sbDefaultValue.setMaximum.assert_called_once_with(maxValue)
@@ -75,7 +75,7 @@ class TestIntEditor(TestCase):
         self._uut.sbDefaultValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveDefaultValue)
         self._uut.sbMinValue.setMinimum \
-            .assert_called_once_with(-(2 ** 31) + 1)
+            .assert_called_once_with(0)
         self._uut.sbMinValue.setMaximum \
             .assert_called_once_with(maxValue - 1)
         self._uut.sbMinValue.setValue.assert_called_once_with(minValue)
@@ -99,7 +99,7 @@ class TestIntEditor(TestCase):
         """
         default = 12
         self._uut._saveDefaultValue(default)
-        self._uut._int.setDefault.assert_called_once_with(default)
+        self._uut._uint.setDefault.assert_called_once_with(default)
 
     def test_saveMinValueSaveMin(self) -> None:
         """
@@ -107,9 +107,9 @@ class TestIntEditor(TestCase):
         minimum value and update the maximum input field minimum value with it
         plus 1.
         """
-        min = -12
+        min = 2
         self._uut._saveMinValue(min)
-        self._uut._int.setMinimum.assert_called_once_with(min)
+        self._uut._uint.setMinimum.assert_called_once_with(min)
         self._uut.sbDefaultValue.setMinimum.assert_called_once_with(min)
         self._uut.sbMaxValue.setMinimum.assert_called_once_with(min + 1)
 
@@ -121,6 +121,6 @@ class TestIntEditor(TestCase):
         """
         max = 12
         self._uut._saveMaxValue(max)
-        self._uut._int.setMaximum.assert_called_once_with(max)
+        self._uut._uint.setMaximum.assert_called_once_with(max)
         self._uut.sbDefaultValue.setMaximum.assert_called_once_with(max)
         self._uut.sbMinValue.setMaximum.assert_called_once_with(max - 1)

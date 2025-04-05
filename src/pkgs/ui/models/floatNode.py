@@ -7,8 +7,8 @@ class FloatData:
     """
     The float node data.
     """
-    min: float = 0.0
-    max: float = 0.0
+    min: float = -1000000.0
+    max: float = 1000000.0
     default: float = 0.0
 
 

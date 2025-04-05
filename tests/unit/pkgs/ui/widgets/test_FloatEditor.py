@@ -79,28 +79,28 @@ class TestFloatEditor(TestCase):
         self._float.getMaximum.return_value = maxValue
         self._float.getDefault.return_value = defaultValue
         self._uut._initUi()
-        self._uut.dsbDefaultValue.setValue \
-            .assert_called_once_with(defaultValue)
         self._uut.dsbDefaultValue.setMinimum.assert_called_once_with(minValue)
         self._uut.dsbDefaultValue.setMaximum.assert_called_once_with(maxValue)
+        self._uut.dsbDefaultValue.setValue \
+            .assert_called_once_with(defaultValue)
         self._uut.dsbDefaultValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.dsbDefaultValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveDefaultValue)
-        self._uut.dsbMinValue.setValue.assert_called_once_with(minValue)
         self._uut.dsbMinValue.setMinimum \
             .assert_called_once_with(-sys.float_info.max)
         self._uut.dsbMinValue.setMaximum \
             .assert_called_once_with(maxValue - 1.0)
+        self._uut.dsbMinValue.setValue.assert_called_once_with(minValue)
         self._uut.dsbMinValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.dsbMinValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveMinValue)
-        self._uut.dsbMaxValue.setValue.assert_called_once_with(maxValue)
         self._uut.dsbMaxValue.setMinimum \
             .assert_called_once_with(minValue + 1.0)
         self._uut.dsbMaxValue.setMaximum \
             .assert_called_once_with(sys.float_info.max)
+        self._uut.dsbMaxValue.setValue.assert_called_once_with(maxValue)
         self._uut.dsbMaxValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.dsbMaxValue.valueChanged.connect \
