@@ -66,28 +66,28 @@ class TestIntEditor(TestCase):
         self._int.getMaximum.return_value = maxValue
         self._int.getDefault.return_value = defaultValue
         self._uut._initUi()
-        self._uut.sbDefaultValue.setValue \
-            .assert_called_once_with(defaultValue)
         self._uut.sbDefaultValue.setMinimum.assert_called_once_with(minValue)
         self._uut.sbDefaultValue.setMaximum.assert_called_once_with(maxValue)
+        self._uut.sbDefaultValue.setValue \
+            .assert_called_once_with(defaultValue)
         self._uut.sbDefaultValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.sbDefaultValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveDefaultValue)
-        self._uut.sbMinValue.setValue.assert_called_once_with(minValue)
         self._uut.sbMinValue.setMinimum \
             .assert_called_once_with(-(2 ** 31) + 1)
         self._uut.sbMinValue.setMaximum \
             .assert_called_once_with(maxValue - 1)
+        self._uut.sbMinValue.setValue.assert_called_once_with(minValue)
         self._uut.sbMinValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.sbMinValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveMinValue)
-        self._uut.sbMaxValue.setValue.assert_called_once_with(maxValue)
         self._uut.sbMaxValue.setMinimum \
             .assert_called_once_with(minValue + 1)
         self._uut.sbMaxValue.setMaximum \
             .assert_called_once_with(2 ** 31 - 1)
+        self._uut.sbMaxValue.setValue.assert_called_once_with(maxValue)
         self._uut.sbMaxValue.setKeyboardTracking \
             .assert_called_once_with(False)
         self._uut.sbMaxValue.valueChanged.connect \
