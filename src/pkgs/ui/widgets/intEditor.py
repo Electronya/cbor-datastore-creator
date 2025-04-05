@@ -1,5 +1,4 @@
 import logging
-import sys
 
 import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
@@ -54,6 +53,7 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             default: The new default value.
         """
+        self._int.setDefault(default)
 
     @qtc.Slot()
     def _saveMinValue(self, min: int) -> None:
@@ -63,6 +63,9 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             min: The new minimum value.
         """
+        self._int.setMinimum(min)
+        self.sbDefaultValue.setMinimum(min)
+        self.sbMaxValue.setMinimum(min + 1)
 
     @qtc.Slot()
     def _saveMaxValue(self, max: int) -> None:
@@ -72,3 +75,6 @@ class IntEditor(qtw.QWidget, Ui_IntEditor):
         Param
             max: The new maximum value.
         """
+        self._int.setMaximum(max)
+        self.sbDefaultValue.setMaximum(max)
+        self.sbMinValue.setMaximum(max - 1)
