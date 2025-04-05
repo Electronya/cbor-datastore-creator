@@ -1,8 +1,6 @@
 from unittest import TestCase
 from unittest.mock import Mock, patch
 
-from PySide6.QtWidgets import QMessageBox
-
 import os
 import sys
 
@@ -36,11 +34,11 @@ class TestIntEditor(TestCase):
         """
         The constructor must get the button editor widget logger.
         """
-        floatObj = Mock()
+        intObj = Mock()
         with patch(self._loggingMod) as mockedLoggingMod, \
                 patch(self._QWidget), patch.object(IntEditor, 'setupUi'), \
                 patch.object(IntEditor, '_initUi'):
-            IntEditor(floatObj)
+            IntEditor(intObj)
             mockedLoggingMod.getLogger \
                 .assert_called_once_with('app.windows.main.intEditor')
 
@@ -48,17 +46,17 @@ class TestIntEditor(TestCase):
         """
         The constructor must setup the UI.
         """
-        floatObj = Mock()
+        intObj = Mock()
         with patch(self._loggingMod), patch(self._QWidget), \
                 patch.object(IntEditor, 'setupUi') as mockedSetupUi, \
                 patch.object(IntEditor, '_initUi'):
-            uut = IntEditor(floatObj)
+            uut = IntEditor(intObj)
             mockedSetupUi.assert_called_once_with(uut)
-            self.assertEqual(floatObj, uut._int)
+            self.assertEqual(intObj, uut._int)
 
     def test_initUiInitInput(self) -> None:
         """
-        The _initUi method must initialize the input value from the float
+        The _initUi method must initialize the input value from the int
         data.
         """
         minValue = -1
@@ -94,3 +92,35 @@ class TestIntEditor(TestCase):
             .assert_called_once_with(False)
         self._uut.sbMaxValue.valueChanged.connect \
             .assert_called_once_with(self._uut._saveMaxValue)
+
+    def test_saveDefaultValueSaveDefault(self) -> None:
+        """
+        The _saveDefaultValue method must save the new default value.
+        """
+        default = 12
+        self._uut._saveDefaultValue(default)
+        self._uut._int.setDefault.assert_called_once_with(default)
+
+    def test_saveMinValueSaveMin(self) -> None:
+        """
+        The _saveMinValue method must save the new minimum, update the default
+        minimum value and update the maximum input field minimum value with it
+        plus 1.
+        """
+        min = -12
+        self._uut._saveMinValue(min)
+        self._uut._int.setMinimum.assert_called_once_with(min)
+        self._uut.sbDefaultValue.setMinimum.assert_called_once_with(min)
+        self._uut.sbMaxValue.setMinimum.assert_called_once_with(min + 1)
+
+    def test_saveMaxValueSaveMax(self) -> None:
+        """
+        The _saveMaxValue method must save the new maximum, update the default
+        maximum value and update the maximum input field maximum value with it
+        minus 1.
+        """
+        max = 12
+        self._uut._saveMaxValue(max)
+        self._uut._int.setMaximum.assert_called_once_with(max)
+        self._uut.sbDefaultValue.setMaximum.assert_called_once_with(max)
+        self._uut.sbMinValue.setMaximum.assert_called_once_with(max - 1)
