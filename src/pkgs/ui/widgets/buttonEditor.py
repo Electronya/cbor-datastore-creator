@@ -26,10 +26,10 @@ class ButtonEditor(qtw.QWidget, Ui_ButtonEditor):
         """
         Initialize the UI.
         """
-        self.spLongPressTime.setValue(self._button.getLongPressTime())
-        self.spLongPressTime.valueChanged.connect(self._saveLongPressTime)
-        self.spInactiveTime.setValue(self._button.getInactiveTime())
-        self.spInactiveTime.valueChanged.connect(self._saveInactiveTime)
+        self.sbLongPressTime.setValue(self._button.getLongPressTime())
+        self.sbLongPressTime.valueChanged.connect(self._saveLongPressTime)
+        self.sbInactiveTime.setValue(self._button.getInactiveTime())
+        self.sbInactiveTime.valueChanged.connect(self._saveInactiveTime)
 
     @qtc.Slot()
     def _saveLongPressTime(self, longPressTime: int) -> None:

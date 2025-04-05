@@ -7,7 +7,7 @@ import PySide6.QtWidgets as qtw
 from .appWindow_ui import Ui_appWindow
 from ..models import BaseNode, DatastoreModel, DatastoreNode, NodeType, \
     ObjectListNode
-from ..widgets import ButtonEditor
+from ..widgets import ButtonEditor, FloatEditor
 
 
 class AppWindow(qtw.QMainWindow, Ui_appWindow):
@@ -43,6 +43,9 @@ class AppWindow(qtw.QMainWindow, Ui_appWindow):
         match selected.getType():
             case NodeType.BUTTON:
                 self._objectEditor = ButtonEditor(selected)
+                self.vlEditor.insertWidget(0, self._objectEditor)
+            case NodeType.FLOAT:
+                self._objectEditor = FloatEditor(selected)
                 self.vlEditor.insertWidget(0, self._objectEditor)
             case _:
                 raise ValueError(f"{selected.getType().name} is an "

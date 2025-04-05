@@ -33,12 +33,12 @@ class Ui_ButtonEditor(object):
 
         self.gridLayout.addWidget(self.lblInactiv, 1, 0, 1, 1)
 
-        self.spInactiveTime = QSpinBox(ButtonEditor)
-        self.spInactiveTime.setObjectName(u"spInactiveTime")
-        self.spInactiveTime.setMinimum(1000)
-        self.spInactiveTime.setMaximum(600000)
+        self.sbInactiveTime = QSpinBox(ButtonEditor)
+        self.sbInactiveTime.setObjectName(u"sbInactiveTime")
+        self.sbInactiveTime.setMinimum(1000)
+        self.sbInactiveTime.setMaximum(600000)
 
-        self.gridLayout.addWidget(self.spInactiveTime, 1, 1, 1, 1)
+        self.gridLayout.addWidget(self.sbInactiveTime, 1, 1, 1, 1)
 
         self.lblLongPress = QLabel(ButtonEditor)
         self.lblLongPress.setObjectName(u"lblLongPress")
@@ -46,12 +46,12 @@ class Ui_ButtonEditor(object):
 
         self.gridLayout.addWidget(self.lblLongPress, 0, 0, 1, 1)
 
-        self.spLongPressTime = QSpinBox(ButtonEditor)
-        self.spLongPressTime.setObjectName(u"spLongPressTime")
-        self.spLongPressTime.setMinimum(1000)
-        self.spLongPressTime.setMaximum(600000)
+        self.sbLongPressTime = QSpinBox(ButtonEditor)
+        self.sbLongPressTime.setObjectName(u"sbLongPressTime")
+        self.sbLongPressTime.setMinimum(1000)
+        self.sbLongPressTime.setMaximum(600000)
 
-        self.gridLayout.addWidget(self.spLongPressTime, 0, 1, 1, 1)
+        self.gridLayout.addWidget(self.sbLongPressTime, 0, 1, 1, 1)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
