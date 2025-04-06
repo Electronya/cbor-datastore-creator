@@ -19,7 +19,7 @@ class StateNode(object):
             parent: The node parent.
         """
         self._logger = logging.getLogger(f"app.datastoreModel.MULTI_STATE."
-                                         f"state.{name}")
+                                         f"stateList.{name}")
         self._name = name
         self._value = value
 

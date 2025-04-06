@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 import os
 import sys
@@ -33,7 +33,7 @@ class TestStateNode(TestCase):
             StateNode(name, value)
             mockedLogging.getLogger \
                 .assert_called_once_with(f"app.datastoreModel.MULTI_STATE."
-                                         f"state.{name}")
+                                         f"stateList.{name}")
 
     def test_constructorSaveNameAndValue(self) -> None:
         name = 'test node'
