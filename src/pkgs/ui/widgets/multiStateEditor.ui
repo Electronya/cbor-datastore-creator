@@ -19,26 +19,6 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="2" column="1">
-    <widget class="QPushButton" name="pbDeleteState">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::EditDelete"/>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="pbAddState">
-     <property name="text">
-      <string/>
-     </property>
-     <property name="icon">
-      <iconset theme="QIcon::ThemeIcon::ContactNew"/>
-     </property>
-    </widget>
-   </item>
    <item row="2" column="2">
     <spacer name="horizontalSpacer_2">
      <property name="orientation">
@@ -65,16 +45,6 @@
      </property>
     </spacer>
    </item>
-   <item row="1" column="0" colspan="3">
-    <widget class="QListView" name="lvStateList"/>
-   </item>
-   <item row="0" column="0" colspan="2">
-    <widget class="QLabel" name="lblStateList">
-     <property name="text">
-      <string>State List:</string>
-     </property>
-    </widget>
-   </item>
    <item row="3" column="1">
     <spacer name="verticalSpacer">
      <property name="orientation">
@@ -87,6 +57,36 @@
       </size>
      </property>
     </spacer>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pbAddState">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::ContactNew"/>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pbDeleteState">
+     <property name="text">
+      <string/>
+     </property>
+     <property name="icon">
+      <iconset theme="QIcon::ThemeIcon::EditDelete"/>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="lblStateList">
+     <property name="text">
+      <string>State List:</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" colspan="3">
+    <widget class="QTableView" name="tvStateList"/>
    </item>
   </layout>
  </widget>
