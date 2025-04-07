@@ -15,9 +15,9 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
     QFont, QFontDatabase, QGradient, QIcon,
     QImage, QKeySequence, QLinearGradient, QPainter,
     QPalette, QPixmap, QRadialGradient, QTransform)
-from PySide6.QtWidgets import (QApplication, QGridLayout, QHeaderView, QLabel,
-    QPushButton, QSizePolicy, QSpacerItem, QTableView,
-    QWidget)
+from PySide6.QtWidgets import (QApplication, QComboBox, QGridLayout, QHeaderView,
+    QLabel, QPushButton, QSizePolicy, QSpacerItem,
+    QTableView, QWidget)
 
 class Ui_MultiStateEditor(object):
     def setupUi(self, MultiStateEditor):
@@ -29,41 +29,51 @@ class Ui_MultiStateEditor(object):
         MultiStateEditor.setFont(font)
         self.gridLayout = QGridLayout(MultiStateEditor)
         self.gridLayout.setObjectName(u"gridLayout")
-        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+        self.tvStateList = QTableView(MultiStateEditor)
+        self.tvStateList.setObjectName(u"tvStateList")
 
-        self.gridLayout.addItem(self.horizontalSpacer_2, 2, 2, 1, 1)
-
-        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
-
-        self.gridLayout.addItem(self.horizontalSpacer, 0, 2, 1, 1)
+        self.gridLayout.addWidget(self.tvStateList, 2, 0, 1, 3)
 
         self.verticalSpacer = QSpacerItem(20, 40, QSizePolicy.Policy.Minimum, QSizePolicy.Policy.Expanding)
 
-        self.gridLayout.addItem(self.verticalSpacer, 3, 1, 1, 1)
+        self.gridLayout.addItem(self.verticalSpacer, 4, 1, 1, 1)
 
         self.pbAddState = QPushButton(MultiStateEditor)
         self.pbAddState.setObjectName(u"pbAddState")
         icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ContactNew))
         self.pbAddState.setIcon(icon)
 
-        self.gridLayout.addWidget(self.pbAddState, 2, 0, 1, 1)
+        self.gridLayout.addWidget(self.pbAddState, 3, 0, 1, 1)
+
+        self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
+
+        self.gridLayout.addItem(self.horizontalSpacer, 1, 2, 1, 1)
+
+        self.lblStateList = QLabel(MultiStateEditor)
+        self.lblStateList.setObjectName(u"lblStateList")
+
+        self.gridLayout.addWidget(self.lblStateList, 1, 0, 1, 2)
 
         self.pbDeleteState = QPushButton(MultiStateEditor)
         self.pbDeleteState.setObjectName(u"pbDeleteState")
         icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.EditDelete))
         self.pbDeleteState.setIcon(icon1)
 
-        self.gridLayout.addWidget(self.pbDeleteState, 2, 1, 1, 1)
+        self.gridLayout.addWidget(self.pbDeleteState, 3, 1, 1, 1)
 
-        self.lblStateList = QLabel(MultiStateEditor)
-        self.lblStateList.setObjectName(u"lblStateList")
+        self.horizontalSpacer_2 = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
-        self.gridLayout.addWidget(self.lblStateList, 0, 0, 1, 2)
+        self.gridLayout.addItem(self.horizontalSpacer_2, 3, 2, 1, 1)
 
-        self.tvStateList = QTableView(MultiStateEditor)
-        self.tvStateList.setObjectName(u"tvStateList")
+        self.cbDefaultState = QComboBox(MultiStateEditor)
+        self.cbDefaultState.setObjectName(u"cbDefaultState")
 
-        self.gridLayout.addWidget(self.tvStateList, 1, 0, 1, 3)
+        self.gridLayout.addWidget(self.cbDefaultState, 0, 2, 1, 1)
+
+        self.lblDefaultState = QLabel(MultiStateEditor)
+        self.lblDefaultState.setObjectName(u"lblDefaultState")
+
+        self.gridLayout.addWidget(self.lblDefaultState, 0, 0, 1, 2)
 
 
         self.retranslateUi(MultiStateEditor)
@@ -74,7 +84,8 @@ class Ui_MultiStateEditor(object):
     def retranslateUi(self, MultiStateEditor):
         MultiStateEditor.setWindowTitle(QCoreApplication.translate("MultiStateEditor", u"Form", None))
         self.pbAddState.setText("")
-        self.pbDeleteState.setText("")
         self.lblStateList.setText(QCoreApplication.translate("MultiStateEditor", u"State List:", None))
+        self.pbDeleteState.setText("")
+        self.lblDefaultState.setText(QCoreApplication.translate("MultiStateEditor", u"Default State:", None))
     # retranslateUi
 
