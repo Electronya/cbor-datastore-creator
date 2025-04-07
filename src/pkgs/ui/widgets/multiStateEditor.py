@@ -4,7 +4,7 @@ import PySide6.QtCore as qtc
 import PySide6.QtWidgets as qtw
 
 from .multiStateEditor_ui import Ui_MultiStateEditor
-from ..models import MultiStateNode
+from ..models import MultiStateNode, StateListModel
 
 
 class MultiStateEditor(qtw.QWidget, Ui_MultiStateEditor):
@@ -26,4 +26,32 @@ class MultiStateEditor(qtw.QWidget, Ui_MultiStateEditor):
     def _initUi(self) -> None:
         """
         Initialize the UI connecting signals and slots.
+        """
+        model = StateListModel(self._multiState.getStateList())
+        self.tvStateList.setModel(model)
+        self.cbDefaultState.setModel(model)
+        self.cbDefaultState.setCurrentIndex(self._multiState.getDefaultIndex())
+        self.cbDefaultState.currentIndexChanged.connect(self._selectNewDefault)
+        self.pbAddState.clicked.connect(self._addState)
+        self.pbDeleteState.clicked.connect(self._deleteState)
+
+    @qtc.Slot()
+    def _selectNewDefault(self, default: int) -> None:
+        """
+        Select a new default state.
+
+        Param
+            default: The new default index.
+        """
+
+    @qtc.Slot()
+    def _addState(self) -> None:
+        """
+        Add a new state.
+        """
+
+    @qtc.Slot()
+    def _deleteState(self) -> None:
+        """
+        Delete the selected state.
         """
