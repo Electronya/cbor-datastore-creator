@@ -18,7 +18,7 @@ class StateListModel(qtc.QAbstractTableModel):
             states: The list of state.
             parent: The parent of the model.
         """
-        qtc.QAbstractTableModel.__init__(parent)
+        super(StateListModel, self).__init__(parent)
         self._logger = logging.getLogger('app.datastoreModel.MULTI_STATE.'
                                          'stateList')
         self._states = states
