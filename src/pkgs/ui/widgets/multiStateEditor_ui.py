@@ -40,7 +40,8 @@ class Ui_MultiStateEditor(object):
 
         self.pbAddState = QPushButton(MultiStateEditor)
         self.pbAddState.setObjectName(u"pbAddState")
-        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ContactNew))
+        self.pbAddState.setEnabled(True)
+        icon = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ListAdd))
         self.pbAddState.setIcon(icon)
 
         self.gridLayout.addWidget(self.pbAddState, 3, 0, 1, 1)
@@ -56,6 +57,7 @@ class Ui_MultiStateEditor(object):
 
         self.pbDeleteState = QPushButton(MultiStateEditor)
         self.pbDeleteState.setObjectName(u"pbDeleteState")
+        self.pbDeleteState.setEnabled(False)
         icon1 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.EditDelete))
         self.pbDeleteState.setIcon(icon1)
 
