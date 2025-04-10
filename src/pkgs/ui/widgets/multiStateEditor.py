@@ -9,7 +9,7 @@ from ..models import MultiStateNode, StateListModel
 
 class MultiStateEditor(qtw.QWidget, Ui_MultiStateEditor):
     """
-    The button editor widget.
+    The multi-state editor widget.
     """
     def __init__(self, multiState: MultiStateNode,
                  parent: qtw.QWidget = None) -> None:
