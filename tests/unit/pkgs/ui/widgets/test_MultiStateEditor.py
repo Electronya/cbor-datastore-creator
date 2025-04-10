@@ -126,3 +126,17 @@ class TestMultiStateEditor(TestCase):
         index.row.return_value = row
         self._uut._addState()
         model.insertRow.assert_called_once_with(row + 1, index)
+
+    def test_deleteStateDelete(self) -> None:
+        """
+        The _deleteState method must delete the selected state..
+        """
+        row = 2
+        index = Mock()
+        model = Mock()
+        self._uut.tvStateList.model.return_value = model
+        self._uut.tvStateList.currentIndex.return_value = index
+        index.isValid.return_value = True
+        index.row.return_value = row
+        self._uut._deleteState()
+        model.removeRow.assert_called_once_with(row, index)

@@ -71,3 +71,7 @@ class MultiStateEditor(qtw.QWidget, Ui_MultiStateEditor):
         """
         Delete the selected state.
         """
+        model = self.tvStateList.model()
+        index = self.tvStateList.currentIndex()
+        if index.isValid():
+            model.removeRow(index.row(), index)
