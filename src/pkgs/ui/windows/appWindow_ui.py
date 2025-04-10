@@ -95,7 +95,7 @@ class Ui_appWindow(object):
         self.pbAddObject = QPushButton(self.objectListGroupBox)
         self.pbAddObject.setObjectName(u"pbAddObject")
         self.pbAddObject.setEnabled(False)
-        icon6 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ContactNew))
+        icon6 = QIcon(QIcon.fromTheme(QIcon.ThemeIcon.ListAdd))
         self.pbAddObject.setIcon(icon6)
         self.pbAddObject.setIconSize(QSize(24, 24))
 
