@@ -22,6 +22,7 @@ class TestStateListModel(TestCase):
         self._states = [Mock(), Mock(), Mock(), Mock()]
         with patch(f"{self._BaseCls}.__init__"), patch(self._loggingMod):
             self._uut = StateListModel(states=self._states)
+            self._uut.layoutChanged = Mock()
 
     def test_constructorBaseClassInit(self) -> None:
         """
@@ -184,6 +185,7 @@ class TestStateListModel(TestCase):
             mockedBegin.assert_called_once_with(index, row, row + 1)
             mockedStateNode.assert_called_once_with(f"STATE_{row}", row)
             mockedEnd.assert_called_once_with()
+            self._uut.layoutChanged.emit.assert_called_once_with()
             self.assertEqual(len(states), len(self._uut._states))
             self.assertEqual(states, self._uut._states)
 
@@ -202,6 +204,7 @@ class TestStateListModel(TestCase):
                 self.assertFalse(self._uut.removeRow(row, parent))
                 mockedBegin.assert_not_called()
                 mockedEnd.assert_not_called()
+                self._uut.layoutChanged.emit.assert_not_called()
                 self.assertEqual(len(states), len(self._uut._states))
                 self.assertEqual(states, self._uut._states)
 
@@ -221,5 +224,6 @@ class TestStateListModel(TestCase):
             self.assertTrue(self._uut.removeRow(row, parent))
             mockedBegin.assert_called_once_with(parent, row, row + 1)
             mockedEnd.assert_called_once_with()
+            self._uut.layoutChanged.emit.assert_called_once_with()
             self.assertEqual(len(states), len(self._uut._states))
             self.assertEqual(states, self._uut._states)

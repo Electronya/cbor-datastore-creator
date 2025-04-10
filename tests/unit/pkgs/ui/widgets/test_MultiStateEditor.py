@@ -74,6 +74,8 @@ class TestMultiStateEditor(TestCase):
             self._uut._initUi()
             mockedModel.assert_called_once_with(states)
             self._uut.tvStateList.setModel.assert_called_once_with(model)
+            self._uut.tvStateList.selectionModel().selectionChanged \
+                .connect.assert_called_once_with(self._uut._newStateSelection)
             self._uut.cbDefaultState.setModel.assert_called_once_with(model)
             self._uut.cbDefaultState.setCurrentIndex \
                 .assert_called_once_with(defaultState)
@@ -81,3 +83,46 @@ class TestMultiStateEditor(TestCase):
                 .assert_called_once_with(self._uut._selectNewDefault)
             self._uut.pbAddState.clicked.connect(self._uut._addState)
             self._uut.pbDeleteState.clicked.connect(self._uut._deleteState)
+
+    def test_newStateSelectionEnableDeleteButton(self) -> None:
+        """
+        The _newStateSelection method must enable the delete state button.
+        """
+        self._uut._newStateSelection()
+        self._uut.pbDeleteState.setEnabled.assert_called_once_with(True)
+
+    def test_selectNewDefaultSaveNewDefaultIndex(self) -> None:
+        """
+        The _selectNewDefault method must save the new default index.
+        """
+        index = 6
+        self._uut._selectNewDefault(index)
+        self._multiState.setDefaultIndex.assert_called_once_with(index)
+
+    def test_addStateAddWithNoSelection(self) -> None:
+        """
+        The _addState method must add a new state at the beginning of the list
+        when no state is selected.
+        """
+        index = Mock()
+        model = Mock()
+        self._uut.tvStateList.model.return_value = model
+        self._uut.tvStateList.currentIndex.return_value = index
+        index.isValid.return_value = False
+        self._uut._addState()
+        model.insertRow.assert_called_once_with(0, index)
+
+    def test_addStateAddWithSelection(self) -> None:
+        """
+        The _addState method must add a new state after the selected state when
+        a state is selected.
+        """
+        row = 2
+        index = Mock()
+        model = Mock()
+        self._uut.tvStateList.model.return_value = model
+        self._uut.tvStateList.currentIndex.return_value = index
+        index.isValid.return_value = True
+        index.row.return_value = row
+        self._uut._addState()
+        model.insertRow.assert_called_once_with(row + 1, index)

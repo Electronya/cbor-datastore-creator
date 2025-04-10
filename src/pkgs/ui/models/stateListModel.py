@@ -128,6 +128,7 @@ class StateListModel(qtc.QAbstractTableModel):
         self.beginInsertRows(qtc.QModelIndex(), row, row + 1)
         self._states.insert(row, StateNode(f"STATE_{row}", row))
         self.endInsertRows()
+        self.layoutChanged.emit()
         return True
 
     def removeRow(self, row: int, parent: qtc.QModelIndex) -> bool:
@@ -145,5 +146,6 @@ class StateListModel(qtc.QAbstractTableModel):
             self.beginRemoveRows(qtc.QModelIndex(), row, row + 1)
             self._states.pop(row)
             self.endRemoveRows()
+            self.layoutChanged.emit()
             return True
         return False
