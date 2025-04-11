@@ -73,33 +73,3 @@ class FloatNode(BaseNode):
             min: The default value of the float.
         """
         self._data.default = default
-
-
-@dataclass
-class FloatArrayElement:
-    """
-    The float array element.
-    """
-    name: str
-    min: float = 0.0
-    max: float = 0.0
-    default: float = 0.0
-
-
-@dataclass
-class FloatArrayData:
-    """
-    The float array node data.
-    """
-    inNvm: bool = False
-    elements: list[FloatArrayElement] = field(default_factory=list)
-
-
-class FloatArrayNode(BaseNode):
-    """
-    The float array node class.
-    """
-    def __init__(self, name: str, data: FloatArrayData,
-                 parent: BaseNode = None):
-        super().__init__(name, NodeType.FLOAT_ARRAY, parent=parent)
-        self._data = data

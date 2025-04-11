@@ -54,31 +54,3 @@ class ButtonNode(BaseNode):
             time: The button inactive time.
         """
         self._data.inactiveTime = time
-
-
-@dataclass
-class ButtonArrayElement:
-    """
-    The button array element.
-    """
-    name: str
-
-
-@dataclass
-class ButtonArrayData:
-    """
-    The button array node data.
-    """
-    longPressTime: int = 3000
-    inactiveTime: int = 6000
-    elements: list[ButtonArrayElement] = field(default_factory=list)
-
-
-class ButtonArrayNode(BaseNode):
-    """
-    The button array node class.
-    """
-    def __init__(self, name: str, data: ButtonArrayData,
-                 parent: BaseNode = None):
-        super().__init__(name, NodeType.BUTTON_ARRAY, parent=parent)
-        self._data = data

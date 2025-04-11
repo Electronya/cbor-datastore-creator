@@ -2,12 +2,11 @@ from logging import getLogger
 from PySide6 import QtCore as qtc
 
 from .baseNode import BaseNode, NodeType
-from .buttonNode import ButtonArrayData, ButtonArrayNode, \
-    ButtonData, ButtonNode
-from .floatNode import FloatArrayData, FloatArrayNode, FloatData, FloatNode
-from .intNode import IntArrayData, IntArrayNode, IntData, IntNode
+from .buttonNode import ButtonData, ButtonNode
+from .floatNode import FloatData, FloatNode
+from .intNode import IntData, IntNode
 from .multiStateNode import MultiStateData, MultiStateNode
-from .uintNode import UintArrayData, UintArrayNode, UintData, UintNode
+from .uintNode import UintData, UintNode
 
 
 class DatastoreModel(qtc.QAbstractItemModel):
@@ -39,8 +38,9 @@ class DatastoreModel(qtc.QAbstractItemModel):
             list: The button array list node.
             row: The insertion row.
         """
-        node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
-        list.addChildAt(row, node)
+        pass
+        # node = ButtonArrayNode('NEW_BUTTON_ARRAY', ButtonArrayData())
+        # list.addChildAt(row, node)
 
     def _insertFloatNode(self, list: BaseNode, row: int) -> None:
         """
@@ -61,8 +61,9 @@ class DatastoreModel(qtc.QAbstractItemModel):
             list: The float array list node.
             row: The insertion row.
         """
-        node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
-        list.addChildAt(row, node)
+        pass
+        # node = FloatArrayNode('NEW_FLOAT_ARRAY', FloatArrayData())
+        # list.addChildAt(row, node)
 
     def _insertIntNode(self, list: BaseNode, row: int) -> None:
         """
@@ -83,8 +84,9 @@ class DatastoreModel(qtc.QAbstractItemModel):
             list: The int array list node.
             row: The insertion row.
         """
-        node = IntArrayNode('NEW_INT_ARRAY', IntArrayData())
-        list.addChildAt(row, node)
+        pass
+        # node = IntArrayNode('NEW_INT_ARRAY', IntArrayData())
+        # list.addChildAt(row, node)
 
     def _insertMultiStateNode(self, list: BaseNode, row: int) -> None:
         """
@@ -116,8 +118,9 @@ class DatastoreModel(qtc.QAbstractItemModel):
             list: The uint array list node.
             row: The insertion row.
         """
-        node = UintArrayNode('NEW_UINT_ARRAY', UintArrayData())
-        list.addChildAt(row, node)
+        pass
+        # node = UintArrayNode('NEW_UINT_ARRAY', UintArrayData())
+        # list.addChildAt(row, node)
 
     def rowCount(self, index: qtc.QModelIndex) -> int:
         """

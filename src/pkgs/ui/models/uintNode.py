@@ -73,33 +73,3 @@ class UintNode(BaseNode):
             min: The default value of the uint.
         """
         self._data.default = default
-
-
-@dataclass
-class UintArrayElement:
-    """
-    The uint array element.
-    """
-    name: str
-    min: int
-    max: int
-    default: int
-
-
-@dataclass
-class UintArrayData:
-    """
-    The uint array node data.
-    """
-    inNvm: bool = False
-    elements: list[UintArrayElement] = field(default_factory=list)
-
-
-class UintArrayNode(BaseNode):
-    """
-    The uint array node class.
-    """
-    def __init__(self, name: str, data: UintArrayData,
-                 parent: BaseNode = None):
-        super().__init__(name, NodeType.UINT_ARRAY, parent=parent)
-        self._data = data

@@ -73,32 +73,3 @@ class IntNode(BaseNode):
             min: The default value of the int.
         """
         self._data.default = default
-
-
-@dataclass
-class IntArrayElement:
-    """
-    The int array element.
-    """
-    name: str
-    min: int = 0
-    max: int = 0
-    default: int = 0
-
-
-@dataclass
-class IntArrayData:
-    """
-    The int array node data.
-    """
-    inNvm: bool = False
-    elements: list[IntArrayElement] = field(default_factory=list)
-
-
-class IntArrayNode(BaseNode):
-    """
-    The int array node class.
-    """
-    def __init__(self, name: str, data: IntArrayData, parent: BaseNode = None):
-        super().__init__(name, NodeType.INT_ARRAY, parent=parent)
-        self._data = data

@@ -6,8 +6,7 @@ import sys
 
 sys.path.append(os.path.abspath('./src'))
 
-from pkgs.ui.models import UintArrayData, UintArrayElement, \
-    UintArrayNode, UintData, UintNode, NodeType                 # noqa: E402
+from pkgs.ui.models import UintData, UintNode, NodeType         # noqa: E402
 
 
 class TestUintNode(TestCase):
@@ -78,28 +77,3 @@ class TestUintNode(TestCase):
         default = 6
         self._uut.setDefault(default)
         self.assertEqual(default, self._uut._data.default)
-
-
-class TestUintArrayNode(TestCase):
-    """
-    UintArrayNode class test cases.
-    """
-    def setUp(self) -> None:
-        """
-        Test cases setup.
-        """
-        self._BaseNodeCls = 'pkgs.ui.models.datastoreNode.BaseNode'
-
-    def test_constructorBaseClassInitAndSaveData(self) -> None:
-        """
-        The constructor must call the base class constructor save the uint
-        array object data.
-        """
-        name = 'test node'
-        data = Mock()
-        parent = Mock()
-        with patch(f"{self._BaseNodeCls}.__init__") as mockedBaseNode:
-            uut = UintArrayNode(name, data, parent)
-            mockedBaseNode.assert_called_once_with(name, NodeType.UINT_ARRAY,
-                                                   parent=parent)
-            self.assertEqual(data, uut._data)
