@@ -17,7 +17,7 @@ class UintEditor(qtw.QWidget, Ui_IntEditor):
         """
         super(UintEditor, self).__init__(parent)
         self._logger = logging.getLogger('app.windows.main.uintEditor')
-        self._logger.info('creating int editor widget')
+        self._logger.info('creating uint editor widget')
         self._uint = uint
         self.setupUi(self)
         self._initUi()

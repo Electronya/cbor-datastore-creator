@@ -18,7 +18,7 @@ class MultiStateEditor(qtw.QWidget, Ui_MultiStateEditor):
         """
         super(MultiStateEditor, self).__init__(parent)
         self._logger = logging.getLogger('app.windows.main.multiStateEditor')
-        self._logger.info('creating int editor widget')
+        self._logger.info('creating multi-state editor widget')
         self._multiState = multiState
         self.setupUi(self)
         self._initUi()
